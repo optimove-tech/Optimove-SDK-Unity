@@ -19,7 +19,7 @@ public class readConfig : MonoBehaviour
     public TMP_Text text;
     // Start is called before the first frame update
 
-    void Start()
+    void Awake()
     {
         string optimoveConfigText = getOptimoveConfigText();
         OptimoveConfig optimoveConfig = JsonUtility.FromJson<OptimoveConfig>(optimoveConfigText);
