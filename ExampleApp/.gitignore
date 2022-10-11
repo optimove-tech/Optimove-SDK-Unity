@@ -35,3 +35,6 @@ sysinfo.txt
 
 # Miscellaneous
 .DS_Store
+/Logs/
+OptimoveUnityPlugin\src\androidTest\
+OptimoveUnityPlugin\src\test\
