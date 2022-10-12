@@ -4,7 +4,7 @@
     package="com.unity3d.player"
     xmlns:tools="http://schemas.android.com/tools">
 	<application tools:remove="android:dataExtractionRules">
-		<provider android:authorities="${applicationId}.optimoveinitprovider" android:name="com.optimove.unity.optimoveunityplugin.OptimoveInitProvider" android:exported="false"></provider>
+		<provider android:authorities="${applicationId}.optimoveinitprovider" android:name="com.optimove.unity.plugin.OptimoveInitProvider" android:exported="false"></provider>
 		<activity android:name="com.unity3d.player.UnityPlayerActivity"
                   android:theme="@style/UnityThemeSelector">
 			<intent-filter>
