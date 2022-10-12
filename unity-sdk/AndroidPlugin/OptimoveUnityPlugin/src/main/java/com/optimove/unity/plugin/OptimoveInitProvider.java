@@ -1,4 +1,4 @@
-package com.optimove.unity.optimoveunityplugin;
+package com.optimove.unity.plugin;
 
 import android.app.Application;
 import android.content.ContentProvider;
