@@ -83,15 +83,25 @@ using System.Runtime.InteropServices;
             AndroidProxy.CallStatic("setUserId", userId);
          }
 
-        // public void SetUserEmail(string userEmail)
-        // {
-        //     //TODO
-        // }
+         public void SetUserEmail(string userEmail)
+         {
+            if (isInvalidString(userEmail))
+            {
+                Debug.LogError("invalid user email");
+                return;
+            }
 
-        // public void RegisterUser(string userId, string userEmail)
-        // {
-        //     //TODO
-        // }
+            AndroidProxy.CallStatic("setUserEmail", userEmail);
+         }
+
+         public void RegisterUser(string userId, string userEmail)
+         {
+            if (isInvalidString(userId) || isInvalidString(userEmail))
+            {
+                Debug.LogError("invalid user id or user email");
+            }
+            AndroidProxy.CallStatic("registerUser", userId, userEmail);
+         }
 
         // public void SignOutUser()
         // {
