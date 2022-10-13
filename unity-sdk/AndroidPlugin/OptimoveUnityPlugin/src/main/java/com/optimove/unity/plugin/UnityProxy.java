@@ -29,7 +29,7 @@ public class UnityProxy {
     public static void setUserId(String userId) {
         try {
             Optimove.getInstance().setUserId(userId);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -37,7 +37,7 @@ public class UnityProxy {
     public static void setUserEmail(String userEmail) {
         try {
             Optimove.getInstance().setUserEmail(userEmail);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -45,7 +45,7 @@ public class UnityProxy {
     public static void reportEvent(String eventName) {
         try {
             Optimove.getInstance().reportEvent(eventName);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -54,88 +54,95 @@ public class UnityProxy {
         try {
             JSONObject eventParamsJson = new JSONObject(eventParamsString);
             Iterator<String> iterator = eventParamsJson.keys();
-            Map<String,Object> eventParams = new HashMap<>();
-            while(iterator.hasNext()){
+            Map<String, Object> eventParams = new HashMap<>();
+            while (iterator.hasNext()) {
                 String key = iterator.next();
-                eventParams.put(key,eventParamsJson.get(key));
+                eventParams.put(key, eventParamsJson.get(key));
             }
             Optimove.getInstance().reportEvent(eventName, eventParams);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    public static void registerUser(String userId,String userEmail){
+
+    public static void registerUser(String userId, String userEmail) {
         try {
-            Optimove.getInstance().registerUser(userId,userEmail);
-        }catch (Exception e){
+            Optimove.getInstance().registerUser(userId, userEmail);
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
-    public static void reportScreenVisit(String screenName){
+
+    public static void reportScreenVisit(String screenName) {
         try {
             Optimove.getInstance().reportScreenVisit(screenName);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
-    public static void reportScreenVisit(String screenName,String screenCategory){
+
+    public static void reportScreenVisit(String screenName, String screenCategory) {
         try {
-            Optimove.getInstance().reportScreenVisit(screenName,screenCategory);
-        }catch (Exception e){
+            Optimove.getInstance().reportScreenVisit(screenName, screenCategory);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    public static String getVisitorId(){
+
+    public static String getVisitorId() {
         try {
 
             return Optimove.getInstance().getVisitorId();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return "";
     }
-    public static void pushRegister(){
+
+    public static void pushRegister() {
         try {
             Optimove.getInstance().pushRegister();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    public static void pushUnregister(){
+
+    public static void pushUnregister() {
         try {
 
             Optimove.getInstance().pushUnregister();
-    }catch (Exception e){
-        e.printStackTrace();
-    }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
-    public static void inAppUpdateConsent(boolean consented){
+
+    public static void inAppUpdateConsent(boolean consented) {
         try {
 
             OptimoveInApp.getInstance().updateConsentForUser(consented);
-    }catch (Exception e){
-        e.printStackTrace();
-    }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
     public static String getCurrentUserId() {
         try {
             return Optimove.getInstance().getCurrentUserIdentifier();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return "";
     }
 
     public static void signOutUser() {
-        try{
+        try {
 
             Optimove.getInstance().signOutUser();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -148,7 +155,6 @@ public class UnityProxy {
         notifyUnityOfPush(pendingPushMessage);
         pendingPushMessage = null;
     }
-
 
 
     public static String inAppGetInboxItems() {
@@ -204,7 +210,7 @@ public class UnityProxy {
     }
 
     public static boolean inAppPresentInboxMessage(int messageId) {
-        try{
+        try {
             List<InAppInboxItem> items = OptimoveInApp.getInstance().getInboxItems();
             for (InAppInboxItem item : items) {
                 if (item.getId() == messageId) {
@@ -213,7 +219,7 @@ public class UnityProxy {
                     return result == OptimoveInApp.InboxMessagePresentationResult.PRESENTED;
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -231,7 +237,7 @@ public class UnityProxy {
                 }
             }
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -248,7 +254,7 @@ public class UnityProxy {
                     return OptimoveInApp.getInstance().markAsRead(item);
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -259,10 +265,10 @@ public class UnityProxy {
     public static boolean inAppMarkAllInboxItemsRead() {
         try {
             return OptimoveInApp.getInstance().markAllInboxItemsAsRead();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
-      return false;
+        return false;
     }
 
     public static void inAppGetInboxSummary(String guid) {
@@ -271,7 +277,7 @@ public class UnityProxy {
             OptimoveInApp.getInstance().getInboxSummaryAsync((InAppInboxSummary summary) -> {
                 notifyUnityOfInboxSummary(guid, summary);
             });
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
