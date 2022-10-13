@@ -6,7 +6,7 @@ using System;
 using System.Text;
 using System.Runtime.InteropServices;
 
-namespace OptimoveSdk
+    namespace OptimoveSdk
 {
     public class Optimove : MonoBehaviour
     {
@@ -64,12 +64,24 @@ namespace OptimoveSdk
 
         #endregion
 
+        //helper functions
+        private bool isInvalidString(string value)
+        {
+            return (value == null) || value.Equals("");
+        }
+
         // #region User Association
 
-        // public void SetUserId(string userId)
-        // {
-        //     //TODO
-        // }
+         public void SetUserId(string userId)
+         {
+            if (isInvalidString(userId))
+            {
+                Debug.LogError("invalid user id");
+                return;
+            }
+
+            AndroidProxy.CallStatic("setUserId", userId);
+         }
 
         // public void SetUserEmail(string userEmail)
         // {
