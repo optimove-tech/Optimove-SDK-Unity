@@ -47,6 +47,8 @@ namespace OptimoveSdk
             var optimoveGameObject = new GameObject(GameObjectName);
             optimoveGameObject.AddComponent<Optimove>();
             DontDestroyOnLoad(optimoveGameObject);
+
+
         }
 
         #endregion
@@ -60,6 +62,7 @@ namespace OptimoveSdk
 // #if UNITY_ANDROID
 //             PollPendingPush();
 // #endif
+            OptimoveSayHello();
         }
 
         #endregion
@@ -311,6 +314,10 @@ namespace OptimoveSdk
 
 #if UNITY_IOS
         private const string nativeLib = "__Internal";
+
+        [DllImport(nativeLib)]
+        private static extern void OptimoveSayHello();
+
 
         // [DllImport(nativeLib)]
         // private static extern void KStrackEvent(string type, string jsonData, int immediateFlush);
