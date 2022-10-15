@@ -64,13 +64,3 @@ char* OptimoveGetVisitorId() {
 void OptimoveSignOutUser() {
     [Optimove_Unity signOutUser];
 }
-
-
-// TESTING
-void OptimoveSayHello() {
-    OptimoveReportEvent("myevent", "{\"a\":1}");
-}
-
-
-
-

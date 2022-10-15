@@ -63,11 +63,6 @@ namespace OptimoveSdk
 //             PollPendingPush();
 // #endif
 
-                #if UNITY_IOS
-                        OptimoveSayHello();
-                #elif UNITY_ANDROID
-                        //TODO
-                #endif
         }
 
         #endregion
@@ -151,8 +146,13 @@ namespace OptimoveSdk
 
         public void ReportScreenVisit(string screenName, string screenCategory)
         {
-                if (!isValidString(screenName) || screenCategory.Equals("")){
-                        Debug.LogError("Invalid screen name or category");
+                if (!isValidString(screenName)){
+                        Debug.LogError("Invalid screen name");
+                        return;
+                }
+
+                if (screenCategory != null && screenCategory.Equals("")){
+                        Debug.LogError("Invalid screen category");
                         return;
                 }
 
@@ -380,13 +380,10 @@ namespace OptimoveSdk
         private const string nativeLib = "__Internal";
 
         [DllImport(nativeLib)]
-        private static extern void OptimoveSayHello();
-
-        [DllImport(nativeLib)]
         private static extern void OptimoveReportEvent(string type, string jsonData);
 
         [DllImport(nativeLib)]
-        private static extern void OptimoveReportScreenVisit(string screenTitle, string screenCategory);
+        private static extern void OptimoveReportScreenVisit(string screenName, string screenCategory);
 
         [DllImport(nativeLib)]
         private static extern void OptimoveRegisterUser(string userId, string email);
@@ -401,7 +398,7 @@ namespace OptimoveSdk
         private static extern string OptimoveGetVisitorId();
 
         [DllImport(nativeLib)]
-        private static extern string OptimoveSignOutUser();
+        private static extern void OptimoveSignOutUser();
 
 
 

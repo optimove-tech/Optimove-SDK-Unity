@@ -43,7 +43,11 @@ public class ButtonController : MonoBehaviour
         string eventType = m_eventType.text;
         string eventProps = m_eventProps.text;
 
-        Optimove.Shared.ReportEvent(eventType, Json.Deserialize(eventProps) as Dictionary<string, object>);
+        Dictionary<string, object> props = null;
+        if (!eventProps.Equals("")){
+            props =  Json.Deserialize(eventProps) as Dictionary<string, object>;
+        }
+        Optimove.Shared.ReportEvent(eventType, props);
 
         m_eventType.text = "";
         m_eventProps.text = "";
