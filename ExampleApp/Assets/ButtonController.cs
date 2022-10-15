@@ -1,11 +1,3 @@
-// To use this example, attach this script to an empty GameObject.
-// Create three buttons (Create>UI>Button). Next, select your
-// empty GameObject in the Hierarchy and click and drag each of your
-// Buttons from the Hierarchy to the Your First Button, Your Second Button
-// and Your Third Button fields in the Inspector.
-// Click each Button in Play Mode to output their message to the console.
-// Note that click means press down and then release.
-
 using UnityEngine;
 using UnityEngine.UI;
 using OptimoveSdk;
@@ -15,7 +7,7 @@ using System.Collections.Generic;
 public class ButtonController : MonoBehaviour
 {
     public InputField m_userIdInput, m_userEmailInput, m_screenName, m_screenCategory, m_eventType, m_eventProps;
-    public Button m_ReportScreenVisit, m_ReportEvent, m_SetUserIdButton, m_SetUserEmailButton, m_RegisterUserButton, m_GetVisitorId;
+    public Button m_ReportScreenVisit, m_ReportEvent, m_SetUserIdButton, m_SetUserEmailButton, m_RegisterUserButton, m_GetVisitorId, m_SignOutUser;
 
     void Start()
     {
@@ -28,6 +20,7 @@ public class ButtonController : MonoBehaviour
         m_SetUserEmailButton.onClick.AddListener(SetUserEmail);
         m_RegisterUserButton.onClick.AddListener(RegisterUser);
         m_GetVisitorId.onClick.AddListener(GetVisitorId);
+        m_SignOutUser.onClick.AddListener(SignOutUser);
     }
 
     void ReportScreenVisit()
@@ -77,5 +70,9 @@ public class ButtonController : MonoBehaviour
         Debug.Log("GetVisitorId: " + Optimove.Shared.GetVisitorId());
     }
 
+    void SignOutUser()
+    {
+        Optimove.Shared.SignOutUser();
+    }
 
 }

@@ -11,5 +11,6 @@
 + (void)setUserId:(NSString * _Nonnull)userId;
 + (void)setUserEmail:(NSString * _Nonnull)email;
 + (NSString * _Nullable)getVisitorId;
++ (void)signOutUser;
 @end
 

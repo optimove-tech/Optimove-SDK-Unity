@@ -9,7 +9,7 @@ void OptimoveRegisterUser(const char* userId, const char* email);
 void OptimoveSetUserId(const char* userId);
 void OptimoveSetUserEmail(const char* email);
 char* OptimoveGetVisitorId();
-
+void OptimoveSignOutUser();
 
 #endif /* UnityPluginBridge_h */
 

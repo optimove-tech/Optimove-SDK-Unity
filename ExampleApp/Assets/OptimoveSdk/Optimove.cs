@@ -129,12 +129,15 @@ namespace OptimoveSdk
                 #endif
         }
 
-        // public void SignOutUser()
-        // {
-        //     //TODO
-        // }
 
-
+        public void SignOutUser()
+        {
+                #if UNITY_IOS
+                        OptimoveSignOutUser();
+                #elif UNITY_ANDROID
+                        //TODO:
+                #endif
+        }
 
         #endregion
 
@@ -392,7 +395,8 @@ namespace OptimoveSdk
         [DllImport(nativeLib)]
         private static extern string OptimoveGetVisitorId();
 
-
+        [DllImport(nativeLib)]
+        private static extern string OptimoveSignOutUser();
 
 
 

@@ -61,6 +61,9 @@ char* OptimoveGetVisitorId() {
     return KSCStringCopy([[Optimove_Unity getVisitorId] cStringUsingEncoding:NSUTF8StringEncoding]);
 }
 
+void OptimoveSignOutUser() {
+    [Optimove_Unity signOutUser];
+}
 
 
 // TESTING

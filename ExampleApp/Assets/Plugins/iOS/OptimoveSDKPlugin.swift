@@ -106,4 +106,9 @@ import OptimoveSDK
     static func getVisitorId() -> String? {
         Optimove.getVisitorID()
     }
+
+    @objc(signOutUser)
+    static func signOutUser() {
+        Optimove.signOutUser()
+    }
 }
