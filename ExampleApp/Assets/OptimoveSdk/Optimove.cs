@@ -47,6 +47,8 @@ namespace OptimoveSdk
             var optimoveGameObject = new GameObject(GameObjectName);
             optimoveGameObject.AddComponent<Optimove>();
             DontDestroyOnLoad(optimoveGameObject);
+
+
         }
 
         #endregion
@@ -55,69 +57,134 @@ namespace OptimoveSdk
 
         void Awake()
         {
-            Optimove.Shared = this;
+                Optimove.Shared = this;
 
 // #if UNITY_ANDROID
 //             PollPendingPush();
 // #endif
+
         }
 
         #endregion
 
-        // #region User Association
+        #region Helper Functions
+        private bool isValidString(string value)
+        {
+            return value != null && !value.Equals("");
+        }
+        #endregion
 
-        // public void SetUserId(string userId)
-        // {
-        //     //TODO
-        // }
+        #region User Association
 
-        // public void SetUserEmail(string userEmail)
-        // {
-        //     //TODO
-        // }
+        public void SetUserId(string userId)
+        {
+                if (!isValidString(userId)){
+                        Debug.LogError("Invalid user id");
+                        return;
+                }
 
-        // public void RegisterUser(string userId, string userEmail)
-        // {
-        //     //TODO
-        // }
+                #if UNITY_IOS
+                        OptimoveSetUserId(userId);
+                #elif UNITY_ANDROID
+                        //AndroidProxy.CallStatic("setUserId", userId);
 
-        // public void SignOutUser()
-        // {
-        //     //TODO
-        // }
+                #endif
+        }
 
-        // public string GetVisitorId()
-        // {
-        //     //TODO
-        // }
+        public void SetUserEmail(string userEmail)
+        {
+                if (!isValidString(userEmail)){
+                        Debug.LogError("Invalid user email");
+                        return;
+                }
 
-        // #endregion
+                #if UNITY_IOS
+                        OptimoveSetUserEmail(userEmail);
+                #elif UNITY_ANDROID
+                       //AndroidProxy.CallStatic("setUserEmail", userEmail);
+
+                #endif
+        }
+
+        public void RegisterUser(string userId, string userEmail)
+        {
+                if (!isValidString(userId) || !isValidString(userEmail)){
+                        Debug.LogError("Invalid user id or user email");
+                        return;
+                }
+
+                #if UNITY_IOS
+                        OptimoveRegisterUser(userId, userEmail);
+                #elif UNITY_ANDROID
+                       //AndroidProxy.CallStatic("registerUser", userId, userEmail);
+                #endif
+        }
+
+        public string GetVisitorId()
+        {
+                #if UNITY_IOS
+                        return OptimoveGetVisitorId();
+                #elif UNITY_ANDROID
+                        //TODO:
+                #endif
+        }
 
 
-//         #region Event Tracking
+        public void SignOutUser()
+        {
+                #if UNITY_IOS
+                        OptimoveSignOutUser();
+                #elif UNITY_ANDROID
+                        //TODO:
+                #endif
+        }
 
-//         public void ReportScreenVisit(string screenName, string screenCategory)
-//         {
-//             //TODO
-//         }
+        #endregion
 
-//         public void ReportEvent(string eventType, Dictionary<string, object> properties)
-//         {
-//             string propsJson = null;
 
-//             if (properties != null)
-//             {
-//                 propsJson = MiniJSON.Json.Serialize(properties);
-//             }
+        #region Event Tracking
 
-// #if UNITY_IOS
-//             KStrackEvent(eventType, propsJson);
-// #elif UNITY_ANDROID
-//             AndroidProxy.CallStatic("reportEvent", new object[] { eventType, propsJson});
-// #else
-// 			Debug.Log(String.Format("Optimove tracking event of type {0} (skipping on unsupported platform)", eventType));
-// #endif
-//         }
+        public void ReportScreenVisit(string screenName, string screenCategory)
+        {
+                if (!isValidString(screenName)){
+                        Debug.LogError("Invalid screen name");
+                        return;
+                }
+
+                if (screenCategory != null && screenCategory.Equals("")){
+                        Debug.LogError("Invalid screen category");
+                        return;
+                }
+
+                #if UNITY_IOS
+                        OptimoveReportScreenVisit(screenName, screenCategory);
+                #elif UNITY_ANDROID
+                       //TODO
+                #endif
+        }
+
+        public void ReportEvent(string eventType, Dictionary<string, object> properties)
+        {
+                if (!isValidString(eventType)){
+                        Debug.LogError("Invalid event type");
+                        return;
+                }
+
+                string propsJson = null;
+
+                if (properties != null) {
+                        propsJson = MiniJSON.Json.Serialize(properties);
+                }
+
+                #if UNITY_IOS
+                        OptimoveReportEvent(eventType, propsJson);
+                #elif UNITY_ANDROID
+                        //TODO
+
+                #endif
+        }
+
+        #endregion
 
         // #region DDL
 
@@ -312,8 +379,31 @@ namespace OptimoveSdk
 #if UNITY_IOS
         private const string nativeLib = "__Internal";
 
-        // [DllImport(nativeLib)]
-        // private static extern void KStrackEvent(string type, string jsonData, int immediateFlush);
+        [DllImport(nativeLib)]
+        private static extern void OptimoveReportEvent(string type, string jsonData);
+
+        [DllImport(nativeLib)]
+        private static extern void OptimoveReportScreenVisit(string screenName, string screenCategory);
+
+        [DllImport(nativeLib)]
+        private static extern void OptimoveRegisterUser(string userId, string email);
+
+        [DllImport(nativeLib)]
+        private static extern void OptimoveSetUserId(string userId);
+
+        [DllImport(nativeLib)]
+        private static extern void OptimoveSetUserEmail(string email);
+
+        [DllImport(nativeLib)]
+        private static extern string OptimoveGetVisitorId();
+
+        [DllImport(nativeLib)]
+        private static extern void OptimoveSignOutUser();
+
+
+
+
+
 
         // [DllImport(nativeLib)]
         // private static extern void KSPushRequestDeviceToken();

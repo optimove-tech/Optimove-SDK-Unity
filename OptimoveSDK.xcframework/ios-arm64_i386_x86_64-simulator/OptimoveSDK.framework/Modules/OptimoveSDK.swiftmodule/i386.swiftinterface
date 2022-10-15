@@ -1,0 +1,352 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 5.5.1 (swiftlang-1300.0.31.4 clang-1300.0.29.6)
+// swift-module-flags: -target i386-apple-ios10.0-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name OptimoveSDK
+import CommonCrypto
+import CoreData
+import CoreLocation
+import Dispatch
+import Foundation
+import ObjectiveC
+import OptimoveCore
+import StoreKit
+import Swift
+import UIKit.UIApplication
+import UIKit
+import UserNotifications
+import WebKit
+import _Concurrency
+import ObjectiveC.runtime
+public enum SysctlError : Swift.Error {
+  case unknown
+  case malformedUTF8
+  case invalidSize
+  case posixError(Darwin.POSIXErrorCode)
+}
+public func sysctl(levels: [Swift.Int32]) throws -> [Swift.Int8]
+public func sysctlLevels(fromName: Swift.String) throws -> [Swift.Int32]
+public func sysctlString(levels: Swift.Int32...) throws -> Swift.String
+public func sysctlString(name: Swift.String) throws -> Swift.String
+public func sysctlInt(levels: Swift.Int32...) throws -> Swift.Int64
+public func sysctlInt(name: Swift.String) throws -> Swift.Int64
+public struct Sysctl {
+  public static var hostName: Swift.String {
+    get
+  }
+  public static var machine: Swift.String {
+    get
+  }
+  public static var model: Swift.String {
+    get
+  }
+  public static var activeCPUs: Swift.Int64 {
+    get
+  }
+  public static var osRelease: Swift.String {
+    get
+  }
+  public static var osRev: Swift.Int64 {
+    get
+  }
+  public static var osType: Swift.String {
+    get
+  }
+  public static var osVersion: Swift.String {
+    get
+  }
+  public static var version: Swift.String {
+    get
+  }
+}
+public struct AppGroupConfig {
+  public static var suffix: Swift.String
+}
+@_hasMissingDesignatedInitializers public class InAppInboxItem {
+  open var id: Swift.Int64 {
+    get
+  }
+  open var title: Swift.String {
+    get
+  }
+  open var subtitle: Swift.String {
+    get
+  }
+  open var availableFrom: Foundation.Date? {
+    get
+  }
+  open var availableTo: Foundation.Date? {
+    get
+  }
+  open var dismissedAt: Foundation.Date? {
+    get
+  }
+  open var sentAt: Foundation.Date {
+    get
+  }
+  open var data: Foundation.NSDictionary? {
+    get
+  }
+  public func isAvailable() -> Swift.Bool
+  public func isRead() -> Swift.Bool
+  public func getImageUrl() -> Foundation.URL?
+  public func getImageUrl(width: Swift.UInt) -> Foundation.URL?
+  @objc deinit
+}
+public struct InAppInboxSummary {
+  public let totalCount: Swift.Int64
+  public let unreadCount: Swift.Int64
+}
+public typealias InboxUpdatedHandlerBlock = () -> Swift.Void
+public typealias InboxSummaryBlock = (OptimoveSDK.InAppInboxSummary?) -> Swift.Void
+@_hasMissingDesignatedInitializers public class OptimoveInApp {
+  public static func updateConsent(forUser consentGiven: Swift.Bool)
+  public static func getInboxItems() -> [OptimoveSDK.InAppInboxItem]
+  public static func presentInboxMessage(item: OptimoveSDK.InAppInboxItem) -> OptimoveSDK.InAppMessagePresentationResult
+  public static func deleteMessageFromInbox(item: OptimoveSDK.InAppInboxItem) -> Swift.Bool
+  public static func markAsRead(item: OptimoveSDK.InAppInboxItem) -> Swift.Bool
+  public static func markAllInboxItemsAsRead() -> Swift.Bool
+  public static func setOnInboxUpdated(inboxUpdatedHandlerBlock: OptimoveSDK.InboxUpdatedHandlerBlock?)
+  public static func getInboxSummaryAsync(inboxSummaryBlock: @escaping OptimoveSDK.InboxSummaryBlock)
+  @objc deinit
+}
+public typealias InAppDeepLinkHandlerBlock = (OptimoveSDK.InAppButtonPress) -> Swift.Void
+public typealias PushOpenedHandlerBlock = (OptimoveSDK.PushNotification) -> Swift.Void
+@available(iOS 10.0, *)
+public typealias PushReceivedInForegroundHandlerBlock = (OptimoveSDK.PushNotification, (UserNotifications.UNNotificationPresentationOptions) -> Swift.Void) -> Swift.Void
+public enum InAppConsentStrategy : Swift.String {
+  case notEnabled
+  case autoEnroll
+  case explicitByUser
+  public init?(rawValue: Swift.String)
+  public typealias RawValue = Swift.String
+  public var rawValue: Swift.String {
+    get
+  }
+}
+public enum InAppPresented : Swift.String {
+  case IMMEDIATELY
+  case NEXT_OPEN
+  case NEVER
+  public init?(rawValue: Swift.String)
+  public typealias RawValue = Swift.String
+  public var rawValue: Swift.String {
+    get
+  }
+}
+public struct InAppButtonPress {
+  public let deepLinkData: [Swift.AnyHashable : Any]
+  public let messageId: Swift.Int64
+  public let messageData: Foundation.NSDictionary?
+}
+@objc public enum LogLevel : Swift.Int {
+  case debug = 0
+  case info = 1
+  case warn = 2
+  case error = 3
+  case fatal = 4
+  public init?(rawValue: Swift.Int)
+  public typealias RawValue = Swift.Int
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+extension OptimoveSDK.LogLevel : Swift.Comparable {
+  public static func < (lhs: OptimoveSDK.LogLevel, rhs: OptimoveSDK.LogLevel) -> Swift.Bool
+}
+extension Foundation.NSNotification.Name {
+  public static let internetStatusChanged: Foundation.Notification.Name
+}
+@_hasMissingDesignatedInitializers public class MediaHelper {
+  @objc deinit
+}
+public struct OptimoveConfig {
+}
+@objc public class OptimoveTenantInfo : ObjectiveC.NSObject {
+  @objc public var tenantToken: Swift.String
+  @objc public var configName: Swift.String
+  @objc public init(tenantToken: Swift.String, configName: Swift.String)
+  @objc deinit
+}
+public struct OptimobileConfig {
+}
+@objc open class OptimoveConfigBuilder : ObjectiveC.NSObject {
+  public init(optimoveCredentials: Swift.String?, optimobileCredentials: Swift.String?)
+  @discardableResult
+  public func setSessionIdleTimeout(seconds: Swift.UInt) -> OptimoveSDK.OptimoveConfigBuilder
+  @discardableResult
+  public func enableInAppMessaging(inAppConsentStrategy: OptimoveSDK.InAppConsentStrategy) -> OptimoveSDK.OptimoveConfigBuilder
+  @discardableResult
+  public func setInAppDeepLinkHandler(inAppDeepLinkHandlerBlock: @escaping OptimoveSDK.InAppDeepLinkHandlerBlock) -> OptimoveSDK.OptimoveConfigBuilder
+  @discardableResult
+  public func setPushOpenedHandler(pushOpenedHandlerBlock: @escaping OptimoveSDK.PushOpenedHandlerBlock) -> OptimoveSDK.OptimoveConfigBuilder
+  @available(iOS 10.0, *)
+  @discardableResult
+  public func setPushReceivedInForegroundHandler(pushReceivedInForegroundHandlerBlock: @escaping OptimoveSDK.PushReceivedInForegroundHandlerBlock) -> OptimoveSDK.OptimoveConfigBuilder
+  @discardableResult
+  public func enableDeepLinking(cname: Swift.String? = nil, _ handler: @escaping OptimoveSDK.DeepLinkHandler) -> OptimoveSDK.OptimoveConfigBuilder
+  @discardableResult
+  public func setRuntimeInfo(runtimeInfo: [Swift.String : Swift.AnyObject]) -> OptimoveSDK.OptimoveConfigBuilder
+  @discardableResult
+  public func setSdkInfo(sdkInfo: [Swift.String : Swift.AnyObject]) -> OptimoveSDK.OptimoveConfigBuilder
+  @discardableResult
+  public func setTargetType(isRelease: Swift.Bool) -> OptimoveSDK.OptimoveConfigBuilder
+  @discardableResult
+  public func setBaseUrlMapping(baseUrlMap: OptimoveSDK.ServiceUrlMap) -> OptimoveSDK.OptimoveConfigBuilder
+  @discardableResult
+  public func build() -> OptimoveSDK.OptimoveConfig
+  @objc deinit
+}
+@objc public protocol OptiLoggerOutputStream {
+  @objc var isVisibleToClient: Swift.Bool { get }
+  @objc func log(level: OptimoveSDK.LogLevel, fileName: Swift.String, methodName: Swift.String, logModule: Swift.String?, message: Swift.String)
+}
+public enum InAppMessagePresentationResult : Swift.String {
+  case PRESENTED
+  case EXPIRED
+  case FAILED
+  public init?(rawValue: Swift.String)
+  public typealias RawValue = Swift.String
+  public var rawValue: Swift.String {
+    get
+  }
+}
+@_inheritsConvenienceInitializers @objc final public class OptiLoggerStreamsContainer : ObjectiveC.NSObject {
+  @objc(logWithLevel:fileName:methodName:logModule:message:) public static func log(level: OptimoveSDK.LogLevel, fileName: Swift.String?, methodName: Swift.String?, logModule: Swift.String?, _ message: Swift.String)
+  @objc public static func add(stream: OptimoveSDK.OptiLoggerOutputStream)
+  @objc public static func remove(stream: OptimoveSDK.OptiLoggerOutputStream)
+  @objc override dynamic public init()
+  @objc deinit
+}
+public typealias Event = OptimoveCore.Event
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc final public class Optimove : ObjectiveC.NSObject {
+  public static let version: Swift.String
+  @objc public static let shared: OptimoveSDK.Optimove
+  public static func initialize(with config: OptimoveSDK.OptimoveConfig)
+  @objc deinit
+}
+extension OptimoveSDK.Optimove {
+  @objc final public func reportEvent(name: Swift.String, parameters: [Swift.String : Any] = [:])
+  @objc public static func reportEvent(name: Swift.String, parameters: [Swift.String : Any] = [:])
+  @objc final public func reportEvent(_ event: OptimoveSDK.OptimoveEvent)
+  @objc public static func reportEvent(_ event: OptimoveSDK.OptimoveEvent)
+}
+extension OptimoveSDK.Optimove {
+  @objc final public func reportScreenVisit(screenTitle title: Swift.String, screenCategory category: Swift.String? = nil)
+  @objc public static func reportScreenVisit(screenTitle title: Swift.String, screenCategory category: Swift.String? = nil)
+}
+extension OptimoveSDK.Optimove {
+  @objc final public func registerUser(sdkId userID: Swift.String, email: Swift.String)
+  @objc public static func registerUser(sdkId userID: Swift.String, email: Swift.String)
+  @objc final public func setUserId(_ userID: Swift.String)
+  @objc public static func getVisitorID() -> Swift.String?
+  @objc public static func setUserId(_ userID: Swift.String)
+  @objc final public func setUserEmail(email: Swift.String)
+  @objc public static func setUserEmail(email: Swift.String)
+  @objc public static func signOutUser()
+  final public func signOutUser()
+}
+extension OptimoveSDK.Optimove {
+  @objc final public func pushRequestDeviceToken()
+  @available(iOS 10.0, *)
+  @objc final public func pushRequestDeviceToken(_ onAuthorizationStatus: OptimoveSDK.OptimoveUNAuthorizationCheckedHandler? = nil)
+  @objc final public func pushRegister(_ deviceToken: Foundation.Data)
+  @objc final public func pushUnregister()
+  @objc final public func application(_ application: UIKit.UIApplication, continue userActivity: Foundation.NSUserActivity, restorationHandler: @escaping ([UIKit.UIUserActivityRestoring]?) -> Swift.Void) -> Swift.Bool
+  @available(iOS 13.0, *)
+  @objc final public func scene(_ scene: UIKit.UIScene, continue userActivity: Foundation.NSUserActivity)
+}
+@objc public protocol OptimoveEvent {
+  @objc var name: Swift.String { get }
+  @objc var parameters: [Swift.String : Any] { get }
+}
+final public class RemoteConfigurationRequestBuilder {
+  public init(storage: OptimoveCore.OptimoveStorage)
+  final public func createTenantConfigurationsRequest() throws -> OptimoveCore.NetworkRequest
+  final public func createGlobalConfigurationsRequest() -> OptimoveCore.NetworkRequest
+  @objc deinit
+}
+public struct RingBuffer<T> {
+  public init(count: Swift.Int)
+  @discardableResult
+  public mutating func write(_ element: T) -> Swift.Bool
+  public mutating func read() -> T?
+  public var isEmpty: Swift.Bool {
+    get
+  }
+  public var isFull: Swift.Bool {
+    get
+  }
+}
+extension OptimoveSDK.RingBuffer : Swift.Sequence {
+  public func makeIterator() -> Swift.AnyIterator<T>
+  public typealias Element = T
+  public typealias Iterator = Swift.AnyIterator<T>
+}
+public enum Service : Swift.CaseIterable {
+  case crm
+  case ddl
+  case events
+  case iar
+  case media
+  case push
+  public static func == (a: OptimoveSDK.Service, b: OptimoveSDK.Service) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public typealias AllCases = [OptimoveSDK.Service]
+  public static var allCases: [OptimoveSDK.Service] {
+    get
+  }
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+public typealias ServiceUrlMap = [OptimoveSDK.Service : Swift.String]
+public struct DeepLinkContent {
+  public let title: Swift.String?
+  public let description: Swift.String?
+}
+public struct DeepLink {
+  public let url: Foundation.URL
+  public let content: OptimoveSDK.DeepLinkContent
+  public let data: [Swift.AnyHashable : Any?]
+}
+public enum DeepLinkResolution {
+  case lookupFailed(_: Foundation.URL)
+  case linkNotFound(_: Foundation.URL)
+  case linkExpired(_: Foundation.URL)
+  case linkLimitExceeded(_: Foundation.URL)
+  case linkMatched(_: OptimoveSDK.DeepLink)
+}
+public typealias DeepLinkHandler = (OptimoveSDK.DeepLinkResolution) -> Swift.Void
+@objc @_hasMissingDesignatedInitializers public class PushNotification : ObjectiveC.NSObject {
+  open var id: Swift.Int {
+    get
+  }
+  open var aps: [Swift.AnyHashable : Any] {
+    get
+  }
+  open var data: [Swift.AnyHashable : Any] {
+    get
+  }
+  open var url: Foundation.URL? {
+    get
+  }
+  open var actionIdentifier: Swift.String? {
+    get
+  }
+  public func inAppDeepLink() -> [Swift.AnyHashable : Any]?
+  @objc deinit
+}
+@available(iOS 10.0, *)
+public typealias OptimoveUNAuthorizationCheckedHandler = (UserNotifications.UNAuthorizationStatus, Swift.Error?) -> Swift.Void
+extension OptimoveSDK.InAppConsentStrategy : Swift.Equatable {}
+extension OptimoveSDK.InAppConsentStrategy : Swift.Hashable {}
+extension OptimoveSDK.InAppConsentStrategy : Swift.RawRepresentable {}
+extension OptimoveSDK.InAppPresented : Swift.Equatable {}
+extension OptimoveSDK.InAppPresented : Swift.Hashable {}
+extension OptimoveSDK.InAppPresented : Swift.RawRepresentable {}
+extension OptimoveSDK.LogLevel : Swift.Hashable {}
+extension OptimoveSDK.LogLevel : Swift.RawRepresentable {}
+extension OptimoveSDK.InAppMessagePresentationResult : Swift.Equatable {}
+extension OptimoveSDK.InAppMessagePresentationResult : Swift.Hashable {}
+extension OptimoveSDK.InAppMessagePresentationResult : Swift.RawRepresentable {}
+extension OptimoveSDK.Service : Swift.Equatable {}
+extension OptimoveSDK.Service : Swift.Hashable {}
