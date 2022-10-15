@@ -7,20 +7,25 @@ using System.Collections.Generic;
 public class ButtonController : MonoBehaviour
 {
     public InputField m_userIdInput, m_userEmailInput, m_screenName, m_screenCategory, m_eventType, m_eventProps;
-    public Button m_ReportScreenVisit, m_ReportEvent, m_SetUserIdButton, m_SetUserEmailButton, m_RegisterUserButton, m_GetVisitorId, m_SignOutUser;
+    public Button m_reportScreenVisit, m_reportEvent, m_setUserIdButton, m_setUserEmailButton, m_registerUserButton, m_getVisitorId, m_signOutUser;
+    public Button m_clearOutput;
+    public Text m_output;
 
     void Start()
     {
         //events
-        m_ReportScreenVisit.onClick.AddListener(ReportScreenVisit);
-        m_ReportEvent.onClick.AddListener(ReportEvent);
+        m_reportScreenVisit.onClick.AddListener(ReportScreenVisit);
+        m_reportEvent.onClick.AddListener(ReportEvent);
 
         //user association
-        m_SetUserIdButton.onClick.AddListener(SetUserId);
-        m_SetUserEmailButton.onClick.AddListener(SetUserEmail);
-        m_RegisterUserButton.onClick.AddListener(RegisterUser);
-        m_GetVisitorId.onClick.AddListener(GetVisitorId);
-        m_SignOutUser.onClick.AddListener(SignOutUser);
+        m_setUserIdButton.onClick.AddListener(SetUserId);
+        m_setUserEmailButton.onClick.AddListener(SetUserEmail);
+        m_registerUserButton.onClick.AddListener(RegisterUser);
+        m_getVisitorId.onClick.AddListener(GetVisitorId);
+        m_signOutUser.onClick.AddListener(SignOutUser);
+
+        //clear output
+        m_clearOutput.onClick.AddListener(ClearOutput);
     }
 
     void ReportScreenVisit()
@@ -67,12 +72,20 @@ public class ButtonController : MonoBehaviour
 
     void GetVisitorId()
     {
-        Debug.Log("GetVisitorId: " + Optimove.Shared.GetVisitorId());
+        m_output.text = Optimove.Shared.GetVisitorId();
     }
 
     void SignOutUser()
     {
         Optimove.Shared.SignOutUser();
     }
+
+    void ClearOutput()
+    {
+       m_output.text = "";
+    }
+
+
+
 
 }

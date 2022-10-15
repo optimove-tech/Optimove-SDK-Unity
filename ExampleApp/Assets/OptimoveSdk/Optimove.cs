@@ -57,12 +57,17 @@ namespace OptimoveSdk
 
         void Awake()
         {
-            Optimove.Shared = this;
+                Optimove.Shared = this;
 
 // #if UNITY_ANDROID
 //             PollPendingPush();
 // #endif
-            OptimoveSayHello();
+
+                #if UNITY_IOS
+                        OptimoveSayHello();
+                #elif UNITY_ANDROID
+                        //TODO
+                #endif
         }
 
         #endregion
