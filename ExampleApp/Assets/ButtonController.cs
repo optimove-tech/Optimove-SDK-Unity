@@ -6,28 +6,57 @@ using System.Collections.Generic;
 
 public class ButtonController : MonoBehaviour
 {
-    public InputField m_userIdInput, m_userEmailInput, m_screenName, m_screenCategory, m_eventType, m_eventProps;
-    public Button m_reportScreenVisit, m_reportEvent, m_setUserIdButton, m_setUserEmailButton, m_registerUserButton, m_getVisitorId, m_signOutUser;
+    // events
+    public InputField m_screenName, m_screenCategory, m_eventType, m_eventProps;
+    public Button m_reportScreenVisit, m_reportEvent;
+
+    // association
+    public InputField m_userIdInput, m_userEmailInput;
+    public Button m_setUserIdButton, m_setUserEmailButton, m_registerUserButton, m_getVisitorId, m_signOutUser;
+
+    // registration
+    public Button m_pushRegister, m_pushUnregister, m_inAppConsentTrue, m_inAppConsentFalse;
+
+    // messaging
+    public InputField m_inboxItemId;
+    public Button m_presentInboxMessage, m_deleteInboxMessage, m_markItemAsRead, m_getInboxItems, m_MarkAllAsRead, m_getInboxSummary;
+
+    // output
     public Button m_clearOutput;
     public Text m_output;
 
     void Start()
     {
-        //events
+        // events
         m_reportScreenVisit.onClick.AddListener(ReportScreenVisit);
         m_reportEvent.onClick.AddListener(ReportEvent);
 
-        //user association
+        // user association
         m_setUserIdButton.onClick.AddListener(SetUserId);
         m_setUserEmailButton.onClick.AddListener(SetUserEmail);
         m_registerUserButton.onClick.AddListener(RegisterUser);
         m_getVisitorId.onClick.AddListener(GetVisitorId);
         m_signOutUser.onClick.AddListener(SignOutUser);
 
-        //clear output
+        // registration
+        m_pushRegister.onClick.AddListener(PushRegister);
+        m_pushUnregister.onClick.AddListener(PushUnregister);
+        m_inAppConsentTrue.onClick.AddListener(InAppConsentTrue);
+        m_inAppConsentFalse.onClick.AddListener(InAppConsentFalse);
+
+        // messaging
+        m_presentInboxMessage.onClick.AddListener(PresentInboxMessage);
+        m_deleteInboxMessage.onClick.AddListener(DeleteInboxMessage);
+        m_markItemAsRead.onClick.AddListener(MarkItemAsRead);
+        m_getInboxItems.onClick.AddListener(GetInboxItems);
+        m_MarkAllAsRead.onClick.AddListener(MarkAllAsRead);
+        m_getInboxSummary.onClick.AddListener(GetInboxSummary);
+
+        // clear output
         m_clearOutput.onClick.AddListener(ClearOutput);
     }
 
+    // events
     void ReportScreenVisit()
     {
         string category = m_screenCategory.text;
@@ -53,6 +82,7 @@ public class ButtonController : MonoBehaviour
         m_eventProps.text = "";
     }
 
+    // association
     void SetUserId()
     {
         Optimove.Shared.SetUserId(m_userIdInput.text);
@@ -84,6 +114,60 @@ public class ButtonController : MonoBehaviour
         Optimove.Shared.SignOutUser();
     }
 
+    // registration
+    void PushRegister()
+    {
+
+    }
+
+    void PushUnregister()
+    {
+
+    }
+
+    void InAppConsentTrue()
+    {
+
+    }
+
+    void InAppConsentFalse()
+    {
+
+    }
+
+    // messaging
+    void PresentInboxMessage()
+    {
+
+    }
+
+    void DeleteInboxMessage()
+    {
+
+    }
+
+    void MarkItemAsRead()
+    {
+
+    }
+
+    void GetInboxItems()
+    {
+
+    }
+
+    void MarkAllAsRead()
+    {
+
+    }
+
+    void GetInboxSummary()
+    {
+
+    }
+
+
+    // output
     void ClearOutput()
     {
        m_output.text = "";
