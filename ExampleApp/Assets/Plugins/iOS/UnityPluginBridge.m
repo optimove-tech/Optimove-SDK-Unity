@@ -19,10 +19,6 @@ NSDictionary* parseJson(const char* jsonStr){
     return json;
 }
 
-NSString* parseCString(const char* str){
-    return [NSString stringWithUTF8String:str];
-}
-
 char* KSCStringCopy(const char* string)
 {
     if (string == NULL)
@@ -34,6 +30,13 @@ char* KSCStringCopy(const char* string)
     return res;
 }
 
+NSString* parseCString(const char* str){
+    return [NSString stringWithUTF8String:str];
+}
+
+char* createCString(NSString* str){
+    return KSCStringCopy([str cStringUsingEncoding:NSUTF8StringEncoding]);
+}
 
 // ===== API FOR C# =====
 
@@ -64,3 +67,73 @@ char* OptimoveGetVisitorId() {
 void OptimoveSignOutUser() {
     [Optimove_Unity signOutUser];
 }
+
+
+
+void OptimoveUpdatePushRegistration(int status) {
+    if (status == 1){
+        [Optimove_Unity pushRegister];
+    }
+    else if (status == 0){
+        [Optimove_Unity pushUnregister];
+    }
+}
+
+void OptimoveInAppUpdateConsentForUser(int consented) {
+    NSNumber* consentedNumber = [NSNumber numberWithInt:consented];
+
+    [Optimove_Unity inAppUpdateConsent:[consentedNumber boolValue]];
+}
+
+
+
+
+
+
+char* OptimoveInAppGetInboxItems() {
+    NSMutableArray<NSDictionary*>* items = [Optimove_Unity inAppGetInboxItems];
+
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:items options:kNilOptions error:nil];
+    if (!jsonData) {
+        return createCString(@"[]");
+    }
+
+    NSString *jsonStr = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    return createCString(jsonStr);
+}
+
+char* OptimoveInAppPresentInboxMessage(int messageId) {
+    NSString* result = [Optimove_Unity inAppPresentInboxMessage:messageId];
+
+    return createCString(result);
+}
+
+BOOL OptimoveInAppDeleteMessageFromInbox(int messageId) {
+    return [Optimove_Unity inAppDeleteMessageFromInbox:messageId];
+}
+
+BOOL OptimoveInAppMarkAsRead(int messageId) {
+    return [Optimove_Unity inAppMarkAsRead:messageId];
+}
+
+BOOL OptimoveMarkAllInboxItemsAsRead() {
+    return [Optimove_Unity inAppMarkAllInboxItemsAsRead];
+}
+
+void OptimoveInAppGetInboxSummary(const char* guid){
+    NSString* guidStr = [NSString stringWithUTF8String:guid];
+
+    [Optimove_Unity inAppGetInboxSummary:guidStr handler:^(NSDictionary *result) {
+        NSData* jsonData = [NSJSONSerialization dataWithJSONObject:result options:kNilOptions error:nil];
+        if (!jsonData) {
+            return;
+        }
+
+        NSString* jsonStr = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+        const char* cStr = KSCStringCopy(createCString(jsonStr));
+
+        UnitySendMessage("OptimoveSdkGameObject", "InvokeInboxSummaryHandler", cStr);
+    }];
+}
+
+

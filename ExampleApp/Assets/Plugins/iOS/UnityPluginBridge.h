@@ -8,6 +8,16 @@ void OptimoveSetUserId(const char* userId);
 void OptimoveSetUserEmail(const char* email);
 char* OptimoveGetVisitorId();
 void OptimoveSignOutUser();
+void OptimoveUpdatePushRegistration(int status);
+void OptimoveInAppUpdateConsentForUser(int consented);
+
+
+char* OptimoveInAppGetInboxItems();
+char* OptimoveInAppPresentInboxMessage(int messageId);
+BOOL OptimoveInAppDeleteMessageFromInbox(int messageId);
+BOOL OptimoveInAppMarkAsRead(int messageId);
+void OptimoveInAppGetInboxSummary(const char* guid);
+
 
 #endif /* UnityPluginBridge_h */
 

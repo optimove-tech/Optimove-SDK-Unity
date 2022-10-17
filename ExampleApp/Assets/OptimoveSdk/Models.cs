@@ -54,74 +54,95 @@ namespace OptimoveSdk
     // }
 
 
-    // public class InAppInboxSummary
-    // {
-    //     public uint TotalCount { get; private set; }
-    //     public uint UnreadCount { get; private set; }
+    public class InAppInboxSummary
+    {
+        public uint TotalCount { get; private set; }
+        public uint UnreadCount { get; private set; }
 
-    //     internal static InAppInboxSummary CreateFromDictionary(Dictionary<string, object> dict)
-    //     {
-    //         var summary = new InAppInboxSummary();
-    //         summary.TotalCount = Convert.ToUInt32((long) dict["totalCount"]);
-    //         summary.UnreadCount = Convert.ToUInt32((long) dict["unreadCount"]);
-    //         return summary;
-    //     }
-    // }
+        internal static InAppInboxSummary CreateFromDictionary(Dictionary<string, object> dict)
+        {
+            var summary = new InAppInboxSummary();
+            summary.TotalCount = Convert.ToUInt32((long) dict["totalCount"]);
+            summary.UnreadCount = Convert.ToUInt32((long) dict["unreadCount"]);
+            return summary;
+        }
+    }
 
-    // public class InAppInboxItem
-    // {
-    //     public long Id { get; private set; }
-    //     public string Title { get; private set; }
-    //     public string Subtitle { get; private set; }
-    //     public string AvailableFrom { get; private set; }
-    //     public string AvailableTo { get; private set; }
-    //     public string DismissedAt { get; private set; }
-    //     public bool IsRead { get; private set; }
-    //     public string SentAt { get; private set; }
-    //     public Dictionary<string, object> Data { get; private set; }
-    //     public string ImageUrl { get; private set; }
+    public enum OptimoveInAppPresentationResult
+    {
+        presented,
+        expired,
+        failed
+    }
 
-    //     public static List<InAppInboxItem> ListFromJson(string json)
-    //     {
-    //         var parsed = MiniJSON.Json.Deserialize(json) as List<object>;
 
-    //         var items = new List<InAppInboxItem>();
-    //         if (parsed == null)
-    //         {
-    //             return items;
-    //         }
+    public class InAppInboxItem
+    {
+        public long Id { get; private set; }
+        public string Title { get; private set; }
+        public string Subtitle { get; private set; }
+        public DateTime? AvailableFrom { get; private set; }
+        public DateTime? AvailableTo { get; private set; }
+        public DateTime? DismissedAt { get; private set; }
+        public bool IsRead { get; private set; }
+        public DateTime SentAt { get; private set; }
+        public Dictionary<string, object> Data { get; private set; }
+        public string ImageUrl { get; private set; }
 
-    //         foreach (var obj in parsed)
-    //         {
-    //             items.Add(CreateFromObj(obj));
-    //         }
+        public static List<InAppInboxItem> ListFromJson(string json)
+        {
+            var parsed = MiniJSON.Json.Deserialize(json) as List<object>;
 
-    //         return items;
-    //     }
+            var items = new List<InAppInboxItem>();
+            if (parsed == null)
+            {
+                return items;
+            }
 
-    //     private static InAppInboxItem CreateFromObj(object parsed)
-    //     {
-    //         var obj = parsed as Dictionary<string, object>;
+            foreach (var obj in parsed)
+            {
+                items.Add(CreateFromObj(obj));
+            }
 
-    //         if (parsed == null || obj == null)
-    //         {
-    //             return null;
-    //         }
+            return items;
+        }
 
-    //         var item = new InAppInboxItem();
+        private static InAppInboxItem CreateFromObj(object parsed)
+        {
+            var obj = parsed as Dictionary<string, object>;
 
-    //         item.Id = (long)obj["id"];
-    //         item.Title = obj["title"] as string;
-    //         item.Subtitle = obj["subtitle"] as string;
-    //         item.AvailableFrom = obj["availableFrom"] as string;
-    //         item.AvailableTo = obj["availableTo"] as string;
-    //         item.DismissedAt = obj["dismissedAt"] as string;
-    //         item.IsRead = (bool)obj.GetValueOrDefault("isRead");
-    //         item.SentAt = obj.GetValueOrDefault("sentAt") as string;
-    //         item.Data = obj.GetValueOrDefault("data") as Dictionary<string, object>;
-    //         item.ImageUrl = obj.GetValueOrDefault("imageUrl") as string;
+            if (parsed == null || obj == null)
+            {
+                return null;
+            }
 
-    //         return item;
-    //     }
-    // }
+            var item = new InAppInboxItem();
+
+            item.Id = (long)obj["id"];
+            item.Title = obj["title"] as string;
+            item.Subtitle = obj["subtitle"] as string;
+            item.AvailableFrom = InAppInboxItem.parseOptionalDate(obj.GetValueOrDefault("availableFrom") as string);
+            item.AvailableTo = InAppInboxItem.parseOptionalDate(obj.GetValueOrDefault("availableTo") as string);
+            item.DismissedAt = InAppInboxItem.parseOptionalDate(obj.GetValueOrDefault("dismissedAt") as string);
+            item.IsRead = (bool)obj.GetValueOrDefault("isRead");
+            item.SentAt = parseDate(obj["sentAt"] as string);
+            item.Data = obj.GetValueOrDefault("data") as Dictionary<string, object>;
+            item.ImageUrl = obj.GetValueOrDefault("imageUrl") as string;
+
+            return item;
+        }
+
+		private static DateTime? parseOptionalDate(string date)
+		{
+			if (date == null){
+				return null;
+			}
+
+			return parseDate(date);
+		}
+
+		private static DateTime parseDate(string date){
+			return DateTime.Parse(date, null, System.Globalization.DateTimeStyles.RoundtripKind);
+		}
+    }
 }

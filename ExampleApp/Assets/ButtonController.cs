@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using OptimoveSdk;
 using OptimoveSdk.MiniJSON;
 using System.Collections.Generic;
+using System;
 
 public class ButtonController : MonoBehaviour
 {
@@ -117,53 +118,102 @@ public class ButtonController : MonoBehaviour
     // registration
     void PushRegister()
     {
-
+         Optimove.Shared.PushRegister();
     }
 
     void PushUnregister()
     {
-
+        Optimove.Shared.PushUnregister();
     }
 
     void InAppConsentTrue()
     {
-
+        Optimove.Shared.InAppUpdateConsent(true);
     }
 
     void InAppConsentFalse()
     {
-
+        Optimove.Shared.InAppUpdateConsent(false);
     }
 
     // messaging
     void PresentInboxMessage()
     {
+        int targetId = ReadInboxItemId();
+        if (targetId == 0){
+            return;
+        }
 
+        List<InAppInboxItem> items = Optimove.Shared.InAppGetInboxItems();
+        foreach (var item in items) {
+            if (item.Id == targetId){
+                OptimoveInAppPresentationResult result = Optimove.Shared.InAppPresentInboxMessage(item);
+                break;
+            }
+        }
     }
 
     void DeleteInboxMessage()
     {
+        int targetId = ReadInboxItemId();
+        if (targetId == 0){
+            return;
+        }
 
+        List<InAppInboxItem> items = Optimove.Shared.InAppGetInboxItems();
+        foreach (var item in items) {
+            if (item.Id == targetId){
+                bool result = Optimove.Shared.InAppDeleteMessageFromInbox(item);
+                break;
+            }
+        }
     }
 
     void MarkItemAsRead()
     {
+        int targetId = ReadInboxItemId();
+        if (targetId == 0){
+            return;
+        }
 
+        List<InAppInboxItem> items = Optimove.Shared.InAppGetInboxItems();
+        foreach (var item in items) {
+            if (item.Id == targetId){
+                bool result = Optimove.Shared.InAppMarkAsRead(item);
+                break;
+            }
+        }
     }
 
     void GetInboxItems()
     {
+        List<InAppInboxItem> items = Optimove.Shared.InAppGetInboxItems();
 
+        List<string> result = new List<string>();
+        foreach (var item in items) {
+            result.Add(string.Join(",", new Dictionary<string, string> {
+                {"id", item.Id + ""},
+                {"isRead", item.IsRead + ""},
+                {"sentAt", item.SentAt.ToString()},
+                {"availableFrom", item.AvailableFrom.ToString()},
+            }));
+        }
+
+		m_output.text = string.Join(Environment.NewLine, result);
     }
 
     void MarkAllAsRead()
     {
-
+        bool result = Optimove.Shared.InAppMarkAllInboxItemsRead();
     }
 
     void GetInboxSummary()
     {
-
+        Optimove.Shared.GetInboxSummaryAsync((InAppInboxSummary summary) => {
+            if (summary != null){
+                m_output.text = "InboxSummary. totalCount: " + summary.TotalCount + " unreadCount: "+ summary.UnreadCount;
+            }
+        });
     }
 
 
@@ -175,5 +225,38 @@ public class ButtonController : MonoBehaviour
 
 
 
+    // helpers
+    int ReadInboxItemId()
+    {
+        int targetId = 0;
+        try {
+            targetId = Int32.Parse(m_inboxItemId.text);
+        }
+        catch (FormatException) {
+        }
+        catch (OverflowException) {
+           Console.WriteLine("Invalid inbox item id: {0}", m_inboxItemId.text);
+        }
 
+        if (targetId <= 0){
+            Console.WriteLine("Inbox item id must be a positive integer: {0}", m_inboxItemId.text);
+        }
+
+        return targetId;
+    }
+
+
+
+
+
+
+// setOnInboxUpdatedHandler: (inboxUpdatedHandler: InAppInboxUpdatedHandler) void;
+
+// setPushOpenedHandler(pushOpenedHandler: PushNotificationHandler) void;
+
+// setPushReceivedHandler(pushReceivedHandler: PushNotificationHandler) void;
+
+// setInAppDeepLinkHandler(inAppDeepLinkHandler: InAppDeepLinkHandler) void;
+
+// setDeepLinkHandler(deepLinkHandler: DeepLinkHandler) void;
 }
