@@ -56,6 +56,41 @@ public class ButtonController : MonoBehaviour
 
         // clear output
         m_clearOutput.onClick.AddListener(ClearOutput);
+
+        SetUpHandlers();
+    }
+
+    void SetUpHandlers()
+    {
+        Optimove.Shared.OnInAppDeepLinkPressed += (Dictionary<string, object> data) =>
+        {
+            AddLogMessage("InAppDeepLinkPressedHandler: " + OptimoveSdk.MiniJSON.Json.Serialize(data));
+        };
+
+        Optimove.Shared.OnInAppInboxUpdated += () =>
+        {
+            AddLogMessage("InAppInboxUpdatedHandler");
+        };
+
+        Optimove.Shared.OnPushOpened += (PushMessage push) =>
+        {
+            string id = push.Id.ToString();
+            string title = push.Title ?? "";
+            string message = push.Message ?? "";
+            string data = push.Data != null ? string.Join(",", push.Data) : "";
+
+            AddLogMessage("PushOpenedHandler: " + "id: " + id + " title: " + title + " message: " + message + " data: " + data);
+        };
+
+        Optimove.Shared.OnPushReceived += (PushMessage push) =>
+        {
+             string id = push.Id.ToString();
+            string title = push.Title ?? "";
+            string message = push.Message ?? "";
+            string data = push.Data != null ? OptimoveSdk.MiniJSON.Json.Serialize(push.Data) : "";
+
+            AddLogMessage("PushReceivedHandler: " + "id: " + id + " title: " + title + " message: " + message + " data: " + data);
+        };
     }
 
     // events
@@ -261,17 +296,4 @@ public class ButtonController : MonoBehaviour
        ButtonController.logMessages.Clear();
        m_output.text = "";
     }
-
-
-
-
-// setOnInboxUpdatedHandler: (inboxUpdatedHandler: InAppInboxUpdatedHandler) void;
-
-// setPushOpenedHandler(pushOpenedHandler: PushNotificationHandler) void;
-
-// setPushReceivedHandler(pushReceivedHandler: PushNotificationHandler) void;
-
-// setInAppDeepLinkHandler(inAppDeepLinkHandler: InAppDeepLinkHandler) void;
-
-// setDeepLinkHandler(deepLinkHandler: DeepLinkHandler) void;
 }

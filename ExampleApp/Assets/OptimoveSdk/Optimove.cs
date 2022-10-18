@@ -14,17 +14,17 @@ namespace OptimoveSdk
 
         public const string Version = "1.0.0";
 
-        // public delegate void PushReceivedDelegate(PushMessage message);
+        public delegate void PushReceivedDelegate(PushMessage message);
+        public event PushReceivedDelegate OnPushReceived;
 
-        // public event PushReceivedDelegate OnPushReceived;
+        public delegate void PushOpenedDelegate(PushMessage message);
+        public event PushOpenedDelegate OnPushOpened;
 
-        // public delegate void InAppDeepLinkDelegate(Dictionary<string, object> message);
+        public delegate void InAppDeepLinkDelegate(Dictionary<string, object> message);
+        public event InAppDeepLinkDelegate OnInAppDeepLinkPressed;
 
-        // public event InAppDeepLinkDelegate OnInAppDeepLinkPressed;
-
-        // public delegate void InAppInboxUpdatedDelegate();
-
-        // public event InAppInboxUpdatedDelegate OnInAppInboxUpdated;
+        public delegate void InAppInboxUpdatedDelegate();
+        public event InAppInboxUpdatedDelegate OnInAppInboxUpdated;
 
         #region Statics
 
@@ -214,19 +214,29 @@ namespace OptimoveSdk
         }
 
 
-//         public void PushReceived(string message)
-//         {
-//             if (OnPushReceived == null)
-//             {
-//                 return;
-//             }
+        public void PushReceived(string message)
+        {
+            if (OnPushReceived == null)
+            {
+                return;
+            }
 
-//             var push = PushMessage.CreateFromJson(message);
+            var push = PushMessage.CreateFromJson(message);
 
-//             OnPushReceived(push);
-//         }
+            OnPushReceived(push);
+        }
 
-    //TODO: PushOpened?
+        public void PushOpened(string message)
+        {
+                if (OnPushOpened == null){
+                        return;
+                }
+
+                var push = PushMessage.CreateFromJson(message);
+
+                OnPushOpened(push);
+        }
+
 
         #endregion
 
@@ -244,30 +254,6 @@ namespace OptimoveSdk
                         //TODO
                 #endif
         }
-
-//         public void InAppDeepLinkPressed(string dataJson)
-//         {
-//             if (OnInAppDeepLinkPressed == null)
-//             {
-//                 return;
-//             }
-
-//             var data = MiniJSON.Json.Deserialize(dataJson) as Dictionary<string, object>;
-
-//             OnInAppDeepLinkPressed(data);
-//         }
-
-//         public void InAppInboxUpdated()
-//         {
-//             if (OnInAppInboxUpdated == null)
-//             {
-//                 return;
-//             }
-
-//             OnInAppInboxUpdated();
-//         }
-
-
 
         public List<InAppInboxItem> InAppGetInboxItems()
         {
@@ -326,6 +312,28 @@ namespace OptimoveSdk
                 #else
                         return false;
                 #endif
+        }
+
+        public void InAppDeepLinkPressed(string dataJson)//TODO: dictionary to model? not in Flutter, but in cordova
+        {
+            if (OnInAppDeepLinkPressed == null)
+            {
+                return;
+            }
+
+            var data = MiniJSON.Json.Deserialize(dataJson) as Dictionary<string, object>;
+
+            OnInAppDeepLinkPressed(data);
+        }
+
+        public void InAppInboxUpdated()
+        {
+            if (OnInAppInboxUpdated == null)
+            {
+                return;
+            }
+
+            OnInAppInboxUpdated();
         }
 
 

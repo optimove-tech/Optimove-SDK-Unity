@@ -13,32 +13,56 @@ using System.Collections.Generic;
 public class SetUpXcodeProject
 {
 
-    private const string kCoreDataFramework = "CoreData.framework";
-    private const string kUserNotificationsFramework = "UserNotifications.framework";
+    //private const string kCoreDataFramework = "CoreData.framework";
+    //private const string kUserNotificationsFramework = "UserNotifications.framework";
 
     [PostProcessBuild]
     public static void ChangeXcodePlist(BuildTarget buildTarget, string pathToBuiltProject)
     {
-        // if (buildTarget == BuildTarget.iOS)
-        // {
-        //     var projectPath = PBXProject.GetPBXProjectPath(pathToBuiltProject);
-        //     var project = new PBXProject();
+        if (buildTarget == BuildTarget.iOS)
+        {
+            var projectPath = PBXProject.GetPBXProjectPath(pathToBuiltProject);
+            var project = new PBXProject();
 
-        //     project.ReadFromFile(projectPath);
+            project.ReadFromFile(projectPath);
 
-        //     #if UNITY_2019_3_OR_NEWER
-        //         var unityTarget = project.GetUnityFrameworkTargetGuid();
-        //     #else
-        //         var unityTarget = project.TargetGuidByName(PBXProject.GetUnityTargetName());
-        //     #endif
+            #if UNITY_2019_3_OR_NEWER
+                var unityTarget = project.GetUnityFrameworkTargetGuid();
 
-        //     SetBuildProperties(project, unityTarget);
-        //     LinkCoreData(project, unityTarget, pathToBuiltProject);
-        //     SetupPushCapabilities(project, unityTarget, pathToBuiltProject);
+                SetModuleMap(project, unityTarget, pathToBuiltProject);
+            #else
+                // TODO: not supported?
+                var unityTarget = project.TargetGuidByName(PBXProject.GetUnityTargetName());
+            #endif
 
-        //     project.WriteToFile(projectPath);
-        // }
+
+
+            // SetBuildProperties(project, unityTarget);
+            // LinkCoreData(project, unityTarget, pathToBuiltProject);
+            // SetupPushCapabilities(project, unityTarget, pathToBuiltProject);
+
+            project.WriteToFile(projectPath);
+        }
     }
+
+    private static void SetModuleMap(PBXProject project, string unityTarget, string buildPath)
+    {
+        // Modulemap
+        project.AddBuildProperty(unityTarget, "DEFINES_MODULE", "YES");
+
+        var moduleFile = buildPath + "/UnityFramework/UnityFramework.modulemap";
+        if (!File.Exists(moduleFile))
+        {
+            FileUtil.CopyFileOrDirectory("Assets/Plugins/iOS/UnityFramework.modulemap", moduleFile);
+            project.AddFile(moduleFile, "UnityFramework/UnityFramework.modulemap");
+            project.AddBuildProperty(unityTarget, "MODULEMAP_FILE", "$(SRCROOT)/UnityFramework/UnityFramework.modulemap");
+        }
+
+        // Headers
+        string pluginObjcInterfaceGuid = project.FindFileGuidByProjectPath("Libraries/Plugins/iOS/Swift-objc-bridging-header.h");
+        project.AddPublicHeaderToBuild(unityTarget, pluginObjcInterfaceGuid);
+    }
+
 
     // private static void SetupPushCapabilities(PBXProject project, string unityTarget, string pathToBuiltProject)
     // {

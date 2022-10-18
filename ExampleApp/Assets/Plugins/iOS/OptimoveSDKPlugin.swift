@@ -1,4 +1,5 @@
 import OptimoveSDK
+import Foundation
 
 enum InAppConsentStrategy: String {
     case autoEnroll = "auto-enroll"
@@ -34,6 +35,22 @@ typealias InboxSummaryResultHandler = ([AnyHashable : Any]) -> Void
             return
         };
 
+        builder.setPushOpenedHandler(pushOpenedHandlerBlock: { notification in
+            let parsedPush = getPushNotificationMap(pushNotification: notification)
+
+            OptimoveCallUnityPushOpened(parsedPush);
+        })
+
+        if #available(iOS 10, *) {
+            builder.setPushReceivedInForegroundHandler(pushReceivedInForegroundHandlerBlock: { notification, completionHanlder in
+                let parsedPush = getPushNotificationMap(pushNotification: notification)
+
+                OptimoveCallUnityPushReceived(parsedPush);
+
+                completionHanlder(UNNotificationPresentationOptions.alert)
+            })
+        }
+
         switch(configValues[inAppConsentStrategy]){
             case InAppConsentStrategy.autoEnroll.rawValue:
                 builder.enableInAppMessaging(inAppConsentStrategy:OptimoveSDK.InAppConsentStrategy.autoEnroll);
@@ -48,11 +65,21 @@ typealias InboxSummaryResultHandler = ([AnyHashable : Any]) -> Void
                 return
         }
 
+        builder.setInAppDeepLinkHandler(inAppDeepLinkHandlerBlock: { data in
+            let parsedButtonPress: [String : Any] = getInappButtonPressMap(inAppButtonPress: data)
+
+            OptimoveCallUnityInAppDeepLinkPressed(parsedButtonPress);
+        })
+
         overrideInstallInfo(builder: builder, unityVersion:unityVersion)
 
         let config = builder.build()
 
         Optimove.initialize(with: config)
+
+        OptimoveInApp.setOnInboxUpdated(inboxUpdatedHandlerBlock: {
+            OptimoveCallUnityInAppInboxUpdated()
+        })
     }
 
     static func overrideInstallInfo(builder: OptimoveConfigBuilder, unityVersion: String) -> Void {
@@ -241,7 +268,6 @@ typealias InboxSummaryResultHandler = ([AnyHashable : Any]) -> Void
 
     @objc(inAppGetInboxSummary:handler:)
     static func inAppGetInboxSummary(guid: String, handler: @escaping InboxSummaryResultHandler) {
-        print("*************** CALLING")
         OptimoveInApp.getInboxSummaryAsync { summary in
             var dict: [String: Any] = [
                 "guid": guid,
@@ -257,7 +283,37 @@ typealias InboxSummaryResultHandler = ([AnyHashable : Any]) -> Void
             handler(dict)
         }
     }
+
+
+    private static func getPushNotificationMap(pushNotification: PushNotification) -> [String: Any] {
+        let aps: [AnyHashable:Any] = pushNotification.aps
+        var alert: [String: String] = [:]
+        if let a = aps["alert"] as? Dictionary<String, String> {
+            alert = a
+        }
+
+        let title: String? = alert["title"] ?? nil
+        let message: String? = alert["body"] ?? nil
+
+        let dict: [String: Any] = [
+            "id": pushNotification.id,
+            "title": title ?? NSNull(),
+            "message": message ?? NSNull(),
+            "data": pushNotification.data,
+            "url": pushNotification.url?.absoluteString ?? NSNull(),
+            "actionId": pushNotification.actionIdentifier ?? NSNull()
+        ]
+
+        return dict
+    }
+
+    private static func getInappButtonPressMap(inAppButtonPress: InAppButtonPress) -> [String: Any] {
+        let dict: [String: Any] = [
+            "deepLinkData": inAppButtonPress.deepLinkData,
+            "messageData": inAppButtonPress.messageData ?? NSNull(),
+            "messageId": inAppButtonPress.messageId
+        ]
+
+        return dict
+    }
 }
-
-
-

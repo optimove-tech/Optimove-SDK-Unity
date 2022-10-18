@@ -1,6 +1,6 @@
 #import <Foundation/Foundation.h>
-#import "Bridging-Header.h"
-
+#import "Objc-swift-bridging-header.h"
+#import "Swift-objc-bridging-header.h"
 
 // ===== HELPERS =====
 
@@ -38,6 +38,21 @@ char* createCString(NSString* str){
     return KSCStringCopy([str cStringUsingEncoding:NSUTF8StringEncoding]);
 }
 
+char* dictionaryToCString(NSDictionary* data){
+    if (nil == data) {
+        return NULL;
+    }
+
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:data options:kNilOptions error:nil];
+    if (!jsonData) {
+        return NULL;
+    }
+
+    NSString *jsonStr = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+
+    return KSCStringCopy(createCString(jsonStr));
+}
+
 // ===== API FOR C# =====
 
 void OptimoveReportEvent(const char* type, const char* jsonData) {
@@ -68,8 +83,6 @@ void OptimoveSignOutUser() {
     [Optimove_Unity signOutUser];
 }
 
-
-
 void OptimoveUpdatePushRegistration(int status) {
     if (status == 1){
         [Optimove_Unity pushRegister];
@@ -84,11 +97,6 @@ void OptimoveInAppUpdateConsentForUser(int consented) {
 
     [Optimove_Unity inAppUpdateConsent:[consentedNumber boolValue]];
 }
-
-
-
-
-
 
 char* OptimoveInAppGetInboxItems() {
     NSMutableArray<NSDictionary*>* items = [Optimove_Unity inAppGetInboxItems];
@@ -120,20 +128,48 @@ BOOL OptimoveMarkAllInboxItemsAsRead() {
     return [Optimove_Unity inAppMarkAllInboxItemsAsRead];
 }
 
+// ===== Native -> C# =====
+
 void OptimoveInAppGetInboxSummary(const char* guid){
     NSString* guidStr = [NSString stringWithUTF8String:guid];
 
     [Optimove_Unity inAppGetInboxSummary:guidStr handler:^(NSDictionary *result) {
-        NSData* jsonData = [NSJSONSerialization dataWithJSONObject:result options:kNilOptions error:nil];
-        if (!jsonData) {
+        char* cStr = dictionaryToCString(result);
+        if (cStr == NULL){
             return;
         }
-
-        NSString* jsonStr = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-        const char* cStr = KSCStringCopy(createCString(jsonStr));
 
         UnitySendMessage("OptimoveSdkGameObject", "InvokeInboxSummaryHandler", cStr);
     }];
 }
 
+void OptimoveCallUnityInAppDeepLinkPressed(NSDictionary* press){
+    char* cStr = dictionaryToCString(press);
+    if (cStr == NULL){
+        return;
+    }
 
+    UnitySendMessage("OptimoveSdkGameObject", "InAppDeepLinkPressed", cStr);
+}
+
+void OptimoveCallUnityInAppInboxUpdated(){
+    UnitySendMessage("OptimoveSdkGameObject", "InAppInboxUpdated", "");
+}
+
+void OptimoveCallUnityPushOpened(NSDictionary* push){
+    char* cStr = dictionaryToCString(push);
+    if (cStr == NULL){
+        return;
+    }
+
+    UnitySendMessage("OptimoveSdkGameObject", "PushOpened", cStr);
+}
+
+void OptimoveCallUnityPushReceived(NSDictionary* push){
+    char* cStr = dictionaryToCString(push);
+    if (cStr == NULL){
+        return;
+    }
+
+    UnitySendMessage("OptimoveSdkGameObject", "PushReceived", cStr);
+}
