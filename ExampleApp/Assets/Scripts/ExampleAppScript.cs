@@ -7,7 +7,8 @@ public class ExampleAppScript : MonoBehaviour
 {
     public TMP_InputField userIdInput;
     public TMP_InputField userEmailInput;
-    
+
+
     public void setUserId()
     {
         Optimove.Shared.SetUserId(userIdInput.text);
