@@ -1,0 +1,881 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 5.5.1 (swiftlang-1300.0.31.4 clang-1300.0.29.6)
+// swift-module-flags: -target armv7-apple-ios10.0 -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name OptimoveCore
+import Foundation
+import Swift
+import _Concurrency
+import os.log
+import os
+@objc @_inheritsConvenienceInitializers open class AsyncOperation : Foundation.Operation {
+  public enum State : Swift.String {
+    case waiting
+    case ready
+    case executing
+    case finished
+    case cancelled
+    public init?(rawValue: Swift.String)
+    public typealias RawValue = Swift.String
+    public var rawValue: Swift.String {
+      get
+    }
+  }
+  public var state: OptimoveCore.AsyncOperation.State {
+    get
+    set
+  }
+  @objc override dynamic open var isReady: Swift.Bool {
+    @objc get
+  }
+  @objc override dynamic open var isExecuting: Swift.Bool {
+    @objc get
+  }
+  @objc override dynamic open var isFinished: Swift.Bool {
+    @objc get
+  }
+  @objc override dynamic open var isCancelled: Swift.Bool {
+    @objc get
+  }
+  @objc override dynamic open var isAsynchronous: Swift.Bool {
+    @objc get
+  }
+  @objc override dynamic public init()
+  @objc deinit
+}
+@objc open class AsyncBlockOperation : OptimoveCore.AsyncOperation {
+  public typealias Closure = (OptimoveCore.AsyncBlockOperation) -> Swift.Void
+  final public let closure: OptimoveCore.AsyncBlockOperation.Closure
+  public init(closure: @escaping OptimoveCore.AsyncBlockOperation.Closure)
+  @objc override dynamic open func main()
+  @objc deinit
+}
+extension Foundation.Bundle {
+  public var appVersion: Swift.String {
+    get
+  }
+}
+extension Foundation.Bundle {
+  public static func hostAppBundle() -> Foundation.Bundle?
+}
+public struct Configuration : Swift.Codable, OptimoveCore.TenantInfo, OptimoveCore.EventInfo {
+  public let tenantID: Swift.Int
+  public let logger: OptimoveCore.LoggerConfig
+  public let realtime: OptimoveCore.RealtimeConfig
+  public let optitrack: OptimoveCore.OptitrackConfig
+  public let events: [Swift.String : OptimoveCore.EventsConfig]
+  public let isEnableRealtime: Swift.Bool
+  public let isSupportedAirship: Swift.Bool
+  public init(tenantID: Swift.Int, logger: OptimoveCore.LoggerConfig, realtime: OptimoveCore.RealtimeConfig, optitrack: OptimoveCore.OptitrackConfig, events: [Swift.String : OptimoveCore.EventsConfig], isEnableRealtime: Swift.Bool, isSupportedAirship: Swift.Bool)
+  public func encode(to encoder: Swift.Encoder) throws
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct LoggerConfig : Swift.Codable, OptimoveCore.TenantInfo {
+  public let tenantID: Swift.Int
+  public let logServiceEndpoint: Foundation.URL
+  public let isProductionLogsEnabled: Swift.Bool
+  public init(tenantID: Swift.Int, logServiceEndpoint: Foundation.URL, isProductionLogsEnabled: Swift.Bool)
+  public func encode(to encoder: Swift.Encoder) throws
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct RealtimeConfig : Swift.Codable, OptimoveCore.TenantInfo, OptimoveCore.EventInfo {
+  public let tenantID: Swift.Int
+  public let realtimeGateway: Foundation.URL
+  public let events: [Swift.String : OptimoveCore.EventsConfig]
+  public let isEnableRealtimeThroughOptistream: Swift.Bool
+  public init(tenantID: Swift.Int, realtimeGateway: Foundation.URL, events: [Swift.String : OptimoveCore.EventsConfig], isEnableRealtimeThroughOptistream: Swift.Bool)
+  public func encode(to encoder: Swift.Encoder) throws
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct OptitrackConfig : Swift.Codable, OptimoveCore.TenantInfo, OptimoveCore.EventInfo {
+  public let tenantID: Swift.Int
+  public let optitrackEndpoint: Foundation.URL
+  public let enableAdvertisingIdReport: Swift.Bool
+  public let eventCategoryName: Swift.String
+  public let events: [Swift.String : OptimoveCore.EventsConfig]
+  public let isEnableRealtime: Swift.Bool
+  public let maxActionCustomDimensions: Swift.Int
+  public init(tenantID: Swift.Int, optitrackEndpoint: Foundation.URL, enableAdvertisingIdReport: Swift.Bool, eventCategoryName: Swift.String, events: [Swift.String : OptimoveCore.EventsConfig], isEnableRealtime: Swift.Bool, maxActionCustomDimensions: Swift.Int)
+  public func encode(to encoder: Swift.Encoder) throws
+  public init(from decoder: Swift.Decoder) throws
+}
+public protocol TenantInfo {
+  var tenantID: Swift.Int { get }
+}
+public protocol EventInfo {
+  var events: [Swift.String : OptimoveCore.EventsConfig] { get }
+}
+final public class ConfigurationBuilder {
+  public init(globalConfig: OptimoveCore.GlobalConfig, tenantConfig: OptimoveCore.TenantConfig)
+  final public func build() -> OptimoveCore.Configuration
+  @objc deinit
+}
+public protocol ConfigurationRepository {
+  func getConfiguration() throws -> OptimoveCore.Configuration
+  func setConfiguration(_: OptimoveCore.Configuration) throws
+  func getGlobal() throws -> OptimoveCore.GlobalConfig
+  func saveGlobal(_: OptimoveCore.GlobalConfig) throws
+  func getTenant() throws -> OptimoveCore.TenantConfig
+  func saveTenant(_: OptimoveCore.TenantConfig) throws
+}
+final public class ConfigurationRepositoryImpl {
+  public init(storage: OptimoveCore.OptimoveStorage)
+  @objc deinit
+}
+extension OptimoveCore.ConfigurationRepositoryImpl : OptimoveCore.ConfigurationRepository {
+  final public func getConfiguration() throws -> OptimoveCore.Configuration
+  final public func setConfiguration(_ config: OptimoveCore.Configuration) throws
+  final public func getGlobal() throws -> OptimoveCore.GlobalConfig
+  final public func saveGlobal(_ config: OptimoveCore.GlobalConfig) throws
+  final public func getTenant() throws -> OptimoveCore.TenantConfig
+  final public func saveTenant(_ config: OptimoveCore.TenantConfig) throws
+}
+final public class ConsoleLoggerStream : OptimoveCore.LoggerStream {
+  final public var policy: OptimoveCore.LoggerStreamFilter {
+    get
+  }
+  public init()
+  final public func log(level: OptimoveCore.LogLevelCore, fileName: Swift.String, methodName: Swift.String, logModule: Swift.String?, message: Swift.String)
+  @objc deinit
+}
+extension os.OSLog {
+  public static var subsystem: Swift.String
+}
+public struct Endpoints {
+  public struct Logger {
+    public static let defaultEndpint: Foundation.URL
+  }
+  public struct Remote {
+    public struct TenantConfig {
+      public static let url: Foundation.URL
+    }
+    public struct GlobalConfig {
+      public static var url: Foundation.URL
+    }
+  }
+}
+open class Event {
+  public static let category: Swift.String
+  final public let eventId: Foundation.UUID
+  final public let requestId: Swift.String
+  final public let name: Swift.String
+  final public let timestamp: Foundation.Date
+  final public let category: Swift.String
+  public var context: [Swift.String : Any]
+  public var isRealtime: Swift.Bool
+  public init(eventId: Foundation.UUID? = nil, requestId: Swift.String? = nil, name: Swift.String, category: Swift.String = category, context: [Swift.String : Any], timestamp: Foundation.Date = Date(), isRealtime: Swift.Bool = false)
+  @objc deinit
+}
+public struct EventsConfig : Swift.Codable, Swift.Equatable {
+  public let id: Swift.Int
+  public let supportedOnOptitrack: Swift.Bool
+  public let supportedOnRealTime: Swift.Bool
+  public let parameters: [Swift.String : OptimoveCore.Parameter]
+  public init(id: Swift.Int, supportedOnOptitrack: Swift.Bool, supportedOnRealTime: Swift.Bool, parameters: [Swift.String : OptimoveCore.Parameter])
+  public static func == (a: OptimoveCore.EventsConfig, b: OptimoveCore.EventsConfig) -> Swift.Bool
+  public func encode(to encoder: Swift.Encoder) throws
+  public init(from decoder: Swift.Decoder) throws
+}
+extension Foundation.FileManager {
+  public static func optimoveURL() throws -> Foundation.URL
+}
+public protocol FileStorage {
+  func isExist(fileName: Swift.String) -> Swift.Bool
+  func save<T>(data: T, toFileName: Swift.String) throws where T : Swift.Decodable, T : Swift.Encodable
+  func saveData(data: Foundation.Data, toFileName: Swift.String) throws
+  func loadData(fileName: Swift.String) throws -> Foundation.Data
+  func load<T>(fileName: Swift.String) throws -> T where T : Swift.Decodable, T : Swift.Encodable
+  func delete(fileName: Swift.String) throws
+}
+final public class FileStorageImpl {
+  public init(url: Foundation.URL) throws
+  @objc deinit
+}
+extension OptimoveCore.FileStorageImpl : OptimoveCore.FileStorage {
+  final public func isExist(fileName: Swift.String) -> Swift.Bool
+  final public func loadData(fileName: Swift.String) throws -> Foundation.Data
+  final public func load<T>(fileName: Swift.String) throws -> T where T : Swift.Decodable, T : Swift.Encodable
+  final public func save<T>(data: T, toFileName fileName: Swift.String) throws where T : Swift.Encodable
+  final public func saveData(data: Foundation.Data, toFileName fileName: Swift.String) throws
+  final public func delete(fileName: Swift.String) throws
+}
+public struct GlobalConfig : Swift.Codable, Swift.Equatable {
+  public let general: OptimoveCore.GlobalGeneralConfig
+  public let optitrack: OptimoveCore.GlobalOptitrackConfig
+  public let coreEvents: [Swift.String : OptimoveCore.EventsConfig]
+  public init(general: OptimoveCore.GlobalGeneralConfig, optitrack: OptimoveCore.GlobalOptitrackConfig, coreEvents: [Swift.String : OptimoveCore.EventsConfig])
+  public init(from decoder: Swift.Decoder) throws
+  public func encode(to encoder: Swift.Encoder) throws
+  public static func == (a: OptimoveCore.GlobalConfig, b: OptimoveCore.GlobalConfig) -> Swift.Bool
+}
+public struct GlobalGeneralConfig : Swift.Codable, Swift.Equatable {
+  public let logsServiceEndpoint: Foundation.URL
+  public init(logsServiceEndpoint: Foundation.URL)
+  public static func == (a: OptimoveCore.GlobalGeneralConfig, b: OptimoveCore.GlobalGeneralConfig) -> Swift.Bool
+  public func encode(to encoder: Swift.Encoder) throws
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct GlobalOptitrackConfig : Swift.Codable, Swift.Equatable {
+  public let eventCategoryName: Swift.String
+  public init(eventCategoryName: Swift.String)
+  public static func == (a: OptimoveCore.GlobalOptitrackConfig, b: OptimoveCore.GlobalOptitrackConfig) -> Swift.Bool
+  public func encode(to encoder: Swift.Encoder) throws
+  public init(from decoder: Swift.Decoder) throws
+}
+public func cast<T>(_ raw: Any?, _ function: Swift.String = #function, _ line: Swift.Int = #line) throws -> T
+public func unwrap<T>(_ raw: T?, _ function: Swift.String = #function, _ line: Swift.Int = #line) throws -> T
+public func unwrap<T>(_ raw: T?, error: Swift.Error?, _ function: Swift.String = #function, _ line: Swift.Int = #line) throws -> T
+public enum CastError : Foundation.LocalizedError {
+  case failedToUnwrap(value: Any?, expectedType: Any.Type, function: Swift.String, line: Swift.Int)
+  case unableCast(value: Any, expectedType: Any.Type, function: Swift.String, line: Swift.Int)
+  public var errorDescription: Swift.String? {
+    get
+  }
+}
+public enum GuardError : Foundation.LocalizedError {
+  case custom(Swift.String)
+  public var errorDescription: Swift.String? {
+    get
+  }
+}
+public let tryCatch: (_ function: () throws -> Swift.Void) -> Swift.Void
+extension Foundation.Formatter {
+  public static let iso8601withFractionalSeconds: Foundation.DateFormatter
+}
+extension OptimoveCore.JSON {
+  public init(_ value: Any) throws
+}
+extension OptimoveCore.JSON {
+  public init<T>(encodable: T) throws where T : Swift.Encodable
+}
+extension OptimoveCore.JSON : Swift.ExpressibleByBooleanLiteral {
+  public init(booleanLiteral value: Swift.Bool)
+  public typealias BooleanLiteralType = Swift.Bool
+}
+extension OptimoveCore.JSON : Swift.ExpressibleByNilLiteral {
+  public init(nilLiteral: ())
+}
+extension OptimoveCore.JSON : Swift.ExpressibleByArrayLiteral {
+  public init(arrayLiteral elements: OptimoveCore.JSON...)
+  public typealias ArrayLiteralElement = OptimoveCore.JSON
+}
+extension OptimoveCore.JSON : Swift.ExpressibleByDictionaryLiteral {
+  public init(dictionaryLiteral elements: (Swift.String, OptimoveCore.JSON)...)
+  public typealias Key = Swift.String
+  public typealias Value = OptimoveCore.JSON
+}
+extension OptimoveCore.JSON : Swift.ExpressibleByFloatLiteral {
+  public init(floatLiteral value: Swift.Double)
+  public typealias FloatLiteralType = Swift.Double
+}
+extension OptimoveCore.JSON : Swift.ExpressibleByIntegerLiteral {
+  public init(integerLiteral value: Swift.Int)
+  public typealias IntegerLiteralType = Swift.Int
+}
+extension OptimoveCore.JSON : Swift.ExpressibleByStringLiteral {
+  public init(stringLiteral value: Swift.String)
+  public typealias ExtendedGraphemeClusterLiteralType = Swift.String
+  public typealias StringLiteralType = Swift.String
+  public typealias UnicodeScalarLiteralType = Swift.String
+}
+@dynamicMemberLookup public enum JSON : Swift.Equatable {
+  case string(Swift.String)
+  case number(Swift.Double)
+  case object([Swift.String : OptimoveCore.JSON])
+  case array([OptimoveCore.JSON])
+  case bool(Swift.Bool)
+  case null
+  public static func == (a: OptimoveCore.JSON, b: OptimoveCore.JSON) -> Swift.Bool
+}
+extension OptimoveCore.JSON : Swift.Codable {
+  public func encode(to encoder: Swift.Encoder) throws
+  public init(from decoder: Swift.Decoder) throws
+}
+extension OptimoveCore.JSON : Swift.CustomDebugStringConvertible {
+  public var debugDescription: Swift.String {
+    get
+  }
+}
+extension OptimoveCore.JSON : Swift.Hashable {
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+public struct LogBody {
+  public init(tenantId: Swift.Int, appNs: Swift.String, sdkPlatform: OptimoveCore.SdkPlatform, level: OptimoveCore.LogLevelCore, logModule: Swift.String?, logFileName: Swift.String?, logMethodName: Swift.String?, message: Swift.String)
+}
+extension OptimoveCore.LogBody : Swift.Codable {
+  public func encode(to encoder: Swift.Encoder) throws
+  public init(from decoder: Swift.Decoder) throws
+}
+@objc public enum LogLevelCore : Swift.Int {
+  case debug = 0
+  case info = 1
+  case warn = 2
+  case error = 3
+  case fatal = 4
+  public init?(rawValue: Swift.Int)
+  public typealias RawValue = Swift.Int
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+extension OptimoveCore.LogLevelCore : Swift.Comparable {
+  public static func < (lhs: OptimoveCore.LogLevelCore, rhs: OptimoveCore.LogLevelCore) -> Swift.Bool
+}
+extension OptimoveCore.LogLevelCore : Swift.Codable {
+  public func encode(to encoder: Swift.Encoder) throws
+}
+@_hasMissingDesignatedInitializers final public class Logger {
+  public static func log(level: OptimoveCore.LogLevelCore, _ message: @autoclosure () -> Swift.String, file: Swift.String = #file, function: Swift.String = #function, line: Swift.UInt = #line, isRemote: Swift.Bool = true)
+  public static func debug(_ message: @autoclosure () -> Swift.String, file: Swift.String = #file, function: Swift.String = #function, line: Swift.UInt = #line)
+  public static func info(_ message: @autoclosure () -> Swift.String, file: Swift.String = #file, function: Swift.String = #function, line: Swift.UInt = #line)
+  public static func warn(_ message: @autoclosure () -> Swift.String, file: Swift.String = #file, function: Swift.String = #function, line: Swift.UInt = #line)
+  public static func error(_ message: @autoclosure () -> Swift.String, file: Swift.String = #file, function: Swift.String = #function, line: Swift.UInt = #line)
+  public static func fatal(_ message: @autoclosure () -> Swift.String, file: Swift.String = #file, function: Swift.String = #function, line: Swift.UInt = #line)
+  public static func buisnessLogicError(_ message: @autoclosure () -> Swift.String, file: Swift.String = #file, function: Swift.String = #function, line: Swift.UInt = #line)
+  @objc deinit
+}
+public protocol LoggerStream : AnyObject {
+  var policy: OptimoveCore.LoggerStreamFilter { get }
+  func log(level: OptimoveCore.LogLevelCore, fileName: Swift.String, methodName: Swift.String, logModule: Swift.String?, message: Swift.String)
+}
+public protocol MutableLoggerStream : OptimoveCore.LoggerStream {
+  var tenantId: Swift.Int { get set }
+  var endpoint: Foundation.URL { get set }
+  var isProductionLogsEnabled: Swift.Bool { get set }
+}
+public enum LoggerStreamFilter {
+  case all
+  case custom(filter: (_ level: OptimoveCore.LogLevelCore, _ isRemote: Swift.Bool) -> Swift.Bool)
+}
+extension OptimoveCore.JSON {
+  public func merging(with new: OptimoveCore.JSON) -> OptimoveCore.JSON
+}
+@_hasMissingDesignatedInitializers final public class MultiplexLoggerStream {
+  public static func log(level: OptimoveCore.LogLevelCore, fileName: Swift.String?, methodName: Swift.String?, logModule: Swift.String?, _ message: Swift.String, isRemote: Swift.Bool)
+  public static func add(stream: OptimoveCore.LoggerStream)
+  public static func mutateStreams(mutator: @escaping (OptimoveCore.MutableLoggerStream) -> Swift.Void)
+  @objc deinit
+}
+public typealias NetworkServiceCompletion = (Swift.Result<OptimoveCore.NetworkResponse<Foundation.Data?>, OptimoveCore.NetworkError>) -> Swift.Void
+public protocol NetworkClient {
+  func perform(_ request: OptimoveCore.NetworkRequest, _ completion: @escaping OptimoveCore.NetworkServiceCompletion)
+}
+public struct NetworkClientImpl {
+  public init(configuration: Foundation.URLSessionConfiguration = URLSessionConfiguration.default)
+}
+extension OptimoveCore.NetworkClientImpl : OptimoveCore.NetworkClient {
+  public func perform(_ request: OptimoveCore.NetworkRequest, _ completion: @escaping OptimoveCore.NetworkServiceCompletion)
+}
+public enum NetworkError : Foundation.LocalizedError {
+  case error(Swift.Error)
+  case noData
+  case invalidURL
+  case requestInvalid(Foundation.Data?)
+  case requestFailed
+  public var errorDescription: Swift.String? {
+    get
+  }
+}
+final public class NetworkRequest {
+  public struct DefaultValue {
+    public static let path: Swift.String?
+    public static let headers: [OptimoveCore.HTTPHeader]
+    public static let queryItems: [Foundation.URLQueryItem]?
+    public static let httpBody: Foundation.Data?
+    public static let timeoutInterval: Swift.Double
+    public static let keyEncodingStrategy: OptimoveCore.KeyEncodingStrategy
+  }
+  final public let method: OptimoveCore.HTTPMethod
+  final public let baseURL: Foundation.URL
+  final public let path: Swift.String?
+  final public let headers: [OptimoveCore.HTTPHeader]?
+  final public let queryItems: [Foundation.URLQueryItem]?
+  final public let httpBody: Foundation.Data?
+  final public let timeoutInterval: Foundation.TimeInterval
+  final public let keyEncodingStrategy: OptimoveCore.KeyEncodingStrategy
+  required public init(method: OptimoveCore.HTTPMethod, baseURL: Foundation.URL, path: Swift.String? = DefaultValue.path, headers: [OptimoveCore.HTTPHeader] = DefaultValue.headers, queryItems: [Foundation.URLQueryItem]? = DefaultValue.queryItems, httpBody: Foundation.Data? = DefaultValue.httpBody, timeoutInterval: Foundation.TimeInterval = DefaultValue.timeoutInterval, keyEncodingStrategy: OptimoveCore.KeyEncodingStrategy = DefaultValue.keyEncodingStrategy)
+  convenience public init<Body>(method: OptimoveCore.HTTPMethod, baseURL: Foundation.URL, path: Swift.String? = DefaultValue.path, headers: [OptimoveCore.HTTPHeader] = DefaultValue.headers, queryItems: [Foundation.URLQueryItem]? = DefaultValue.queryItems, body: Body, timeoutInterval: Foundation.TimeInterval = DefaultValue.timeoutInterval, keyEncodingStrategy: OptimoveCore.KeyEncodingStrategy = DefaultValue.keyEncodingStrategy) throws where Body : Swift.Encodable
+  @objc deinit
+}
+public enum HTTPMethod : Swift.String {
+  case get
+  case put
+  case post
+  case delete
+  case head
+  case options
+  case trace
+  case connect
+  case patch
+  public init?(rawValue: Swift.String)
+  public typealias RawValue = Swift.String
+  public var rawValue: Swift.String {
+    get
+  }
+}
+public struct HTTPHeader {
+  public let field: Swift.String
+  public let value: Swift.String
+}
+extension OptimoveCore.HTTPHeader {
+  public enum Fields : Swift.String {
+    case contentType
+    case userAgent
+    public init?(rawValue: Swift.String)
+    public typealias RawValue = Swift.String
+    public var rawValue: Swift.String {
+      get
+    }
+  }
+  public enum Values : Swift.String {
+    case json
+    public init?(rawValue: Swift.String)
+    public typealias RawValue = Swift.String
+    public var rawValue: Swift.String {
+      get
+    }
+  }
+}
+extension OptimoveCore.HTTPHeader {
+  public init(field: OptimoveCore.HTTPHeader.Fields, value: OptimoveCore.HTTPHeader.Values)
+}
+extension OptimoveCore.HTTPHeader : Swift.CustomStringConvertible {
+  public var description: Swift.String {
+    get
+  }
+}
+extension OptimoveCore.NetworkRequest : Swift.CustomStringConvertible {
+  final public var description: Swift.String {
+    get
+  }
+}
+public enum KeyEncodingStrategy {
+  case useDefaultKeys
+  case convertToSnakeCase
+  case custom(([Swift.CodingKey]) -> Swift.CodingKey)
+}
+public struct NetworkResponse<Body> {
+}
+extension OptimoveCore.NetworkResponse where Body == Foundation.Data? {
+  public func decode<BodyType>(to type: BodyType.Type) throws -> BodyType where BodyType : Swift.Decodable
+  public func unwrap() throws -> Foundation.Data
+  public var description: Swift.String {
+    get
+  }
+}
+public enum NetworkResult<Body> {
+  case success(OptimoveCore.NetworkResponse<Body>)
+  case failure(OptimoveCore.NetworkError)
+}
+public struct OptistreamEvent : Swift.Codable {
+  public let tenant: Swift.Int
+  public let category: Swift.String
+  public let event: Swift.String
+  public let origin: Swift.String
+  public let customer: Swift.String?
+  public let visitor: Swift.String
+  public let timestamp: Swift.String
+  public let context: OptimoveCore.JSON
+  public var metadata: OptimoveCore.OptistreamEvent.Metadata
+  public struct Metadata : Swift.Codable, Swift.Hashable {
+    public var realtime: Swift.Bool
+    public var firstVisitorDate: Swift.Int64?
+    public let eventId: Swift.String
+    public let requestId: Swift.String
+    public let platform: Swift.String
+    public let version: Swift.String
+    public init(realtime: Swift.Bool, firstVisitorDate: Swift.Int64?, eventId: Swift.String, requestId: Swift.String)
+    public func hash(into hasher: inout Swift.Hasher)
+    public static func == (a: OptimoveCore.OptistreamEvent.Metadata, b: OptimoveCore.OptistreamEvent.Metadata) -> Swift.Bool
+    public func encode(to encoder: Swift.Encoder) throws
+    public var hashValue: Swift.Int {
+      get
+    }
+    public init(from decoder: Swift.Decoder) throws
+  }
+  public init(tenant: Swift.Int, category: Swift.String, event: Swift.String, origin: Swift.String, customer: Swift.String?, visitor: Swift.String, timestamp: Swift.String, context: OptimoveCore.JSON, metadata: OptimoveCore.OptistreamEvent.Metadata)
+  public func encode(to encoder: Swift.Encoder) throws
+  public init(from decoder: Swift.Decoder) throws
+}
+extension OptimoveCore.OptistreamEvent : Swift.Equatable {
+  public static func == (lhs: OptimoveCore.OptistreamEvent, rhs: OptimoveCore.OptistreamEvent) -> Swift.Bool
+}
+extension OptimoveCore.OptistreamEvent : Swift.Hashable {
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+final public class OptistreamEventBuilder {
+  public init(tenantID: Swift.Int, storage: OptimoveCore.OptimoveStorage)
+  final public func build(event: OptimoveCore.Event) throws -> OptimoveCore.OptistreamEvent
+  @objc deinit
+}
+public protocol OptistreamNetworking {
+  func send(events: [OptimoveCore.OptistreamEvent], path: Swift.String, completion: @escaping (Swift.Result<Swift.Void, OptimoveCore.NetworkError>) -> Swift.Void)
+  func send(events: [OptimoveCore.OptistreamEvent], completion: @escaping (Swift.Result<Swift.Void, OptimoveCore.NetworkError>) -> Swift.Void)
+}
+final public class OptistreamNetworkingImpl {
+  public init(networkClient: OptimoveCore.NetworkClient, endpoint: Foundation.URL)
+  @objc deinit
+}
+extension OptimoveCore.OptistreamNetworkingImpl : OptimoveCore.OptistreamNetworking {
+  final public func send(events: [OptimoveCore.OptistreamEvent], path: Swift.String, completion: @escaping (Swift.Result<Swift.Void, OptimoveCore.NetworkError>) -> Swift.Void)
+  final public func send(events: [OptimoveCore.OptistreamEvent], completion: @escaping (Swift.Result<Swift.Void, OptimoveCore.NetworkError>) -> Swift.Void)
+}
+public struct TenantOptitrackConfig : Swift.Codable, Swift.Equatable {
+  public var optitrackEndpoint: Foundation.URL
+  public var siteId: Swift.Int
+  public var maxActionCustomDimensions: Swift.Int
+  public init(optitrackEndpoint: Foundation.URL, siteId: Swift.Int, maxActionCustomDimensions: Swift.Int)
+  public static func == (a: OptimoveCore.TenantOptitrackConfig, b: OptimoveCore.TenantOptitrackConfig) -> Swift.Bool
+  public func encode(to encoder: Swift.Encoder) throws
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct Parameter : Swift.Codable, Swift.Equatable {
+  public let type: Swift.String
+  public let optional: Swift.Bool
+  public init(type: Swift.String, optional: Swift.Bool)
+  public var mandatory: Swift.Bool {
+    get
+  }
+  public static func == (a: OptimoveCore.Parameter, b: OptimoveCore.Parameter) -> Swift.Bool
+  public func encode(to encoder: Swift.Encoder) throws
+  public init(from decoder: Swift.Decoder) throws
+}
+extension Foundation.ProcessInfo {
+  public var osVersion: Swift.String {
+    get
+  }
+}
+extension OptimoveCore.JSON {
+  public var stringValue: Swift.String? {
+    get
+  }
+  public var doubleValue: Swift.Double? {
+    get
+  }
+  public var boolValue: Swift.Bool? {
+    get
+  }
+  public var objectValue: [Swift.String : OptimoveCore.JSON]? {
+    get
+  }
+  public var arrayValue: [OptimoveCore.JSON]? {
+    get
+  }
+  public var isNull: Swift.Bool {
+    get
+  }
+  public subscript(index: Swift.Int) -> OptimoveCore.JSON? {
+    get
+  }
+  public subscript(key: Swift.String) -> OptimoveCore.JSON? {
+    get
+  }
+  public subscript(dynamicMember member: Swift.String) -> OptimoveCore.JSON? {
+    get
+  }
+  public subscript(keyPath keyPath: Swift.String) -> OptimoveCore.JSON? {
+    get
+  }
+  public func queryKeyPath<T>(_ path: T) -> OptimoveCore.JSON? where T : Swift.Collection, T.Element == Swift.String
+}
+public struct TenantRealtimeConfig : Swift.Codable, Swift.Equatable {
+  public var realtimeGateway: Foundation.URL
+  public init(realtimeGateway: Foundation.URL)
+  public static func == (a: OptimoveCore.TenantRealtimeConfig, b: OptimoveCore.TenantRealtimeConfig) -> Swift.Bool
+  public func encode(to encoder: Swift.Encoder) throws
+  public init(from decoder: Swift.Decoder) throws
+}
+final public class RemoteLoggerStream : OptimoveCore.MutableLoggerStream {
+  final public var policy: OptimoveCore.LoggerStreamFilter {
+    get
+  }
+  final public var tenantId: Swift.Int
+  final public var endpoint: Foundation.URL
+  final public var isProductionLogsEnabled: Swift.Bool
+  public init(tenantId: Swift.Int)
+  final public func log(level: OptimoveCore.LogLevelCore, fileName: Swift.String, methodName: Swift.String, logModule: Swift.String?, message: Swift.String)
+  @objc deinit
+}
+extension Swift.Result {
+  public var isSuccessful: Swift.Bool {
+    get
+  }
+}
+final public class RuntimeCodingKey : Swift.CodingKey {
+  final public var stringValue: Swift.String
+  public init?(stringValue: Swift.String)
+  final public var intValue: Swift.Int?
+  public init?(intValue: Swift.Int)
+  @objc deinit
+}
+public let SDKVersion: Swift.String
+public struct SdkEnvironment {
+  public struct Constants {
+    public struct Key {
+      public static let debugEnabled: Swift.String
+    }
+  }
+  public static let isDebugEnabled: Swift.Bool
+}
+public enum SdkPlatform : Swift.String, Swift.Codable {
+  case ios
+  case unity
+  public init?(rawValue: Swift.String)
+  public typealias RawValue = Swift.String
+  public var rawValue: Swift.String {
+    get
+  }
+}
+public typealias OptimoveStorage = OptimoveCore.FileStorage & OptimoveCore.KeyValueStorage & OptimoveCore.StorageValue
+public enum StorageKey : Swift.String, Swift.CaseIterable {
+  case installationID
+  case customerID
+  case configurationEndPoint
+  case initialVisitorId
+  case tenantToken
+  case visitorID
+  case version
+  case userAgent
+  case deviceResolutionWidth
+  case deviceResolutionHeight
+  case advertisingIdentifier
+  case migrationVersions
+  case firstRunTimestamp
+  case pushNotificationChannels
+  case optitrackEndpoint
+  case tenantID
+  case userEmail
+  case siteID
+  case settingUserSuccess
+  case firstVisitTimestamp
+  public init?(rawValue: Swift.String)
+  public typealias AllCases = [OptimoveCore.StorageKey]
+  public typealias RawValue = Swift.String
+  public static var allCases: [OptimoveCore.StorageKey] {
+    get
+  }
+  public var rawValue: Swift.String {
+    get
+  }
+}
+public protocol StorageValue {
+  var installationID: Swift.String? { get set }
+  var customerID: Swift.String? { get set }
+  var configurationEndPoint: Foundation.URL? { get set }
+  var initialVisitorId: Swift.String? { get set }
+  var tenantToken: Swift.String? { get set }
+  var visitorID: Swift.String? { get set }
+  var version: Swift.String? { get set }
+  var userAgent: Swift.String? { get set }
+  var deviceResolutionWidth: Swift.Float? { get set }
+  var deviceResolutionHeight: Swift.Float? { get set }
+  var advertisingIdentifier: Swift.String? { get set }
+  var optitrackEndpoint: Foundation.URL? { get set }
+  var tenantID: Swift.Int? { get set }
+  var userEmail: Swift.String? { get set }
+  var siteID: Swift.Int? { get set }
+  var isSettingUserSuccess: Swift.Bool? { get set }
+  var firstVisitTimestamp: Swift.Int64? { get set }
+  func getConfigurationEndPoint() throws -> Foundation.URL
+  func getCustomerID() throws -> Swift.String
+  func getInitialVisitorId() throws -> Swift.String
+  func getTenantToken() throws -> Swift.String
+  func getVisitorID() throws -> Swift.String
+  func getVersion() throws -> Swift.String
+  func getUserAgent() throws -> Swift.String
+  func getDeviceResolutionWidth() throws -> Swift.Float
+  func getDeviceResolutionHeight() throws -> Swift.Float
+  mutating func finishedMigration(to version: Swift.String)
+  func isAlreadyMigrated(to version: Swift.String) -> Swift.Bool
+  func getUserEmail() throws -> Swift.String
+  func getSiteID() throws -> Swift.Int
+}
+public protocol KeyValueStorage {
+  func set(value: Any?, key: OptimoveCore.StorageKey)
+  func value(for: OptimoveCore.StorageKey) -> Any?
+  subscript<T>(key: OptimoveCore.StorageKey) -> T? { get set }
+}
+extension Foundation.UserDefaults : OptimoveCore.KeyValueStorage {
+  public func set(value: Any?, key: OptimoveCore.StorageKey)
+  public func value(for key: OptimoveCore.StorageKey) -> Any?
+  public subscript<T>(key: OptimoveCore.StorageKey) -> T? {
+    get
+    set
+  }
+}
+public enum StorageError : Foundation.LocalizedError {
+  case noValue(OptimoveCore.StorageKey)
+  public var errorDescription: Swift.String? {
+    get
+  }
+}
+final public class StorageFacade : OptimoveCore.OptimoveStorage {
+  public init(keyValureStorage: OptimoveCore.KeyValueStorage, fileStorage: OptimoveCore.FileStorage)
+  @objc deinit
+}
+extension OptimoveCore.StorageFacade {
+  final public func set(value: Any?, key: OptimoveCore.StorageKey)
+  final public func value(for key: OptimoveCore.StorageKey) -> Any?
+  final public subscript<T>(key: OptimoveCore.StorageKey) -> T? {
+    get
+    set
+  }
+}
+extension OptimoveCore.StorageFacade {
+  final public func isExist(fileName: Swift.String) -> Swift.Bool
+  final public func save<T>(data: T, toFileName: Swift.String) throws where T : Swift.Decodable, T : Swift.Encodable
+  final public func saveData(data: Foundation.Data, toFileName: Swift.String) throws
+  final public func load<T>(fileName: Swift.String) throws -> T where T : Swift.Decodable, T : Swift.Encodable
+  final public func loadData(fileName: Swift.String) throws -> Foundation.Data
+  final public func delete(fileName: Swift.String) throws
+}
+extension OptimoveCore.KeyValueStorage where Self : OptimoveCore.StorageValue {
+  public var installationID: Swift.String? {
+    get
+    set
+  }
+  public var customerID: Swift.String? {
+    get
+    set
+  }
+  public var visitorID: Swift.String? {
+    get
+    set
+  }
+  public var initialVisitorId: Swift.String? {
+    get
+    set
+  }
+  public var configurationEndPoint: Foundation.URL? {
+    get
+    set
+  }
+  public var tenantToken: Swift.String? {
+    get
+    set
+  }
+  public var version: Swift.String? {
+    get
+    set
+  }
+  public var userAgent: Swift.String? {
+    get
+    set
+  }
+  public var deviceResolutionWidth: Swift.Float? {
+    get
+    set
+  }
+  public var deviceResolutionHeight: Swift.Float? {
+    get
+    set
+  }
+  public var advertisingIdentifier: Swift.String? {
+    get
+    set
+  }
+  public var migrationVersions: [Swift.String] {
+    get
+    set
+  }
+  public var firstRunTimestamp: Swift.Int64? {
+    get
+    set
+  }
+  public var pushNotificationChannels: [Swift.String]? {
+    get
+    set
+  }
+  public var optitrackEndpoint: Foundation.URL? {
+    get
+    set
+  }
+  public var tenantID: Swift.Int? {
+    get
+    set
+  }
+  public var userEmail: Swift.String? {
+    get
+    set
+  }
+  public var siteID: Swift.Int? {
+    get
+    set
+  }
+  public var isSettingUserSuccess: Swift.Bool? {
+    get
+    set
+  }
+  public var firstVisitTimestamp: Swift.Int64? {
+    get
+    set
+  }
+  public func getConfigurationEndPoint() throws -> Foundation.URL
+  public func getInstallationID() throws -> Swift.String
+  public func getCustomerID() throws -> Swift.String
+  public func getInitialVisitorId() throws -> Swift.String
+  public func getTenantToken() throws -> Swift.String
+  public func getVisitorID() throws -> Swift.String
+  public func getVersion() throws -> Swift.String
+  public func getUserAgent() throws -> Swift.String
+  public func getDeviceResolutionWidth() throws -> Swift.Float
+  public func getDeviceResolutionHeight() throws -> Swift.Float
+  public func getFirstRunTimestamp() throws -> Swift.Int64
+  public func getTenantID() throws -> Swift.Int
+  public mutating func finishedMigration(to version: Swift.String)
+  public func isAlreadyMigrated(to version: Swift.String) -> Swift.Bool
+  public func getUserEmail() throws -> Swift.String
+  public func getSiteID() throws -> Swift.Int
+}
+public struct TenantConfig : Swift.Codable, Swift.Equatable {
+  public let isSupportedAirship: Swift.Bool
+  public let isEnableRealtime: Swift.Bool
+  public let isEnableRealtimeThroughOptistream: Swift.Bool
+  public let isProductionLogsEnabled: Swift.Bool
+  public let realtime: OptimoveCore.TenantRealtimeConfig
+  public var optitrack: OptimoveCore.TenantOptitrackConfig
+  public let events: [Swift.String : OptimoveCore.EventsConfig]
+  public init(realtime: OptimoveCore.TenantRealtimeConfig, optitrack: OptimoveCore.TenantOptitrackConfig, events: [Swift.String : OptimoveCore.EventsConfig], isEnableRealtime: Swift.Bool, isSupportedAirship: Swift.Bool, isEnableRealtimeThroughOptistream: Swift.Bool, isProductionLogsEnabled: Swift.Bool)
+  public init(from decoder: Swift.Decoder) throws
+  public func encode(to encoder: Swift.Encoder) throws
+  public static func == (a: OptimoveCore.TenantConfig, b: OptimoveCore.TenantConfig) -> Swift.Bool
+}
+extension Swift.Double {
+  public var seconds: Swift.Int64 {
+    get
+  }
+}
+extension Foundation.UserDefaults {
+  public struct Constants {
+  }
+  public static func optimove() throws -> Foundation.UserDefaults
+}
+extension Darwin.utsname {
+  public var deviceModel: Swift.String {
+    get
+  }
+}
+extension OptimoveCore.AsyncOperation.State : Swift.Equatable {}
+extension OptimoveCore.AsyncOperation.State : Swift.Hashable {}
+extension OptimoveCore.AsyncOperation.State : Swift.RawRepresentable {}
+extension OptimoveCore.LogLevelCore : Swift.Hashable {}
+extension OptimoveCore.LogLevelCore : Swift.RawRepresentable {}
+extension OptimoveCore.HTTPMethod : Swift.Equatable {}
+extension OptimoveCore.HTTPMethod : Swift.Hashable {}
+extension OptimoveCore.HTTPMethod : Swift.RawRepresentable {}
+extension OptimoveCore.HTTPHeader.Fields : Swift.Equatable {}
+extension OptimoveCore.HTTPHeader.Fields : Swift.Hashable {}
+extension OptimoveCore.HTTPHeader.Fields : Swift.RawRepresentable {}
+extension OptimoveCore.HTTPHeader.Values : Swift.Equatable {}
+extension OptimoveCore.HTTPHeader.Values : Swift.Hashable {}
+extension OptimoveCore.HTTPHeader.Values : Swift.RawRepresentable {}
+extension OptimoveCore.SdkPlatform : Swift.Equatable {}
+extension OptimoveCore.SdkPlatform : Swift.Hashable {}
+extension OptimoveCore.SdkPlatform : Swift.RawRepresentable {}
+extension OptimoveCore.StorageKey : Swift.Equatable {}
+extension OptimoveCore.StorageKey : Swift.Hashable {}
+extension OptimoveCore.StorageKey : Swift.RawRepresentable {}

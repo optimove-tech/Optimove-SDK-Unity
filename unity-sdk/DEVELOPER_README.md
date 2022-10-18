@@ -1,7 +1,7 @@
 ## Android
 
 - The `AndroidPlugin` folder should be opened in Android Studio to work on the Android proxy classes
-- The proxy is shipped in the SDK as an AAR, built with `./gradlew OptimoveUnityPlugin:assembleRelease`. Created file is `AndroidPlugin/unity/build/outputs/aar/unity-release.aar`
+- The proxy is shipped in the SDK as an AAR, built with `./gradlew OptimoveUnityPlugin:assembleRelease`. Created file is `AndroidPlugin/OptimoveUnityPlugin/build/outputs/aar/OptimoveUnityPlugin-release.aar`
 - Copy the proxy AAR into `Assets/Plugins/Android`
 - We also ship a gradle template and AndroidManifest template with the Android plugin, see files in `Assets/Plugins/Android`
 - The gradle template adds our SDK dependency and allows suppressing dependency conflicts

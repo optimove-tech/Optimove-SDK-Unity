@@ -41,7 +41,7 @@ namespace OptimoveSdk
         public static void Initialize()
         {
 #if UNITY_ANDROID
-            AndroidProxy = new AndroidJavaClass("com.optimove.unity.plugin.UnityProxy");
+        AndroidProxy = new AndroidJavaClass("com.optimove.unity.plugin.UnityProxy");
 #endif
 
             var optimoveGameObject = new GameObject(GameObjectName);
@@ -57,7 +57,7 @@ namespace OptimoveSdk
 
         void Awake()
         {
-            Optimove.Shared = this;
+                Optimove.Shared = this;
 
              #if UNITY_ANDROID
                        //  PollPendingPush();
@@ -316,6 +316,16 @@ namespace OptimoveSdk
         // #endif
         //         }
 
+        public bool InAppMarkAsRead(InAppInboxItem item)
+        {
+                #if UNITY_IOS
+                        return OptimoveInAppMarkAsRead(item.Id);
+                #elif UNITY_ANDROID
+                        //return AndroidProxy.CallStatic<bool>("inAppMarkInboxItemRead", new object[] { item.Id });
+                #else
+                        return false;
+                #endif
+        }
 
         //         public bool InAppMarkAllInboxItemsRead()
         //         {
@@ -328,6 +338,16 @@ namespace OptimoveSdk
         // #endif
         //         }
 
+        public bool InAppMarkAllInboxItemsRead()
+        {
+                #if UNITY_IOS
+                        return OptimoveMarkAllInboxItemsAsRead();
+                #elif UNITY_ANDROID
+                        //return AndroidProxy.CallStatic<bool>("inAppMarkAllInboxItemsRead", new object[] { });
+                #else
+                        return false;
+                #endif
+        }
 
         //         //**************************************** SUMMARY ************************************************
         //         private static Dictionary<string, Action<InAppInboxSummary>> inboxSummaryHandlers = new Dictionary<string, Action<InAppInboxSummary>>();
@@ -375,6 +395,9 @@ namespace OptimoveSdk
         // #endif
         //         }
 
+            inboxSummaryHandlers[guid](summary);
+            inboxSummaryHandlers.Remove(guid);
+        }
 
         //          //************************************************************************************************
 
@@ -412,29 +435,29 @@ namespace OptimoveSdk
 
 
 
-        // [DllImport(nativeLib)]
-        // private static extern void KSPushRequestDeviceToken();
+        [DllImport(nativeLib)]
+        private static extern void OptimoveUpdatePushRegistration(int state);
 
-        // [DllImport(nativeLib)]
-        // private static extern void KSInAppUpdateConsentForUser(int consented);
+        [DllImport(nativeLib)]
+        private static extern void OptimoveInAppUpdateConsentForUser(int consented);
 
-        // [DllImport(nativeLib)]
-        // private static extern string KSInAppGetInboxItems();
+        [DllImport(nativeLib)]
+        private static extern string OptimoveInAppGetInboxItems();
 
-        // [DllImport(nativeLib)]
-        // private static extern bool KSInAppPresentInboxMessage(long messageId);
+        [DllImport(nativeLib)]
+        private static extern string OptimoveInAppPresentInboxMessage(long messageId);
 
-        // [DllImport(nativeLib)]
-        // private static extern bool KSInAppDeleteMessageFromInbox(long messageId);
+        [DllImport(nativeLib)]
+        private static extern bool OptimoveInAppDeleteMessageFromInbox(long messageId);
 
-        // [DllImport(nativeLib)]
-        // private static extern bool KSInAppMarkInboxItemRead(long messageId);
+        [DllImport(nativeLib)]
+        private static extern bool OptimoveInAppMarkAsRead(long messageId);
 
-        // [DllImport(nativeLib)]
-        // private static extern bool KSInAppMarkAllInboxItemsRead();
+        [DllImport(nativeLib)]
+        private static extern bool OptimoveMarkAllInboxItemsAsRead();
 
-        // [DllImport(nativeLib)]
-        // private static extern void KSInAppGetInboxSummary(string guid);
+        [DllImport(nativeLib)]
+        private static extern void OptimoveInAppGetInboxSummary(string guid);
 
 #endif
 

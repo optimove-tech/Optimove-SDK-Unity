@@ -95,7 +95,7 @@ public class ButtonController : MonoBehaviour
 
     void SetUserEmail()
     {
-        Optimove.Shared.SetUserEmail(m_userEmailInput.text);
+        Optimove.Shared.SetUserEmail( m_userEmailInput.text);
 
         m_userEmailInput.text = "";
     }
@@ -109,7 +109,7 @@ public class ButtonController : MonoBehaviour
 
     void GetVisitorId()
     {
-      //  AddLogMessage(Optimove.Shared.GetVisitorId());
+        AddLogMessage(Optimove.Shared.GetVisitorId());
     }
 
     void SignOutUser()
