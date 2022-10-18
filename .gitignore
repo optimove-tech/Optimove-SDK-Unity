@@ -1,1 +1,3 @@
 .DS_Store
+ExampleApp/Assets/Plugins/Android/OptimoveUnityPlugin-debug.aar
+unity-sdk/AndroidPlugin/OptimoveUnityPlugin/google-services.json

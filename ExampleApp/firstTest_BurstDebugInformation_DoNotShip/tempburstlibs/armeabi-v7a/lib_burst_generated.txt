@@ -141,7 +141,6 @@ Library: lib_burst_generated
 --root-assembly=/Users/tom_b/Work repositories/Optimove-SDK-Unity/ExampleApp/Temp/StagingArea/Data/Managed/Unity.Services.Core.Environments.Internal.dll
 --root-assembly=/Users/tom_b/Work repositories/Optimove-SDK-Unity/ExampleApp/Temp/StagingArea/Data/Managed/Unity.Burst.dll
 --root-assembly=/Users/tom_b/Work repositories/Optimove-SDK-Unity/ExampleApp/Temp/StagingArea/Data/Managed/Unity.2D.Animation.Runtime.dll
---root-assembly=/Users/tom_b/Work repositories/Optimove-SDK-Unity/ExampleApp/Temp/StagingArea/Data/Managed/Unity.TextMeshPro.dll
 --root-assembly=/Users/tom_b/Work repositories/Optimove-SDK-Unity/ExampleApp/Temp/StagingArea/Data/Managed/Unity.Timeline.dll
 --root-assembly=/Users/tom_b/Work repositories/Optimove-SDK-Unity/ExampleApp/Temp/StagingArea/Data/Managed/Unity.Services.Core.dll
 --root-assembly=/Users/tom_b/Work repositories/Optimove-SDK-Unity/ExampleApp/Temp/StagingArea/Data/Managed/Unity.Services.Core.Environments.dll

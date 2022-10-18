@@ -42,7 +42,7 @@ namespace OptimoveSdk
         public static void Initialize()
         {
 #if UNITY_ANDROID
-        AndroidProxy = new AndroidJavaClass("com.optimove.unity.plugin.UnityProxy");
+            AndroidProxy = new AndroidJavaClass("com.optimove.unity.plugin.UnityProxy");
 #endif
 
             var optimoveGameObject = new GameObject(GameObjectName);
@@ -58,11 +58,11 @@ namespace OptimoveSdk
 
         void Awake()
         {
-                Optimove.Shared = this;
+            Optimove.Shared = this;
 
-             #if UNITY_ANDROID
-                       //  PollPendingPush();
-             #endif
+#if UNITY_ANDROID
+              PollPendingPush();
+#endif
 
         }
 
@@ -74,11 +74,7 @@ namespace OptimoveSdk
             return value != null && !value.Equals("");
         }
 
-        /*private string DictionaryToJsonString(Dictionary<string, object> dictionary)
-        {
-            return "{" + string.Join(",", dictionary.Select(kv => kv.Key + ":" + kv.Value).ToArray()) + "}";
-        }
-        */
+
         #endregion
 
         #region User Association
@@ -210,21 +206,32 @@ namespace OptimoveSdk
 
         //         #endregion
 
-        //         #region Push
+        #region Push
+        private static void PollPendingPush()
+        {
+            #if UNITY_ANDROID
+                AndroidProxy.CallStatic("pollPendingPush");
+            #endif
+        }
 
-        //         public void PushRegister()
-        //         {
-        // #if UNITY_IOS
-        //             Optimove.KSPushRequestDeviceToken();
-        // #elif UNITY_ANDROID
-        //             AndroidProxy.CallStatic("pushRegUnreg", new object[] { true });
-        // #endif
-        //         }
+        public void PushRegister()
+        {
+#if UNITY_IOS
+                     Optimove.KSPushRequestDeviceToken();
+#elif UNITY_ANDROID
+            AndroidProxy.CallStatic("pushRegister");
+#endif
+        }
 
-        //         public void PushUnregister()
-        //         {
-        //             //TODO:
-        //         }
+        public void PushUnregister()
+        {
+#if UNITY_IOS
+                     Optimove.KSPushRequestDeviceToken();
+#elif UNITY_ANDROID
+            AndroidProxy.CallStatic("pushUnregister");
+#endif
+        }
+
 
         //         public void PushReceived(string message)
         //         {
@@ -240,7 +247,7 @@ namespace OptimoveSdk
 
         //TODO: PushOpened?
 
-        //         #endregion
+        #endregion
 
         //         #region InApp
 
@@ -324,38 +331,38 @@ namespace OptimoveSdk
         // #endif
         //         }
 
-    /*    public bool InAppMarkAsRead(InAppInboxItem item)
-        {
-                #if UNITY_IOS
-                        return OptimoveInAppMarkAsRead(item.Id);
-                #elif UNITY_ANDROID
-                        //return AndroidProxy.CallStatic<bool>("inAppMarkInboxItemRead", new object[] { item.Id });
-                #else
-                        return false;
-                #endif
-        }
+        /*    public bool InAppMarkAsRead(InAppInboxItem item)
+            {
+                    #if UNITY_IOS
+                            return OptimoveInAppMarkAsRead(item.Id);
+                    #elif UNITY_ANDROID
+                            //return AndroidProxy.CallStatic<bool>("inAppMarkInboxItemRead", new object[] { item.Id });
+                    #else
+                            return false;
+                    #endif
+            }
 
-        //         public bool InAppMarkAllInboxItemsRead()
-        //         {
-        // #if UNITY_IOS
-        //             return KSInAppMarkAllInboxItemsRead();
-        // #elif UNITY_ANDROID
-        //             return AndroidProxy.CallStatic<bool>("inAppMarkAllInboxItemsRead", new object[] { });
-        // #else
-        // 			return false;
-        // #endif
-        //         }
+            //         public bool InAppMarkAllInboxItemsRead()
+            //         {
+            // #if UNITY_IOS
+            //             return KSInAppMarkAllInboxItemsRead();
+            // #elif UNITY_ANDROID
+            //             return AndroidProxy.CallStatic<bool>("inAppMarkAllInboxItemsRead", new object[] { });
+            // #else
+            // 			return false;
+            // #endif
+            //         }
 
-        public bool InAppMarkAllInboxItemsRead()
-        {
-                #if UNITY_IOS
-                        return OptimoveMarkAllInboxItemsAsRead();
-                #elif UNITY_ANDROID
-                        //return AndroidProxy.CallStatic<bool>("inAppMarkAllInboxItemsRead", new object[] { });
-                #else
-                        return false;
-                #endif
-        }*/
+            public bool InAppMarkAllInboxItemsRead()
+            {
+                    #if UNITY_IOS
+                            return OptimoveMarkAllInboxItemsAsRead();
+                    #elif UNITY_ANDROID
+                            //return AndroidProxy.CallStatic<bool>("inAppMarkAllInboxItemsRead", new object[] { });
+                    #else
+                            return false;
+                    #endif
+            }*/
 
         //         //**************************************** SUMMARY ************************************************
         //         private static Dictionary<string, Action<InAppInboxSummary>> inboxSummaryHandlers = new Dictionary<string, Action<InAppInboxSummary>>();
@@ -403,10 +410,8 @@ namespace OptimoveSdk
         // #endif
         //         }
 
-            //inboxSummaryHandlers[guid](summary);
-            //inboxSummaryHandlers.Remove(guid);
-        }
-
+        //inboxSummaryHandlers[guid](summary);
+        //inboxSummaryHandlers.Remove(guid);
         //          //************************************************************************************************
 
 
@@ -469,14 +474,8 @@ namespace OptimoveSdk
 
 #endif
 
-        //         private static void PollPendingPush()
-        //         {
-        // #if UNITY_ANDROID
-        //             AndroidProxy.CallStatic("pollPendingPush", new object[] { });
-        // #endif
-        //         }
+             
 
         #endregion
-
     }
-
+}

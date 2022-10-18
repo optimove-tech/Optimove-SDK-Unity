@@ -16,7 +16,8 @@ public class OptimoveInitProvider extends ContentProvider {
     @Override
     public boolean onCreate() {
         Application app = (Application) this.getContext().getApplicationContext();
-        Optimove.initialize(app, new OptimoveConfig.Builder("YOUR OPTIMOVE CREDENTIALS", "YOUR OPTIMOVE MOBILE CREDENTIALS").build());
+        Optimove.initialize(app, new OptimoveConfig.Builder("WzEsICJpbnRlcm5hbC10b2tlbiIsICJxYS1kaXJlY3QtcnQiXQ==", "WzEsImV1LWNlbnRyYWwtMSIsImM4MTRiNWM4LWY4ZDYtNGZlYy1iMWE3LTUxYmRkMzIwNzk3YSIsIkRxa2tuWTcrTzUyOEZvUTZrZVRVOVNUTlZpek1CZHBrbTliaSJd").build());
+        Optimove.getInstance().pushRegister();
         return false;
     }
 
