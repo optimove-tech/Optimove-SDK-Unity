@@ -5,6 +5,7 @@ using UnityEngine.Networking;
 using System;
 using System.Text;
 using System.Runtime.InteropServices;
+using System.Linq;
 
 namespace OptimoveSdk
 {
@@ -68,17 +69,23 @@ namespace OptimoveSdk
         #endregion
 
         #region Helper Functions
-        private bool isValidString(string value)
+        private bool IsValidString(string value)
         {
             return value != null && !value.Equals("");
         }
+
+        /*private string DictionaryToJsonString(Dictionary<string, object> dictionary)
+        {
+            return "{" + string.Join(",", dictionary.Select(kv => kv.Key + ":" + kv.Value).ToArray()) + "}";
+        }
+        */
         #endregion
 
         #region User Association
 
         public void SetUserId(string userId)
         {
-            if (!isValidString(userId))
+            if (!IsValidString(userId))
             {
                 Debug.LogError("Invalid user id");
                 return;
@@ -94,7 +101,7 @@ namespace OptimoveSdk
 
         public void SetUserEmail(string userEmail)
         {
-            if (!isValidString(userEmail))
+            if (!IsValidString(userEmail))
             {
                 Debug.LogError("Invalid user email");
                 return;
@@ -110,7 +117,7 @@ namespace OptimoveSdk
 
         public void RegisterUser(string userId, string userEmail)
         {
-            if (!isValidString(userId) || !isValidString(userEmail))
+            if (!IsValidString(userId) || !IsValidString(userEmail))
             {
                 Debug.LogError("Invalid user id or user email");
                 return;
@@ -128,7 +135,7 @@ namespace OptimoveSdk
 #if UNITY_IOS
                         return OptimoveGetVisitorId();
 #elif UNITY_ANDROID
-            return AndroidProxy.GetStatic<string>("getVisitorId");
+            return AndroidProxy.CallStatic<string>("getVisitorId");
 #endif
         }
 
@@ -138,7 +145,7 @@ namespace OptimoveSdk
 #if UNITY_IOS
                         OptimoveSignOutUser();
 #elif UNITY_ANDROID
-            
+            AndroidProxy.CallStatic("signOutUser");
 #endif
         }
 
@@ -149,7 +156,7 @@ namespace OptimoveSdk
 
         public void ReportScreenVisit(string screenName, string screenCategory)
         {
-            if (!isValidString(screenName))
+            if (!IsValidString(screenName))
             {
                 Debug.LogError("Invalid screen name");
                 return;
@@ -164,19 +171,19 @@ namespace OptimoveSdk
 #if UNITY_IOS
                         OptimoveReportScreenVisit(screenName, screenCategory);
 #elif UNITY_ANDROID
-            //TODO
+            AndroidProxy.CallStatic("reportScreenVisit", screenName, screenCategory);
 #endif
         }
 
         public void ReportEvent(string eventType, Dictionary<string, object> properties)
         {
-            if (!isValidString(eventType))
+            if (!IsValidString(eventType))
             {
                 Debug.LogError("Invalid event type");
                 return;
             }
-
             string propsJson = null;
+
 
             if (properties != null)
             {
@@ -186,7 +193,8 @@ namespace OptimoveSdk
 #if UNITY_IOS
                         OptimoveReportEvent(eventType, propsJson);
 #elif UNITY_ANDROID
-            //TODO
+
+            AndroidProxy.CallStatic("reportEvent", eventType, propsJson);
 
 #endif
         }
@@ -316,7 +324,7 @@ namespace OptimoveSdk
         // #endif
         //         }
 
-        public bool InAppMarkAsRead(InAppInboxItem item)
+    /*    public bool InAppMarkAsRead(InAppInboxItem item)
         {
                 #if UNITY_IOS
                         return OptimoveInAppMarkAsRead(item.Id);
@@ -347,7 +355,7 @@ namespace OptimoveSdk
                 #else
                         return false;
                 #endif
-        }
+        }*/
 
         //         //**************************************** SUMMARY ************************************************
         //         private static Dictionary<string, Action<InAppInboxSummary>> inboxSummaryHandlers = new Dictionary<string, Action<InAppInboxSummary>>();
@@ -395,8 +403,8 @@ namespace OptimoveSdk
         // #endif
         //         }
 
-            inboxSummaryHandlers[guid](summary);
-            inboxSummaryHandlers.Remove(guid);
+            //inboxSummaryHandlers[guid](summary);
+            //inboxSummaryHandlers.Remove(guid);
         }
 
         //          //************************************************************************************************
@@ -472,4 +480,3 @@ namespace OptimoveSdk
 
     }
 
-}

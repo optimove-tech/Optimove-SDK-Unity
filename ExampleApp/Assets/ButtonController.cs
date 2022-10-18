@@ -262,7 +262,7 @@ public class ButtonController : MonoBehaviour
 
         return targetId;
     }
-
+ */
     void AddLogMessage(string message)
     {
         string prefix = DateTime.Now.ToString("[MM/dd/yyyy h:mm:ss]: ");

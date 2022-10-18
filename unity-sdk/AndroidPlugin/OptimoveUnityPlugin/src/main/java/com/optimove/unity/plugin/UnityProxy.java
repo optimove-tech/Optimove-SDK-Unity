@@ -1,8 +1,10 @@
 package com.optimove.unity.plugin;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.optimove.android.Optimove;
+import com.optimove.android.main.tools.opti_logger.OptiLoggerStreamsContainer;
 import com.optimove.android.optimobile.InAppDeepLinkHandlerInterface;
 import com.optimove.android.optimobile.InAppInboxItem;
 import com.optimove.android.optimobile.InAppInboxSummary;
@@ -22,6 +24,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.logging.Logger;
 
 public class UnityProxy {
     private static JSONObject pendingPushMessage;
@@ -51,6 +54,12 @@ public class UnityProxy {
     }
 
     public static void reportEvent(String eventName, String eventParamsString) {
+
+        if (eventParamsString == null) {
+            reportEvent(eventName);
+            return;
+        }
+
         try {
             JSONObject eventParamsJson = new JSONObject(eventParamsString);
             Iterator<String> iterator = eventParamsJson.keys();
