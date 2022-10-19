@@ -1,21 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.optimove.unity.plugin">
-    <application>
-    <service android:name="com.optimove.android.optimobile.FirebaseMessagingService" android:exported="false">
-        <intent-filter>
-            <action android:name="com.google.firebase.MESSAGING_EVENT" />
-        </intent-filter>
-    </service>
 
-    <!-- Optimove Push receiver -->
-    <receiver android:name="package com.optimove.unity.plugin.PushReceiver" android:exported="false">
-        <intent-filter>
-            <action android:name="com.optimove.push.RECEIVED" />
-            <action android:name="com.optimove.push.OPENED" />
-            <action android:name="com.optimove.push.DISMISSED" />
-            <action android:name="com.optimove.push.BUTTON_CLICKED" />
-        </intent-filter>
-    </receiver>
-    </application>
 </manifest>

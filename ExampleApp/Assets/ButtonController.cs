@@ -40,10 +40,10 @@ public class ButtonController : MonoBehaviour
         m_getVisitorId.onClick.AddListener(GetVisitorId);
         m_signOutUser.onClick.AddListener(SignOutUser);
 
-        // registration
-       /* m_pushRegister.onClick.AddListener(PushRegister);
+         //registration
+        m_pushRegister.onClick.AddListener(PushRegister);
         m_pushUnregister.onClick.AddListener(PushUnregister);
-        m_inAppConsentTrue.onClick.AddListener(InAppConsentTrue);
+       /* m_inAppConsentTrue.onClick.AddListener(InAppConsentTrue);
         m_inAppConsentFalse.onClick.AddListener(InAppConsentFalse);
 
         // messaging
@@ -117,7 +117,7 @@ public class ButtonController : MonoBehaviour
         Optimove.Shared.SignOutUser();
     }
 
- /*   // registration
+   // registration
     void PushRegister()
     {
         AddLogMessage("Registering for push");
@@ -129,7 +129,7 @@ public class ButtonController : MonoBehaviour
         AddLogMessage("Unregistering for push");
         Optimove.Shared.PushUnregister();
     }
-
+    /*
     void InAppConsentTrue()
     {
         AddLogMessage("Updating in-app consent: true");
