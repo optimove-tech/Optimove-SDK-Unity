@@ -80,7 +80,7 @@ public class ButtonController : MonoBehaviour
             string id = push.Id.ToString();
             string title = push.Title ?? "";
             string message = push.Message ?? "";
-            string data = push.Data != null ? string.Join(",", push.Data) : "";
+            string data = push.Data != null ? OptimoveSdk.MiniJSON.Json.Serialize(push.Data) : "";
 
             AddLogMessage("PushOpenedHandler: " + "id: " + id + " title: " + title + " message: " + message + " data: " + data);
         };
