@@ -59,6 +59,24 @@ namespace OptimoveSdk
         }
     }
 
+    public class InAppButtonPress
+    {
+        public long MessageId { get; private set; }
+        public Dictionary<string, object> DeepLinkData { get; private set; }
+        public Dictionary<string, object> MessageData { get; private set; }
+
+        internal static InAppButtonPress CreateFromJson(string json)
+        {
+            var data = MiniJSON.Json.Deserialize(json) as Dictionary<string, object>;
+
+            var press = new InAppButtonPress();
+            press.MessageId = (long) data["messageId"];
+            press.DeepLinkData = data["deepLinkData"] as Dictionary<string, object>;
+            press.MessageData = data.GetValueOrDefault("messageData") as Dictionary<string, object>;
+            return press;
+        }
+    }
+
     public enum OptimoveInAppPresentationResult
     {
         presented,

@@ -62,9 +62,12 @@ public class ButtonController : MonoBehaviour
 
     void SetUpHandlers()
     {
-        Optimove.Shared.OnInAppDeepLinkPressed += (Dictionary<string, object> data) =>
+        Optimove.Shared.OnInAppDeepLinkPressed += (InAppButtonPress press) =>
         {
-            AddLogMessage("InAppDeepLinkPressedHandler: " + OptimoveSdk.MiniJSON.Json.Serialize(data));
+            string deepLinkData = OptimoveSdk.MiniJSON.Json.Serialize(press.DeepLinkData);
+            string messageData = OptimoveSdk.MiniJSON.Json.Serialize(press.MessageData);
+
+            AddLogMessage( "InAppDeepLinkPressedHandler: Message id: " + press.MessageId + " deepLinkData: " + deepLinkData + " messageData: " + messageData);
         };
 
         Optimove.Shared.OnInAppInboxUpdated += () =>

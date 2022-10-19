@@ -20,7 +20,7 @@ namespace OptimoveSdk
         public delegate void PushOpenedDelegate(PushMessage message);
         public event PushOpenedDelegate OnPushOpened;
 
-        public delegate void InAppDeepLinkDelegate(Dictionary<string, object> message);
+        public delegate void InAppDeepLinkDelegate(InAppButtonPress press);
         public event InAppDeepLinkDelegate OnInAppDeepLinkPressed;
 
         public delegate void InAppInboxUpdatedDelegate();
@@ -314,16 +314,16 @@ namespace OptimoveSdk
                 #endif
         }
 
-        public void InAppDeepLinkPressed(string dataJson)//TODO: dictionary to model? not in Flutter, but in cordova
+        public void InAppDeepLinkPressed(string dataJson)
         {
-            if (OnInAppDeepLinkPressed == null)
-            {
-                return;
-            }
+                if (OnInAppDeepLinkPressed == null)
+                {
+                        return;
+                }
 
-            var data = MiniJSON.Json.Deserialize(dataJson) as Dictionary<string, object>;
+                var press = InAppButtonPress.CreateFromJson(dataJson);
 
-            OnInAppDeepLinkPressed(data);
+                OnInAppDeepLinkPressed(press);
         }
 
         public void InAppInboxUpdated()
