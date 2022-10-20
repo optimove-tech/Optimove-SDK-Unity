@@ -15,17 +15,17 @@ namespace OptimoveSdk
 
         public const string Version = "1.0.0";
 
-        // public delegate void PushReceivedDelegate(PushMessage message);
+         public delegate void PushReceivedDelegate(PushMessage message);
 
-        // public event PushReceivedDelegate OnPushReceived;
+         public event PushReceivedDelegate OnPushReceived;
 
-        // public delegate void InAppDeepLinkDelegate(Dictionary<string, object> message);
+         public delegate void InAppDeepLinkDelegate(Dictionary<string, object> message);
 
-        // public event InAppDeepLinkDelegate OnInAppDeepLinkPressed;
+         public event InAppDeepLinkDelegate OnInAppDeepLinkPressed;
 
-        // public delegate void InAppInboxUpdatedDelegate();
+        public delegate void InAppInboxUpdatedDelegate();
 
-        // public event InAppInboxUpdatedDelegate OnInAppInboxUpdated;
+         public event InAppInboxUpdatedDelegate OnInAppInboxUpdated;
 
         #region Statics
 
@@ -233,103 +233,103 @@ namespace OptimoveSdk
         }
 
 
-        //         public void PushReceived(string message)
-        //         {
-        //             if (OnPushReceived == null)
-        //             {
-        //                 return;
-        //             }
+                 public void PushReceived(string message)
+                 {
+                     if (OnPushReceived == null)
+                     {
+                         return;
+                     }
 
-        //             var push = PushMessage.CreateFromJson(message);
+                     var push = PushMessage.CreateFromJson(message);
 
-        //             OnPushReceived(push);
-        //         }
+                     OnPushReceived(push);
+                 }
 
         //TODO: PushOpened?
 
         #endregion
 
-        //         #region InApp
+                 #region InApp
 
-        //         public void InAppDeepLinkPressed(string dataJson)
-        //         {
-        //             if (OnInAppDeepLinkPressed == null)
-        //             {
-        //                 return;
-        //             }
+                 public void InAppDeepLinkPressed(string dataJson)
+                 {
+                     if (OnInAppDeepLinkPressed == null)
+                     {
+                         return;
+                     }
 
-        //             var data = MiniJSON.Json.Deserialize(dataJson) as Dictionary<string, object>;
+                     var data = MiniJSON.Json.Deserialize(dataJson) as Dictionary<string, object>;
 
-        //             OnInAppDeepLinkPressed(data);
-        //         }
+                     OnInAppDeepLinkPressed(data);
+                 }
 
-        //         public void InAppInboxUpdated()
-        //         {
-        //             if (OnInAppInboxUpdated == null)
-        //             {
-        //                 return;
-        //             }
+                 public void InAppInboxUpdated()
+                 {
+                     if (OnInAppInboxUpdated == null)
+                     {
+                         return;
+                     }
 
-        //             OnInAppInboxUpdated();
-        //         }
+                     OnInAppInboxUpdated();
+                 }
 
-        //         public void InAppUpdateConsent(bool consented)
-        //         {
-        // #if UNITY_IOS
-        //             if (consented) {
-        //                 KSInAppUpdateConsentForUser(1);
-        //             } else {
-        //                 KSInAppUpdateConsentForUser(0);
-        //             }
-        // #elif UNITY_ANDROID
-        //             AndroidProxy.CallStatic("inAppUpdateConsentForUser", new object[] { consented });
-        // #endif
-        //         }
+                 public void InAppUpdateConsent(bool consented)
+                 {
+#if UNITY_IOS
+                     if (consented) {
+                         KSInAppUpdateConsentForUser(1);
+                     } else {
+                         KSInAppUpdateConsentForUser(0);
+                     }
+#elif UNITY_ANDROID
+            AndroidProxy.CallStatic("inAppUpdateConsentForUser");
+#endif
+        }
 
-        //         public List<InAppInboxItem> InAppGetInboxItems()
-        //         {
-        //             string json = "[]";
-        // #if UNITY_IOS
-        //             json = KSInAppGetInboxItems();
-        // #elif UNITY_ANDROID
-        //             json = AndroidProxy.CallStatic<string>("inAppGetInboxItems", new object[] { });
-        // #endif
+        public List<InAppInboxItem> InAppGetInboxItems()
+        {
+            string json = "[]";
+#if UNITY_IOS
+                     json = KSInAppGetInboxItems();
+#elif UNITY_ANDROID
+            json = AndroidProxy.CallStatic<string>("inAppGetInboxItems", new object[] { });
+#endif
 
-        //             return InAppInboxItem.ListFromJson(json);
-        //         }
+            return InAppInboxItem.ListFromJson(json);
+        }
 
-        //         public bool InAppPresentInboxMessage(InAppInboxItem item)
-        //         {
-        // #if UNITY_IOS
-        //             return KSInAppPresentInboxMessage(item.Id);
-        // #elif UNITY_ANDROID
-        //             return AndroidProxy.CallStatic<bool>("inAppPresentInboxMessage", new object[] { item.Id });
-        // #else
-        // 			return false;
-        // #endif
-        //         }
+        public bool InAppPresentInboxMessage(InAppInboxItem item)
+        {
+#if UNITY_IOS
+                     return KSInAppPresentInboxMessage(item.Id);
+#elif UNITY_ANDROID
+            return AndroidProxy.CallStatic<bool>("inAppPresentInboxMessage", new object[] { item.Id });
+#else
+         			return false;
+#endif
+        }
 
-        //         public bool InAppDeleteMessageFromInbox(InAppInboxItem item)
-        //         {
-        // #if UNITY_IOS
-        //             return KSInAppDeleteMessageFromInbox(item.Id);
-        // #elif UNITY_ANDROID
-        //             return AndroidProxy.CallStatic<bool>("inAppDeleteMessageFromInbox", new object[] { item.Id });
-        // #else
-        // 			return false;
-        // #endif
-        //         }
+        public bool InAppDeleteMessageFromInbox(InAppInboxItem item)
+        {
+#if UNITY_IOS
+                     return KSInAppDeleteMessageFromInbox(item.Id);
+#elif UNITY_ANDROID
+            return AndroidProxy.CallStatic<bool>("inAppDeleteMessageFromInbox", new object[] { item.Id });
+#else
+         			return false;
+#endif
+        }
 
-        //         public bool InAppMarkAsRead(InAppInboxItem item)
-        //         {
-        // #if UNITY_IOS
-        //             return KSInAppMarkInboxItemRead(item.Id);
-        // #elif UNITY_ANDROID
-        //             return AndroidProxy.CallStatic<bool>("inAppMarkInboxItemRead", new object[] { item.Id });
-        // #else
-        // 			return false;
-        // #endif
-        //         }
+        public bool InAppMarkAsRead(InAppInboxItem item)
+        {
+#if UNITY_IOS
+                     return KSInAppMarkInboxItemRead(item.Id);
+#elif UNITY_ANDROID
+            return AndroidProxy.CallStatic<bool>("inAppMarkInboxItemRead", new object[] { item.Id });
+#else
+         			return false;
+#endif
+        }
 
         /*    public bool InAppMarkAsRead(InAppInboxItem item)
             {
@@ -474,7 +474,7 @@ namespace OptimoveSdk
 
 #endif
 
-             
+
 
         #endregion
     }
