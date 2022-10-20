@@ -173,12 +173,12 @@ public class UnityProxy {
 
 
     public static String inAppGetInboxItems() {
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
         formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
 
+        List<InAppInboxItem> items = OptimoveInApp.getInstance().getInboxItems();
         JSONArray results = new JSONArray();
         try {
-            List<InAppInboxItem> items = OptimoveInApp.getInstance().getInboxItems();
             for (InAppInboxItem item : items) {
                 JSONObject mapped = new JSONObject();
 
@@ -191,25 +191,27 @@ public class UnityProxy {
                 Date availableFrom = item.getAvailableFrom();
                 Date availableTo = item.getAvailableTo();
                 Date dismissedAt = item.getDismissedAt();
-                mapped.put("data", item.getData());
+
+                JSONObject data = item.getData();
+                mapped.put("data", data == null ? JSONObject.NULL : data);
 
                 URL imageUrl = item.getImageUrl();
-                mapped.put("imageUrl", imageUrl == null ? null : imageUrl.toString());
+                mapped.put("imageUrl", imageUrl == null ? JSONObject.NULL : imageUrl.toString());
 
                 if (null == availableFrom) {
-                    mapped.put("availableFrom", "");
+                    mapped.put("availableFrom", JSONObject.NULL);
                 } else {
                     mapped.put("availableFrom", formatter.format(availableFrom));
                 }
 
                 if (null == availableTo) {
-                    mapped.put("availableTo", "");
+                    mapped.put("availableTo", JSONObject.NULL);
                 } else {
                     mapped.put("availableTo", formatter.format(availableTo));
                 }
 
                 if (null == dismissedAt) {
-                    mapped.put("dismissedAt", "");
+                    mapped.put("dismissedAt", JSONObject.NULL);
                 } else {
                     mapped.put("dismissedAt", formatter.format(dismissedAt));
                 }
@@ -218,20 +220,19 @@ public class UnityProxy {
             }
         } catch (JSONException e) {
             e.printStackTrace();
-            return "[]";
+            return null;
         }
 
         return results.toString();
     }
 
-    public static boolean inAppPresentInboxMessage(int messageId) {
+    public static String inAppPresentInboxMessage(long messageId) {
         try {
             List<InAppInboxItem> items = OptimoveInApp.getInstance().getInboxItems();
             for (InAppInboxItem item : items) {
                 if (item.getId() == messageId) {
                     OptimoveInApp.InboxMessagePresentationResult result = OptimoveInApp.getInstance().presentInboxMessage(item);
-
-                    return result == OptimoveInApp.InboxMessagePresentationResult.PRESENTED;
+                    return result.toString();
                 }
             }
         } catch (Exception e) {
@@ -239,10 +240,10 @@ public class UnityProxy {
         }
 
 
-        return false;
+        return OptimoveInApp.InboxMessagePresentationResult.FAILED.toString();
     }
 
-    public static boolean inAppDeleteMessageFromInbox(int messageId) {
+    public static boolean inAppDeleteMessageFromInbox(long messageId) {
         try {
 
             List<InAppInboxItem> items = OptimoveInApp.getInstance().getInboxItems();
@@ -260,7 +261,7 @@ public class UnityProxy {
         return false;
     }
 
-    public static boolean inAppMarkInboxItemRead(int messageId) {
+    public static boolean inAppMarkInboxItemRead(long messageId) {
         try {
 
             List<InAppInboxItem> items = OptimoveInApp.getInstance().getInboxItems();

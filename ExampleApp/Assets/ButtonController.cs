@@ -47,13 +47,13 @@ public class ButtonController : MonoBehaviour
         m_inAppConsentFalse.onClick.AddListener(InAppConsentFalse);
 
         // messaging
-       /* m_presentInboxMessage.onClick.AddListener(PresentInboxMessage);
+        m_presentInboxMessage.onClick.AddListener(PresentInboxMessage);
         m_deleteInboxMessage.onClick.AddListener(DeleteInboxMessage);
         m_markItemAsRead.onClick.AddListener(MarkItemAsRead);
         m_getInboxItems.onClick.AddListener(GetInboxItems);
         m_MarkAllAsRead.onClick.AddListener(MarkAllAsRead);
         m_getInboxSummary.onClick.AddListener(GetInboxSummary);
-       */
+       
         // clear output
         m_clearOutput.onClick.AddListener(ClearOutput);
 
@@ -181,7 +181,7 @@ public class ButtonController : MonoBehaviour
     }
 
     // messaging
-   /* void PresentInboxMessage()
+    void PresentInboxMessage()
     {
         int targetId = ReadInboxItemId();
         if (targetId == 0){
@@ -198,6 +198,7 @@ public class ButtonController : MonoBehaviour
         }
     }
 
+    
     void DeleteInboxMessage()
     {
         int targetId = ReadInboxItemId();
@@ -214,7 +215,7 @@ public class ButtonController : MonoBehaviour
             }
         }
     }
-
+    
     void MarkItemAsRead()
     {
         int targetId = ReadInboxItemId();
@@ -232,6 +233,7 @@ public class ButtonController : MonoBehaviour
         }
     }
 
+   
     void GetInboxItems()
     {
         List<InAppInboxItem> items = Optimove.Shared.InAppGetInboxItems();
@@ -256,7 +258,7 @@ public class ButtonController : MonoBehaviour
 
         AddLogMessage("Mark all items read result: " + result);
     }
-
+    
     void GetInboxSummary()
     {
         Optimove.Shared.GetInboxSummaryAsync((InAppInboxSummary summary) => {
@@ -265,7 +267,7 @@ public class ButtonController : MonoBehaviour
             }
         });
     }
-    */
+    
     // helpers
     int ReadInboxItemId()
     {
@@ -282,7 +284,7 @@ public class ButtonController : MonoBehaviour
         if (targetId <= 0){
             Console.WriteLine("Inbox item id must be a positive integer: {0}", m_inboxItemId.text);
         }
-
+        m_inboxItemId.text = "";
         return targetId;
     }
 
