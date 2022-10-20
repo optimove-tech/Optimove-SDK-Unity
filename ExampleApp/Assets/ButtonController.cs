@@ -40,10 +40,10 @@ public class ButtonController : MonoBehaviour
         m_getVisitorId.onClick.AddListener(GetVisitorId);
         m_signOutUser.onClick.AddListener(SignOutUser);
 
-         //registration
+        // registration
         m_pushRegister.onClick.AddListener(PushRegister);
         m_pushUnregister.onClick.AddListener(PushUnregister);
-       /* m_inAppConsentTrue.onClick.AddListener(InAppConsentTrue);
+        m_inAppConsentTrue.onClick.AddListener(InAppConsentTrue);
         m_inAppConsentFalse.onClick.AddListener(InAppConsentFalse);
 
         // messaging
@@ -80,7 +80,7 @@ public class ButtonController : MonoBehaviour
             string id = push.Id.ToString();
             string title = push.Title ?? "";
             string message = push.Message ?? "";
-            string data = push.Data != null ? string.Join(",", push.Data) : "";
+            string data = push.Data != null ? OptimoveSdk.MiniJSON.Json.Serialize(push.Data) : "";
 
             AddLogMessage("PushOpenedHandler: " + "id: " + id + " title: " + title + " message: " + message + " data: " + data);
         };
@@ -155,7 +155,7 @@ public class ButtonController : MonoBehaviour
         Optimove.Shared.SignOutUser();
     }
 
-   // registration
+    // registration
     void PushRegister()
     {
         AddLogMessage("Registering for push");
@@ -167,7 +167,7 @@ public class ButtonController : MonoBehaviour
         AddLogMessage("Unregistering for push");
         Optimove.Shared.PushUnregister();
     }
-    /*
+
     void InAppConsentTrue()
     {
         AddLogMessage("Updating in-app consent: true");
@@ -184,16 +184,13 @@ public class ButtonController : MonoBehaviour
     void PresentInboxMessage()
     {
         int targetId = ReadInboxItemId();
-        if (targetId == 0)
-        {
+        if (targetId == 0){
             return;
         }
 
         List<InAppInboxItem> items = Optimove.Shared.InAppGetInboxItems();
-        foreach (var item in items)
-        {
-            if (item.Id == targetId)
-            {
+        foreach (var item in items) {
+            if (item.Id == targetId){
                 OptimoveInAppPresentationResult result = Optimove.Shared.InAppPresentInboxMessage(item);
                 AddLogMessage("Present message result: " + result.ToString());
                 break;
@@ -204,16 +201,13 @@ public class ButtonController : MonoBehaviour
     void DeleteInboxMessage()
     {
         int targetId = ReadInboxItemId();
-        if (targetId == 0)
-        {
+        if (targetId == 0){
             return;
         }
 
         List<InAppInboxItem> items = Optimove.Shared.InAppGetInboxItems();
-        foreach (var item in items)
-        {
-            if (item.Id == targetId)
-            {
+        foreach (var item in items) {
+            if (item.Id == targetId){
                 bool result = Optimove.Shared.InAppDeleteMessageFromInbox(item);
                 AddLogMessage("Delete message result: " + result);
                 break;
@@ -224,16 +218,13 @@ public class ButtonController : MonoBehaviour
     void MarkItemAsRead()
     {
         int targetId = ReadInboxItemId();
-        if (targetId == 0)
-        {
+        if (targetId == 0){
             return;
         }
 
         List<InAppInboxItem> items = Optimove.Shared.InAppGetInboxItems();
-        foreach (var item in items)
-        {
-            if (item.Id == targetId)
-            {
+        foreach (var item in items) {
+            if (item.Id == targetId){
                 bool result = Optimove.Shared.InAppMarkAsRead(item);
                 AddLogMessage("Mark item read result: " + result);
                 break;
@@ -246,8 +237,7 @@ public class ButtonController : MonoBehaviour
         List<InAppInboxItem> items = Optimove.Shared.InAppGetInboxItems();
 
         List<string> result = new List<string>();
-        foreach (var item in items)
-        {
+        foreach (var item in items) {
             result.Add(string.Join(",", new Dictionary<string, string> {
                 {"id", item.Id + ""},
                 {"isRead", item.IsRead + ""},
@@ -270,9 +260,8 @@ public class ButtonController : MonoBehaviour
     void GetInboxSummary()
     {
         Optimove.Shared.GetInboxSummaryAsync((InAppInboxSummary summary) => {
-            if (summary != null)
-            {
-                AddLogMessage("InboxSummary. totalCount: " + summary.TotalCount + " unreadCount: " + summary.UnreadCount);
+            if (summary != null){
+                AddLogMessage("InboxSummary. totalCount: " + summary.TotalCount + " unreadCount: "+ summary.UnreadCount);
             }
         });
     }
@@ -281,26 +270,22 @@ public class ButtonController : MonoBehaviour
     int ReadInboxItemId()
     {
         int targetId = 0;
-        try
-        {
+        try {
             targetId = Int32.Parse(m_inboxItemId.text);
         }
-        catch (FormatException)
-        {
+        catch (FormatException) {
         }
-        catch (OverflowException)
-        {
-            Console.WriteLine("Invalid inbox item id: {0}", m_inboxItemId.text);
+        catch (OverflowException) {
+           Console.WriteLine("Invalid inbox item id: {0}", m_inboxItemId.text);
         }
 
-        if (targetId <= 0)
-        {
+        if (targetId <= 0){
             Console.WriteLine("Inbox item id must be a positive integer: {0}", m_inboxItemId.text);
         }
 
         return targetId;
     }
- */
+
     void AddLogMessage(string message)
     {
         string prefix = DateTime.Now.ToString("[MM/dd/yyyy h:mm:ss]: ");
@@ -312,7 +297,7 @@ public class ButtonController : MonoBehaviour
 
     void ClearOutput()
     {
-        ButtonController.logMessages.Clear();
-        m_output.text = "";
+       ButtonController.logMessages.Clear();
+       m_output.text = "";
     }
 }
