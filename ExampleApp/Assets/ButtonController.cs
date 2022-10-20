@@ -62,20 +62,20 @@ public class ButtonController : MonoBehaviour
 
     void SetUpHandlers()
     {
-        Optimove.Shared.OnInAppDeepLinkPressed += (InAppButtonPress press) =>
+        Optimove.Shared.setInAppDeepLinkHandler ( (InAppButtonPress press) =>
         {
             string deepLinkData = OptimoveSdk.MiniJSON.Json.Serialize(press.DeepLinkData);
             string messageData = OptimoveSdk.MiniJSON.Json.Serialize(press.MessageData);
 
             AddLogMessage( "InAppDeepLinkPressedHandler: Message id: " + press.MessageId + " deepLinkData: " + deepLinkData + " messageData: " + messageData);
-        };
+        });
 
-        Optimove.Shared.OnInAppInboxUpdated += () =>
+        Optimove.Shared.setInAppInboxUpdatedHandler(() =>
         {
             AddLogMessage("InAppInboxUpdatedHandler");
-        };
+        });
 
-        Optimove.Shared.OnPushOpened += (PushMessage push) =>
+        Optimove.Shared.setPushOpenedHandler( (PushMessage push) =>
         {
             string id = push.Id.ToString();
             string title = push.Title ?? "";
@@ -83,9 +83,9 @@ public class ButtonController : MonoBehaviour
             string data = push.Data != null ? OptimoveSdk.MiniJSON.Json.Serialize(push.Data) : "";
 
             AddLogMessage("PushOpenedHandler: " + "id: " + id + " title: " + title + " message: " + message + " data: " + data);
-        };
+        });
 
-        Optimove.Shared.OnPushReceived += (PushMessage push) =>
+        Optimove.Shared.setPushReceivedHandler ( (PushMessage push) =>
         {
              string id = push.Id.ToString();
             string title = push.Title ?? "";
@@ -93,7 +93,7 @@ public class ButtonController : MonoBehaviour
             string data = push.Data != null ? OptimoveSdk.MiniJSON.Json.Serialize(push.Data) : "";
 
             AddLogMessage("PushReceivedHandler: " + "id: " + id + " title: " + title + " message: " + message + " data: " + data);
-        };
+        });
     }
 
     // events

@@ -16,16 +16,16 @@ namespace OptimoveSdk
         public const string Version = "1.0.0";
 
         public delegate void PushReceivedDelegate(PushMessage message);
-        public event PushReceivedDelegate OnPushReceived;
+        private event PushReceivedDelegate OnPushReceived;
 
         public delegate void PushOpenedDelegate(PushMessage message);
-        public event PushOpenedDelegate OnPushOpened;
+        private event PushOpenedDelegate OnPushOpened;
 
         public delegate void InAppDeepLinkDelegate(InAppButtonPress press);
-        public event InAppDeepLinkDelegate OnInAppDeepLinkPressed;
+        private event InAppDeepLinkDelegate OnInAppDeepLinkPressed;
 
         public delegate void InAppInboxUpdatedDelegate();
-        public event InAppInboxUpdatedDelegate OnInAppInboxUpdated;
+        private event InAppInboxUpdatedDelegate OnInAppInboxUpdated;
 
         #region Statics
 
@@ -458,5 +458,30 @@ namespace OptimoveSdk
 
 
         #endregion
+        #region handlersSetting
+        public void setPushReceivedHandler(PushReceivedDelegate pushReceivedDelegate) {
+            OnPushReceived = pushReceivedDelegate;
+        }
+        public void setPushOpenedHandler(PushOpenedDelegate pushOpenedHanlder) {
+            PollPendingPush();
+            OnPushOpened = pushOpenedHanlder;
+        }
+        public void setInAppDeepLinkHandler(InAppDeepLinkDelegate inAppDeepLinkDelegate)
+        {
+            OnInAppDeepLinkPressed = inAppDeepLinkDelegate;
+        }
+        public void setInAppInboxUpdatedHandler(InAppInboxUpdatedDelegate inAppInboxUpdatedDelegate) {
+            OnInAppInboxUpdated = inAppInboxUpdatedDelegate;
+        }
+        #endregion
+        /*
+         * 
+    public delegate void InAppDeepLinkDelegate(InAppButtonPress press);
+    public event InAppDeepLinkDelegate OnInAppDeepLinkPressed;
+
+    public delegate void InAppInboxUpdatedDelegate();
+    public event InAppInboxUpdatedDelegate OnInAppInboxUpdated;
+
+         */
     }
 }
