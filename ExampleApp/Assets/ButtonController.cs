@@ -47,13 +47,13 @@ public class ButtonController : MonoBehaviour
         m_inAppConsentFalse.onClick.AddListener(InAppConsentFalse);
 
         // messaging
-        m_presentInboxMessage.onClick.AddListener(PresentInboxMessage);
+       /* m_presentInboxMessage.onClick.AddListener(PresentInboxMessage);
         m_deleteInboxMessage.onClick.AddListener(DeleteInboxMessage);
         m_markItemAsRead.onClick.AddListener(MarkItemAsRead);
         m_getInboxItems.onClick.AddListener(GetInboxItems);
         m_MarkAllAsRead.onClick.AddListener(MarkAllAsRead);
         m_getInboxSummary.onClick.AddListener(GetInboxSummary);
-
+       */
         // clear output
         m_clearOutput.onClick.AddListener(ClearOutput);
 
@@ -181,7 +181,7 @@ public class ButtonController : MonoBehaviour
     }
 
     // messaging
-    void PresentInboxMessage()
+   /* void PresentInboxMessage()
     {
         int targetId = ReadInboxItemId();
         if (targetId == 0){
@@ -265,7 +265,7 @@ public class ButtonController : MonoBehaviour
             }
         });
     }
-
+    */
     // helpers
     int ReadInboxItemId()
     {

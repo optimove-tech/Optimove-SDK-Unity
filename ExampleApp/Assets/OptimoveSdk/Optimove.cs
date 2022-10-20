@@ -267,7 +267,7 @@ namespace OptimoveSdk
                                 OptimoveInAppUpdateConsentForUser(0);
                         }
                 #elif UNITY_ANDROID
-                        //TODO
+                        //AndroidProxy.CallStatic()
                 #endif
         }
 
@@ -283,7 +283,7 @@ namespace OptimoveSdk
                 return InAppInboxItem.ListFromJson(json);
         }
 
-        public OptimoveInAppPresentationResult InAppPresentInboxMessage(InAppInboxItem item)
+      /*  public OptimoveInAppPresentationResult InAppPresentInboxMessage(InAppInboxItem item)
         {
                 #if UNITY_IOS
                         string result = OptimoveInAppPresentInboxMessage(item.Id);
@@ -351,7 +351,7 @@ namespace OptimoveSdk
 
             OnInAppInboxUpdated();
         }
-
+      */
         //**************************************** SUMMARY ************************************************
         private static Dictionary<string, Action<InAppInboxSummary>> inboxSummaryHandlers = new Dictionary<string, Action<InAppInboxSummary>>();
 

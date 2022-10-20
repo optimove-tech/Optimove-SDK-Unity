@@ -39,7 +39,6 @@ public class PushReceiver extends PushBroadcastReceiver {
             result.put("url", uri == null ? JSONObject.NULL : uri.toString());
             result.put("actionId", actionId == null ? JSONObject.NULL : actionId);
             result.put("data", data == null ? JSONObject.NULL : data);
-            result.put("isBackground", pushMessage.runBackgroundHandler());
         } catch (JSONException e) {
             e.printStackTrace();
         }

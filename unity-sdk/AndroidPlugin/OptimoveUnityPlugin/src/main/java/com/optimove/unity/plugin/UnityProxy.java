@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.TimeZone;
 
 public class UnityProxy {
-    private static JSONObject pendingPushMessage;
+    private static JSONObject pendingPush;
 
     public static void setUserId(String userId) {
         try {
@@ -154,12 +154,21 @@ public class UnityProxy {
     }
 
     public static void pollPendingPush() {
-        if (pendingPushMessage == null) {
+        if (pendingPush == null) {
             return;
         }
+        try {
+            if (pendingPush.getBoolean("pushOpened")){
+                notifyUnityOfPush(pendingPush.getJSONObject("pushMessage"),"Opened");
+            }else {
+                notifyUnityOfPush(pendingPush.getJSONObject("pushMessage"),"Received");
+            }
 
-        notifyUnityOfPush(pendingPushMessage);
-        pendingPushMessage = null;
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            pendingPush = null;
+        }
     }
 
 
@@ -311,24 +320,33 @@ public class UnityProxy {
     //-- Internal / helper APIs
 
     static void queueOrSendPushToUnity(JSONObject msg, boolean didOpenFromPush) {
-        try {
-            msg.put("didOpenFromPush", didOpenFromPush);
-        } catch (JSONException e) {
+
+        try{
+            if (UnityPlayer.currentActivity == null) {
+                JSONObject pendingPush = new JSONObject();
+                pendingPush.put("pushOpened",didOpenFromPush);
+                pendingPush.put("pushMessage",msg);
+                UnityProxy.pendingPush = pendingPush;
+            } else {
+                if (didOpenFromPush){
+                    notifyUnityOfPush(msg, "Opened");
+                }else{
+
+                    notifyUnityOfPush(msg,"Received");
+                }
+
+            }
+        }catch (Exception e){
             e.printStackTrace();
-            return;
         }
 
-        if (UnityPlayer.currentActivity == null) {
-            pendingPushMessage = msg;
-        } else {
-            notifyUnityOfPush(msg);
-        }
     }
 
-    private static void notifyUnityOfPush(JSONObject pushMessage) {
+    private static void notifyUnityOfPush(JSONObject pushMessage, String eventType) {
         String unityMessage = pushMessage.toString();
-        UnityPlayer.UnitySendMessage("OptimoveSdkGameObject", "PushReceived", unityMessage);
+        UnityPlayer.UnitySendMessage("OptimoveSdkGameObject", "Push"+eventType, unityMessage);
     }
+
 
     static class DeepLinkHandler implements InAppDeepLinkHandlerInterface {
 
