@@ -1,5 +1,5 @@
-#ifndef UnityPluginBridge_h
-#define UnityPluginBridge_h
+#ifndef OptimovePluginInterface_h
+#define OptimovePluginInterface_h
 
 void OptimoveReportEvent(const char* type, const char* jsonData);
 void OptimoveReportScreenVisit(const char* screenTitle, const char* screenCategory);
@@ -19,6 +19,4 @@ BOOL OptimoveInAppMarkAsRead(int messageId);
 void OptimoveInAppGetInboxSummary(const char* guid);
 
 
-#endif /* UnityPluginBridge_h */
-
-
+#endif /* OptimovePluginInterface_h */

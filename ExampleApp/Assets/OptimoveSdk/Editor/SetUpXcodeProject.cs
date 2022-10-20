@@ -6,75 +6,100 @@ using System.IO;
 using UnityEditor;
 using System.Collections.Generic;
 
-/*
- * This class sets up the Xcode native project for iOS with the necessary capabilities & dependencies for analytics, crash reporting, and push notifications.
- *
- */
 public class SetUpXcodeProject
 {
-
-    private const string kCoreDataFramework = "CoreData.framework";
-    private const string kUserNotificationsFramework = "UserNotifications.framework";
+    private static readonly string _appGroupName = $"group.{PlayerSettings.applicationIdentifier}.optimove";
 
     [PostProcessBuild]
     public static void ChangeXcodePlist(BuildTarget buildTarget, string pathToBuiltProject)
     {
-        // if (buildTarget == BuildTarget.iOS)
-        // {
-        //     var projectPath = PBXProject.GetPBXProjectPath(pathToBuiltProject);
-        //     var project = new PBXProject();
+        if (buildTarget != BuildTarget.iOS)
+        {
+            return;
+        }
 
-        //     project.ReadFromFile(projectPath);
-
-        //     #if UNITY_2019_3_OR_NEWER
-        //         var unityTarget = project.GetUnityFrameworkTargetGuid();
-        //     #else
-        //         var unityTarget = project.TargetGuidByName(PBXProject.GetUnityTargetName());
-        //     #endif
-
-        //     SetBuildProperties(project, unityTarget);
-        //     LinkCoreData(project, unityTarget, pathToBuiltProject);
-        //     SetupPushCapabilities(project, unityTarget, pathToBuiltProject);
-
-        //     project.WriteToFile(projectPath);
-        // }
+        #if UNITY_2019_3_OR_NEWER
+            DoProjectSetup(buildTarget, pathToBuiltProject);
+        #endif
     }
 
-    // private static void SetupPushCapabilities(PBXProject project, string unityTarget, string pathToBuiltProject)
-    // {
-    //     if (!project.ContainsFramework(unityTarget, kUserNotificationsFramework))
-    //     {
-    //         project.AddFrameworkToProject(unityTarget, kUserNotificationsFramework, true);
-    //     }
+    private static void DoProjectSetup(BuildTarget buildTarget, string pathToBuiltProject)
+    {
+        var projectPath = PBXProject.GetPBXProjectPath(pathToBuiltProject);
+        var project = new PBXProject();
 
-    //     project.AddCapability(unityTarget, PBXCapabilityType.PushNotifications);
+        project.ReadFromFile(projectPath);
 
-    //     string plistPath = pathToBuiltProject + "/Info.plist";
-    //     PlistDocument plist = new PlistDocument();
-    //     plist.ReadFromFile(plistPath);
+        var unityTarget = project.GetUnityFrameworkTargetGuid();
 
-    //     PlistElementDict rootDict = plist.root;
+        // Push Notifications, Background Modes, App Groups for the main target
+        SetupMainTargetCapabilities(project, projectPath, pathToBuiltProject);
 
-    //     // Add our background mode
-    //     var buildKey = "UIBackgroundModes";
-    //     var backgroundModes = rootDict.CreateArray(buildKey);
-    //     backgroundModes.AddString("fetch");
-    //     backgroundModes.AddString("remote-notification");
+        // enables calling objc functions from swift
+        SetModuleMap(project, unityTarget, pathToBuiltProject);
 
-    //     plist.WriteToFile(plistPath);
-    // }
+        project.WriteToFile(projectPath);
+    }
 
-	// private static void LinkCoreData(PBXProject project, string unityTarget, string pathToBuiltProject)
-    // {
-    //     if (!project.ContainsFramework(unityTarget, kCoreDataFramework))
-    //     {
-    //         project.AddFrameworkToProject(unityTarget, kCoreDataFramework, false);
-    //     }
-    // }
+    private static void SetupMainTargetCapabilities(PBXProject project, string projectPath, string pathToBuiltProject) {
+        //2019.3+ only
+        var mainTargetGuid = project.GetUnityMainTargetGuid();
+        var mainTargetName = "Unity-iPhone";
 
-    // private static void SetBuildProperties(PBXProject project, string unityTarget)
-    // {
-    //     project.AddBuildProperty(unityTarget, "OTHER_LDFLAGS", "-ObjC");
-    //     project.AddBuildPropertyForConfig(project.BuildConfigByName(unityTarget, "Debug"), "GCC_PREPROCESSOR_DEFINITIONS[arch=*]", "DEBUG=1");
-    // }
+        var entitlementsPath = GetEntitlementsPath(project, mainTargetGuid, mainTargetName, pathToBuiltProject);
+        var projCapability = new ProjectCapabilityManager(projectPath, entitlementsPath, mainTargetName);
+
+        projCapability.AddBackgroundModes(BackgroundModesOptions.RemoteNotifications | BackgroundModesOptions.BackgroundFetch);
+
+        projCapability.AddPushNotifications(false);
+        projCapability.AddAppGroups(new[] { _appGroupName });
+
+        projCapability.WriteToFile();
+    }
+
+    // Get existing entitlements file if exists or creates a new file, adds it to the project, and returns the path
+    private static string GetEntitlementsPath(PBXProject project, string targetGuid, string targetName, string pathToBuiltProject) {
+        var relativePath = project.GetBuildPropertyForAnyConfig(targetGuid, "CODE_SIGN_ENTITLEMENTS");
+
+        if (relativePath != null) {
+            var fullPath = Path.Combine(pathToBuiltProject, relativePath);
+
+            if (File.Exists(fullPath))
+                return fullPath;
+        }
+
+        var entitlementsPath = Path.Combine(pathToBuiltProject, targetName, $"{targetName}.entitlements");
+
+        // make new file
+        var entitlementsPlist = new PlistDocument();
+        entitlementsPlist.WriteToFile(entitlementsPath);
+
+        // Copy the entitlement file to the xcode project
+        var entitlementFileName = Path.GetFileName(entitlementsPath);
+        var relativeDestination = targetName + "/" + entitlementFileName;
+
+        // Add the pbx configs to include the entitlements files on the project
+        project.AddFile(relativeDestination, entitlementFileName);
+        project.SetBuildProperty(targetGuid, "CODE_SIGN_ENTITLEMENTS", relativeDestination);
+
+        return relativeDestination;
+    }
+
+    private static void SetModuleMap(PBXProject project, string unityTarget, string buildPath)
+    {
+        // Modulemap
+        project.AddBuildProperty(unityTarget, "DEFINES_MODULE", "YES");
+
+        var moduleFile = buildPath + "/UnityFramework/UnityFramework.modulemap";
+        if (!File.Exists(moduleFile))
+        {
+            FileUtil.CopyFileOrDirectory("Assets/Plugins/iOS/UnityFramework.modulemap", moduleFile);
+            project.AddFile(moduleFile, "UnityFramework/UnityFramework.modulemap");
+            project.AddBuildProperty(unityTarget, "MODULEMAP_FILE", "$(SRCROOT)/UnityFramework/UnityFramework.modulemap");
+        }
+
+        // Headers
+        string pluginObjcInterfaceGuid = project.FindFileGuidByProjectPath("Libraries/Plugins/iOS/Swift-objc-bridging-header.h");
+        project.AddPublicHeaderToBuild(unityTarget, pluginObjcInterfaceGuid);
+    }
 }

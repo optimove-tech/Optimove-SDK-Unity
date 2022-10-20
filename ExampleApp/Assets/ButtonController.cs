@@ -55,7 +55,45 @@ public class ButtonController : MonoBehaviour
         m_getInboxSummary.onClick.AddListener(GetInboxSummary);
 
         // clear output
-        m_clearOutput.onClick.AddListener(ClearOutput);*/
+        m_clearOutput.onClick.AddListener(ClearOutput);
+
+        SetUpHandlers();
+    }
+
+    void SetUpHandlers()
+    {
+        Optimove.Shared.OnInAppDeepLinkPressed += (InAppButtonPress press) =>
+        {
+            string deepLinkData = OptimoveSdk.MiniJSON.Json.Serialize(press.DeepLinkData);
+            string messageData = OptimoveSdk.MiniJSON.Json.Serialize(press.MessageData);
+
+            AddLogMessage( "InAppDeepLinkPressedHandler: Message id: " + press.MessageId + " deepLinkData: " + deepLinkData + " messageData: " + messageData);
+        };
+
+        Optimove.Shared.OnInAppInboxUpdated += () =>
+        {
+            AddLogMessage("InAppInboxUpdatedHandler");
+        };
+
+        Optimove.Shared.OnPushOpened += (PushMessage push) =>
+        {
+            string id = push.Id.ToString();
+            string title = push.Title ?? "";
+            string message = push.Message ?? "";
+            string data = push.Data != null ? string.Join(",", push.Data) : "";
+
+            AddLogMessage("PushOpenedHandler: " + "id: " + id + " title: " + title + " message: " + message + " data: " + data);
+        };
+
+        Optimove.Shared.OnPushReceived += (PushMessage push) =>
+        {
+             string id = push.Id.ToString();
+            string title = push.Title ?? "";
+            string message = push.Message ?? "";
+            string data = push.Data != null ? OptimoveSdk.MiniJSON.Json.Serialize(push.Data) : "";
+
+            AddLogMessage("PushReceivedHandler: " + "id: " + id + " title: " + title + " message: " + message + " data: " + data);
+        };
     }
 
     // events
@@ -277,17 +315,4 @@ public class ButtonController : MonoBehaviour
         ButtonController.logMessages.Clear();
         m_output.text = "";
     }
-
-
-
-
-    // setOnInboxUpdatedHandler: (inboxUpdatedHandler: InAppInboxUpdatedHandler) void;
-
-    // setPushOpenedHandler(pushOpenedHandler: PushNotificationHandler) void;
-
-    // setPushReceivedHandler(pushReceivedHandler: PushNotificationHandler) void;
-
-    // setInAppDeepLinkHandler(inAppDeepLinkHandler: InAppDeepLinkHandler) void;
-
-    // setDeepLinkHandler(deepLinkHandler: DeepLinkHandler) void;*/
 }

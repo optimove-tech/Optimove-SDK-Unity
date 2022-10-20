@@ -14,45 +14,36 @@ namespace OptimoveSdk
         }
     }
 
-     public class PushMessage
-     {
-         public string Id { get; private set; }
-         public string Title { get; private set; }
-         public string Message { get; private set; }
-         public Dictionary<string, object> Data { get; private set; }
-         public string Url { get; private set; }
-         public bool IsBackground { get; private set; }
-         public bool DidOpenFromPush { get; private set; }
-         public string ActionId { get; private set; }
+    public class PushMessage
+    {
+        public long Id { get; private set; }
+        public string Title { get; private set; }
+        public string Message { get; private set; }
+        public Dictionary<string, object> Data { get; private set; }
+        public string Url { get; private set; }
+        public string ActionId { get; private set; }
 
-         public static PushMessage CreateFromJson(string message)
-         {
-             var data = MiniJSON.Json.Deserialize(message) as Dictionary<string, object>;
+        public static PushMessage CreateFromJson(string message)
+        {
+            var data = MiniJSON.Json.Deserialize(message) as Dictionary<string, object>;
 
-             if (data == null)
-             {
-                 return null;
-             }
+            if (data == null)
+            {
+                return null;
+            }
 
-             var push = new PushMessage();
+            var push = new PushMessage();
 
-             push.Id = data.GetValueOrDefault("id") as string;
-             push.Title = data.GetValueOrDefault("title") as string;
-             push.Message = data.GetValueOrDefault("message") as string;
-             push.Url = data.GetValueOrDefault("url") as string;
-             push.IsBackground = (bool)data.GetValueOrDefault("isBackground");
-             push.DidOpenFromPush = (bool)data.GetValueOrDefault("didOpenFromPush");
-             push.Data = data.GetValueOrDefault("data") as Dictionary<string, object>;
+            push.Id = (long)data["id"];
+            push.Title = data.GetValueOrDefault("title") as string;
+            push.Message = data.GetValueOrDefault("message") as string;
+            push.Url = data.GetValueOrDefault("url") as string;
+            push.Data = data.GetValueOrDefault("data") as Dictionary<string, object>;
+            push.ActionId =  data.GetValueOrDefault("actionId") as string;
 
-             string actionId = data.GetValueOrDefault("actionId") as string;
-             if (actionId != null){
-                 push.ActionId = actionId;
-             }
-
-             return push;
-         }
-     }
-
+            return push;
+        }
+    }
 
     public class InAppInboxSummary
     {
@@ -68,13 +59,30 @@ namespace OptimoveSdk
         }
     }
 
+    public class InAppButtonPress
+    {
+        public long MessageId { get; private set; }
+        public Dictionary<string, object> DeepLinkData { get; private set; }
+        public Dictionary<string, object> MessageData { get; private set; }
+
+        internal static InAppButtonPress CreateFromJson(string json)
+        {
+            var data = MiniJSON.Json.Deserialize(json) as Dictionary<string, object>;
+
+            var press = new InAppButtonPress();
+            press.MessageId = (long) data["messageId"];
+            press.DeepLinkData = data["deepLinkData"] as Dictionary<string, object>;
+            press.MessageData = data.GetValueOrDefault("messageData") as Dictionary<string, object>;
+            return press;
+        }
+    }
+
     public enum OptimoveInAppPresentationResult
     {
         presented,
         expired,
         failed
     }
-
 
     public class InAppInboxItem
     {

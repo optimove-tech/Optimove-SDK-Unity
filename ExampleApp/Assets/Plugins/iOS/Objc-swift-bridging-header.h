@@ -24,6 +24,4 @@ typedef void (^InboxSummaryResultHandler)(NSDictionary* _Nonnull);
 + (BOOL)inAppMarkAllInboxItemsAsRead;
 + (void)inAppGetInboxSummary:(NSString * _Nonnull)guid handler:(InboxSummaryResultHandler _Nonnull)handler;
 
-
 @end
-

@@ -15,17 +15,17 @@ namespace OptimoveSdk
 
         public const string Version = "1.0.0";
 
-         public delegate void PushReceivedDelegate(PushMessage message);
+        public delegate void PushReceivedDelegate(PushMessage message);
+        public event PushReceivedDelegate OnPushReceived;
 
-         public event PushReceivedDelegate OnPushReceived;
+        public delegate void PushOpenedDelegate(PushMessage message);
+        public event PushOpenedDelegate OnPushOpened;
 
-         public delegate void InAppDeepLinkDelegate(Dictionary<string, object> message);
-
-         public event InAppDeepLinkDelegate OnInAppDeepLinkPressed;
+        public delegate void InAppDeepLinkDelegate(InAppButtonPress press);
+        public event InAppDeepLinkDelegate OnInAppDeepLinkPressed;
 
         public delegate void InAppInboxUpdatedDelegate();
-
-         public event InAppInboxUpdatedDelegate OnInAppInboxUpdated;
+        public event InAppInboxUpdatedDelegate OnInAppInboxUpdated;
 
         #region Statics
 
@@ -233,19 +233,29 @@ namespace OptimoveSdk
         }
 
 
-                 public void PushReceived(string message)
-                 {
-                     if (OnPushReceived == null)
-                     {
-                         return;
-                     }
+        public void PushReceived(string message)
+        {
+            if (OnPushReceived == null)
+            {
+                return;
+            }
 
-                     var push = PushMessage.CreateFromJson(message);
+            var push = PushMessage.CreateFromJson(message);
 
-                     OnPushReceived(push);
-                 }
+            OnPushReceived(push);
+        }
 
-        //TODO: PushOpened?
+        public void PushOpened(string message)
+        {
+                if (OnPushOpened == null){
+                        return;
+                }
+
+                var push = PushMessage.CreateFromJson(message);
+
+                OnPushOpened(push);
+        }
+
 
         #endregion
 
@@ -364,8 +374,28 @@ namespace OptimoveSdk
                     #endif
             }*/
 
-        //         //**************************************** SUMMARY ************************************************
-        //         private static Dictionary<string, Action<InAppInboxSummary>> inboxSummaryHandlers = new Dictionary<string, Action<InAppInboxSummary>>();
+        public void InAppDeepLinkPressed(string dataJson)
+        {
+                if (OnInAppDeepLinkPressed == null)
+                {
+                        return;
+                }
+
+                var press = InAppButtonPress.CreateFromJson(dataJson);
+
+                OnInAppDeepLinkPressed(press);
+        }
+
+        public void InAppInboxUpdated()
+        {
+            if (OnInAppInboxUpdated == null)
+            {
+                return;
+            }
+
+            OnInAppInboxUpdated();
+        }
+
 
         //         private string CacheInboxSummaryHandler(Action<InAppInboxSummary> inboxSummaryHandler)
         //         {
@@ -376,20 +406,24 @@ namespace OptimoveSdk
 
         //             inboxSummaryHandlers.Add(guid, inboxSummaryHandler);
 
-        //             return guid;
-        //         }
+        private string CacheInboxSummaryHandler(Action<InAppInboxSummary> inboxSummaryHandler)
+        {
+            string guid = Guid.NewGuid().ToString();
+            while(inboxSummaryHandlers.ContainsKey(guid)){
+                guid = Guid.NewGuid().ToString();
+            }
 
-        //         private void InvokeInboxSummaryHandler(string resultJson)
-        //         {
-        //             var parsed = MiniJSON.Json.Deserialize(resultJson) as Dictionary<string, object>;
-        //             if (parsed == null){
-        //                 return;
-        //             }
+            inboxSummaryHandlers.Add(guid, inboxSummaryHandler);
 
-        //             string guid = parsed["guid"] as string;
-        //             if (!inboxSummaryHandlers.ContainsKey(guid)){
-        //                 return;
-        //             }
+            return guid;
+        }
+
+        private void InvokeInboxSummaryHandler(string resultJson)
+        {
+            var parsed = MiniJSON.Json.Deserialize(resultJson) as Dictionary<string, object>;
+            if (parsed == null){
+                return;
+            }
 
         //             bool success = (bool)parsed.GetValueOrDefault("success");
         //             InAppInboxSummary summary = null;

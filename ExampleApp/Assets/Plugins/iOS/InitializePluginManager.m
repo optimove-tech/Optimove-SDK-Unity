@@ -1,5 +1,5 @@
 #import "InitializePluginManager.h"
-#import "Bridging-Header.h"
+#import "Objc-swift-bridging-header.h"
 
 @implementation InitializePluginManager
 
