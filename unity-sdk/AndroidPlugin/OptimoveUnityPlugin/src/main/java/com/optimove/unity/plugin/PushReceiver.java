@@ -8,11 +8,14 @@ import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
 
+import androidx.core.app.TaskStackBuilder;
+
 import com.optimove.android.Optimove;
 import com.optimove.android.optimobile.Optimobile;
 import com.optimove.android.optimobile.PushActionHandlerInterface;
 import com.optimove.android.optimobile.PushBroadcastReceiver;
 import com.optimove.android.optimobile.PushMessage;
+import com.unity3d.player.UnityPlayer;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -63,31 +66,44 @@ public class PushReceiver extends PushBroadcastReceiver {
         if (null == launchIntent) {
             return;
         }
+
         ComponentName component = launchIntent.getComponent();
         if (null == component) {
             return;
         }
+
         Class<? extends Activity> cls = null;
         try {
             cls = (Class<? extends Activity>) Class.forName(component.getClassName());
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
+
         // Ensure we're trying to launch an Activity
         if (null == cls) {
             return;
         }
-        if (null != pushMessage.getUrl()) {
-            launchIntent = new Intent(Intent.ACTION_VIEW, pushMessage.getUrl());
+
+        if (UnityPlayer.currentActivity != null) {
+            Intent existingIntent = UnityPlayer.currentActivity.getIntent();
+            addDeepLinkExtras(pushMessage, existingIntent);
         }
 
-        addDeepLinkExtras(pushMessage, launchIntent);
+        if (null != pushMessage.getUrl()) {
+            launchIntent = new Intent(Intent.ACTION_VIEW, pushMessage.getUrl());
 
-        launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(launchIntent);
+            addDeepLinkExtras(pushMessage, launchIntent);
 
-        if (pushMessage.getData().has("k.deepLink")) {
-            return;
+            TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
+            taskStackBuilder.addParentStack(component);
+            taskStackBuilder.addNextIntent(launchIntent);
+            taskStackBuilder.startActivities();
+        } else {
+            launchIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+            addDeepLinkExtras(pushMessage, launchIntent);
+
+            context.startActivity(launchIntent);
         }
 
         JSONObject msg = PushReceiver.pushMessageToJsonObject(pushMessage, actionId);
