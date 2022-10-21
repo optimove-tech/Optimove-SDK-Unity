@@ -67,7 +67,7 @@ public class ButtonController : MonoBehaviour
             string deepLinkData = OptimoveSdk.MiniJSON.Json.Serialize(press.DeepLinkData);
             string messageData = OptimoveSdk.MiniJSON.Json.Serialize(press.MessageData);
 
-            AddLogMessage( "InAppDeepLinkPressedHandler: Message id: " + press.MessageId + " deepLinkData: " + deepLinkData + " messageData: " + messageData);
+            AddLogMessage(string.Format("InAppDeepLinkPressedHandler: id: {0}, deepLinkData: {1}, messageData: {2}", press.MessageId, deepLinkData, messageData));
         };
 
         Optimove.Shared.OnInAppInboxUpdated += () =>
@@ -82,17 +82,27 @@ public class ButtonController : MonoBehaviour
             string message = push.Message ?? "";
             string data = push.Data != null ? OptimoveSdk.MiniJSON.Json.Serialize(push.Data) : "";
 
-            AddLogMessage("PushOpenedHandler: " + "id: " + id + " title: " + title + " message: " + message + " data: " + data);
+            AddLogMessage(string.Format("PushOpenedHandler: id: {0}, title: {1}, message: {2}, data: {3} ", id, title, message, data));
         };
 
         Optimove.Shared.OnPushReceived += (PushMessage push) =>
         {
-             string id = push.Id.ToString();
+            string id = push.Id.ToString();
             string title = push.Title ?? "";
             string message = push.Message ?? "";
             string data = push.Data != null ? OptimoveSdk.MiniJSON.Json.Serialize(push.Data) : "";
 
-            AddLogMessage("PushReceivedHandler: " + "id: " + id + " title: " + title + " message: " + message + " data: " + data);
+            AddLogMessage(string.Format("PushReceivedHandler: id: {0}, title: {1}, message: {2}, data: {3} ", id, title, message, data));
+        };
+
+        Optimove.Shared.OnDeepLinkResolved += (DeepLink ddl) =>
+        {
+            string resolution = ddl.Resolution.ToString();
+            string url = ddl.Url;
+            string linkData = ddl.LinkData != null ? OptimoveSdk.MiniJSON.Json.Serialize(ddl.LinkData) : "";
+            string content = ddl.Content != null ? OptimoveSdk.MiniJSON.Json.Serialize(ddl.Content) : "";
+
+            AddLogMessage(string.Format("DeepLinkHandler: resolution: {0}, url: {1}, linkData: {2}, content: {3} ", resolution, url, linkData, content));
         };
     }
 

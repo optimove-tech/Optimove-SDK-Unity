@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace OptimoveSdk
 {
@@ -79,9 +80,9 @@ namespace OptimoveSdk
 
     public enum OptimoveInAppPresentationResult
     {
-        presented,
-        expired,
-        failed
+        Presented,
+        Expired,
+        Failed
     }
 
     public class InAppInboxItem
@@ -152,5 +153,44 @@ namespace OptimoveSdk
 		private static DateTime parseDate(string date){
 			return DateTime.Parse(date, null, System.Globalization.DateTimeStyles.RoundtripKind);
 		}
+    }
+
+    public enum OptimoveDeepLinkResolutionResult
+    {
+        LookupFailed,
+        LinkNotFound,
+        LinkExpired,
+        LinkLimitExceeded,
+        LinkMatched
+    }
+
+    public class DeepLink
+    {
+        public OptimoveDeepLinkResolutionResult Resolution { get; private set; }
+        public string Url { get; private set; }
+        public Dictionary<string, object> LinkData { get; private set; }
+        public Dictionary<string, object> Content { get; private set; }
+
+        internal static DeepLink CreateFromJson(string json)
+        {
+            Dictionary<string, object> data = MiniJSON.Json.Deserialize(json) as Dictionary<string, object>;
+
+            DeepLink ddl = new DeepLink();
+
+            string resolution = convertToPascalCase(data["resolution"] as string);
+
+            ddl.Resolution = (OptimoveDeepLinkResolutionResult) Enum.Parse(typeof(OptimoveDeepLinkResolutionResult), resolution, true);
+            ddl.Url = data["url"] as string;
+            ddl.Content = data["content"] as Dictionary<string, object>;
+            ddl.LinkData = data.GetValueOrDefault("linkData") as Dictionary<string, object>;
+            return ddl;
+        }
+
+        private static string convertToPascalCase(string snakeCase)
+        {
+            string temp = snakeCase.ToLower().Replace("_", " ");
+            TextInfo info = CultureInfo.CurrentCulture.TextInfo;
+            return info.ToTitleCase(temp).Replace(" ", string.Empty);
+        }
     }
 }
