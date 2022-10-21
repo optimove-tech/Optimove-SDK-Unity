@@ -74,3 +74,7 @@ crashlytics-build.properties
 # Custom
 .DS_Store
 UpgradeLog.htm
+Assets/Plugins/optimove.json
+Assets/Plugins/optimove.json.meta
+Assets/Plugins/iOS/optimove.plist
+Assets/Plugins/iOS/optimove.plist.meta

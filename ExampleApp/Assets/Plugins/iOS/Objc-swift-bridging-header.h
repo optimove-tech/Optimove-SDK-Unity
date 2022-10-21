@@ -3,7 +3,7 @@
 typedef void (^InboxSummaryResultHandler)(NSDictionary* _Nonnull);
 
 
-+ (void)didFinishLaunching:(NSNotification * _Nonnull)notification unityVersion:String;
++ (void)didFinishLaunching:(NSNotification * _Nonnull)notification;
 
 + (void)reportEvent:(NSString * _Nonnull)type parameters:(NSDictionary * _Nullable) parameters;
 + (void)reportScreenVisit:(NSString * _Nonnull)screenTitle screenCategory:(NSString * _Nullable) screenCategory;

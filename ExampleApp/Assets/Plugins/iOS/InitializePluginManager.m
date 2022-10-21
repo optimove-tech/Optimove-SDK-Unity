@@ -14,7 +14,7 @@
 }
 
 + (void) didFinishLaunching: (NSNotification*) n {
-    [Optimove_Unity didFinishLaunching:n unityVersion: @"Unknown"];
+    [Optimove_Unity didFinishLaunching:n];
 }
 
 @end

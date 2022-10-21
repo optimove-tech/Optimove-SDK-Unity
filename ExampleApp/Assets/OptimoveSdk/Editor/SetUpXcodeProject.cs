@@ -5,13 +5,14 @@ using System;
 using System.IO;
 using UnityEditor;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class SetUpXcodeProject
 {
     private static readonly string _appGroupName = $"group.{PlayerSettings.applicationIdentifier}.optimove";
 
     [PostProcessBuild]
-    public static void ChangeXcodePlist(BuildTarget buildTarget, string pathToBuiltProject)
+    public static void OnPostprocessBuild(BuildTarget buildTarget, string pathToBuiltProject)
     {
         if (buildTarget != BuildTarget.iOS)
         {
@@ -32,13 +33,28 @@ public class SetUpXcodeProject
 
         var unityTarget = project.GetUnityFrameworkTargetGuid();
 
+        // copy optimove.plist as *.plist files are not copied automatically
+        AddOptimoveConfig(project, pathToBuiltProject, unityTarget);
+
         // Push Notifications, Background Modes, App Groups for the main target
         SetupMainTargetCapabilities(project, projectPath, pathToBuiltProject);
 
         // enables calling objc functions from swift
         SetModuleMap(project, unityTarget, pathToBuiltProject);
 
+        // add UNITY_RUNTIME_VERSION to Info.plist of the framework target
+        AddUnityVersionToPlist(pathToBuiltProject);
+
         project.WriteToFile(projectPath);
+    }
+
+    private static void AddOptimoveConfig(PBXProject project, string pathToBuiltProject, string unityTargetGuid)
+    {
+        var srcPath = "Assets/Plugins/iOS/optimove.plist";
+        var dstLocalPath = "Libraries/Plugins/iOS/optimove.plist";
+        var dstPath = Path.Combine(pathToBuiltProject, dstLocalPath);
+        File.Copy(srcPath, dstPath, true);
+        project.AddFileToBuild(unityTargetGuid, project.AddFile(dstLocalPath, dstLocalPath));
     }
 
     private static void SetupMainTargetCapabilities(PBXProject project, string projectPath, string pathToBuiltProject) {
@@ -101,5 +117,17 @@ public class SetUpXcodeProject
         // Headers
         string pluginObjcInterfaceGuid = project.FindFileGuidByProjectPath("Libraries/Plugins/iOS/Swift-objc-bridging-header.h");
         project.AddPublicHeaderToBuild(unityTarget, pluginObjcInterfaceGuid);
+    }
+
+    private static void AddUnityVersionToPlist(string buildPath)
+    {
+        var plistPath = buildPath + "/UnityFramework/Info.plist";
+        PlistDocument plist = new PlistDocument();
+        plist.ReadFromFile(plistPath);
+
+        PlistElementDict rootDict = plist.root;
+        rootDict.SetString("unityEngineVersionForOptimoveReporting", "$(UNITY_RUNTIME_VERSION)");
+
+        plist.WriteToFile(plistPath);
     }
 }
