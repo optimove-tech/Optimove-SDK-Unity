@@ -76,3 +76,5 @@ crashlytics-build.properties
 UpgradeLog.htm
 Assets/Plugins/optimove.json
 Assets/Plugins/optimove.json.meta
+Assets/Plugins/iOS/optimove.plist
+Assets/Plugins/iOS/optimove.plist.meta

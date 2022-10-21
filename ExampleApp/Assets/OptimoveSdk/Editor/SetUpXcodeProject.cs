@@ -5,6 +5,7 @@ using System;
 using System.IO;
 using UnityEditor;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class SetUpXcodeProject
 {
@@ -32,6 +33,9 @@ public class SetUpXcodeProject
 
         var unityTarget = project.GetUnityFrameworkTargetGuid();
 
+        //copy optimove.plist as *.plist files are not copied automatically
+        AddOptimoveConfig(project, pathToBuiltProject, unityTarget);
+
         // Push Notifications, Background Modes, App Groups for the main target
         SetupMainTargetCapabilities(project, projectPath, pathToBuiltProject);
 
@@ -39,6 +43,15 @@ public class SetUpXcodeProject
         SetModuleMap(project, unityTarget, pathToBuiltProject);
 
         project.WriteToFile(projectPath);
+    }
+
+    private static void AddOptimoveConfig(PBXProject project, string pathToBuiltProject, string unityTargetGuid)
+    {
+        var srcPath = "Assets/Plugins/iOS/optimove.plist";
+        var dstLocalPath = "Libraries/Plugins/iOS/optimove.plist";
+        var dstPath = Path.Combine(pathToBuiltProject, dstLocalPath);
+        File.Copy(srcPath, dstPath, true);
+        project.AddFileToBuild(unityTargetGuid, project.AddFile(dstLocalPath, dstLocalPath));
     }
 
     private static void SetupMainTargetCapabilities(PBXProject project, string projectPath, string pathToBuiltProject) {

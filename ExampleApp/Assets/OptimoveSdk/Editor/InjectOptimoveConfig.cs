@@ -5,6 +5,7 @@ using UnityEngine;
 using System.IO;
 using System;
 using System.Linq;
+using UnityEditor.iOS.Xcode;
 
 [Serializable]
 public class OptimoveConfig
@@ -32,9 +33,8 @@ public class InjectOptimoveConfig : IPreprocessBuildWithReport
             config.inAppConsentStrategy = "in-app-disabled";
         }
 
-        File.WriteAllText(
-        Application.dataPath + "/Resources/version.txt",
-        string.Format("saywhaat. optimoveCreds: {0}, optimobileCreds: {1}, inAppStrategy: {2}, ddl: {3}", config.optimoveCredentials, config.optimobileCredentials,  config.inAppConsentStrategy, config.enableDeferredDeepLinking));
+        this.SetUpIos(config);
+        //this.SetUpAndroid(config);
     }
 
     private OptimoveConfig ReadConfig()
@@ -67,4 +67,21 @@ public class InjectOptimoveConfig : IPreprocessBuildWithReport
             }
         }
     }
+
+    private void SetUpIos(OptimoveConfig config)
+    {
+        PlistDocument plist = new PlistDocument();
+        PlistElementDict rootDict = plist.root;
+        rootDict.SetString("optimoveCredentials", config.optimoveCredentials);
+        rootDict.SetString("optimobileCredentials", config.optimobileCredentials);
+        rootDict.SetString("optimoveInAppConsentStrategy", config.inAppConsentStrategy);
+        rootDict.SetBoolean("optimoveEnableDeferredDeepLinking", config.enableDeferredDeepLinking);
+
+        plist.WriteToFile(Application.dataPath + "/Plugins/iOS/optimove.plist");
+    }
+
+    // private void SetUpAndroid(OptimoveConfig config)
+    // {
+    //     //TODO:
+    // }
 }

@@ -24,12 +24,21 @@ typealias InboxSummaryResultHandler = ([AnyHashable : Any]) -> Void
 
     @objc(didFinishLaunching:unityVersion:)
     static func didFinishLaunching(notification: Notification, unityVersion: String) {
+        guard let frameworkBundle = Bundle(identifier:"com.unity3d.framework") else{
+            print("UnityFramework bundle not found")
+            return
+        }
 
-        let configValues = [
-            "optimoveCredentials": "",
-            "optimoveMobileCredentials": "<yours>",
-            "optimoveInAppConsentStrategy": "explicit-by-user"
-        ]
+        let configPath = frameworkBundle.path(forResource: "optimove", ofType: "plist")
+        guard let configPath = configPath else {
+            print("optimove.plist not found")
+            return
+        }
+
+        guard let configValues: [String: String] = NSDictionary(contentsOfFile: configPath) as? [String: String] else {
+            print("optimove.plist is not valid")
+            return
+        }
 
         guard let builder = getConfigBuilder(configValues: configValues) else{
             return
@@ -97,9 +106,9 @@ typealias InboxSummaryResultHandler = ([AnyHashable : Any]) -> Void
         builder.setSdkInfo(sdkInfo: sdkInfo);
 
         var isRelease = true
-        #if DEBUG
-            isRelease = false
-        #endif
+#if DEBUG
+        isRelease = false
+#endif
         builder.setTargetType(isRelease: isRelease);
     }
 
@@ -122,7 +131,6 @@ typealias InboxSummaryResultHandler = ([AnyHashable : Any]) -> Void
 
         return builder
     }
-
 
 
     // ========================== ASSOCIATION AND EVENTS ==========================
@@ -246,19 +254,19 @@ typealias InboxSummaryResultHandler = ([AnyHashable : Any]) -> Void
 
     @objc(inAppMarkAsRead:)
     static func inAppMarkAsRead(messageId: Int64) -> Bool {
-      let inboxItems = OptimoveInApp.getInboxItems()
+        let inboxItems = OptimoveInApp.getInboxItems()
 
-      var result = false
-      for msg in inboxItems {
-          if msg.id != messageId {
-              continue
-          }
+        var result = false
+        for msg in inboxItems {
+            if msg.id != messageId {
+                continue
+            }
 
-          result = OptimoveInApp.markAsRead(item: msg)
-          break
-      }
+            result = OptimoveInApp.markAsRead(item: msg)
+            break
+        }
 
-      return result
+        return result
     }
 
     @objc(inAppMarkAllInboxItemsAsRead)
