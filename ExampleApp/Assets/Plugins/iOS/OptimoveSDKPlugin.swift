@@ -22,8 +22,8 @@ typealias InboxSummaryResultHandler = ([AnyHashable : Any]) -> Void
 
     // ========================== INITIALIZATION ==========================
 
-    @objc(didFinishLaunching:unityVersion:)
-    static func didFinishLaunching(notification: Notification, unityVersion: String) {
+    @objc(didFinishLaunching:)
+    static func didFinishLaunching(notification: Notification) {
         guard let frameworkBundle = Bundle(identifier:"com.unity3d.framework") else{
             print("UnityFramework bundle not found")
             return
@@ -43,6 +43,8 @@ typealias InboxSummaryResultHandler = ([AnyHashable : Any]) -> Void
         guard let builder = getConfigBuilder(configValues: configValues) else{
             return
         };
+
+        let unityVersion: String = frameworkBundle.infoDictionary?["unityEngineVersionForOptimoveReporting"] as? String ?? "Unknown"
 
         builder.setPushOpenedHandler(pushOpenedHandlerBlock: { notification in
             let parsedPush = getPushNotificationMap(pushNotification: notification)

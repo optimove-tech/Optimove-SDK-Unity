@@ -33,7 +33,7 @@ public class SetUpXcodeProject
 
         var unityTarget = project.GetUnityFrameworkTargetGuid();
 
-        //copy optimove.plist as *.plist files are not copied automatically
+        // copy optimove.plist as *.plist files are not copied automatically
         AddOptimoveConfig(project, pathToBuiltProject, unityTarget);
 
         // Push Notifications, Background Modes, App Groups for the main target
@@ -41,6 +41,9 @@ public class SetUpXcodeProject
 
         // enables calling objc functions from swift
         SetModuleMap(project, unityTarget, pathToBuiltProject);
+
+        // add UNITY_RUNTIME_VERSION to Info.plist of the framework target
+        AddUnityVersionToPlist(pathToBuiltProject);
 
         project.WriteToFile(projectPath);
     }
@@ -114,5 +117,17 @@ public class SetUpXcodeProject
         // Headers
         string pluginObjcInterfaceGuid = project.FindFileGuidByProjectPath("Libraries/Plugins/iOS/Swift-objc-bridging-header.h");
         project.AddPublicHeaderToBuild(unityTarget, pluginObjcInterfaceGuid);
+    }
+
+    private static void AddUnityVersionToPlist(string buildPath)
+    {
+        var plistPath = buildPath + "/UnityFramework/Info.plist";
+        PlistDocument plist = new PlistDocument();
+        plist.ReadFromFile(plistPath);
+
+        PlistElementDict rootDict = plist.root;
+        rootDict.SetString("unityEngineVersionForOptimoveReporting", "$(UNITY_RUNTIME_VERSION)");
+
+        plist.WriteToFile(plistPath);
     }
 }
