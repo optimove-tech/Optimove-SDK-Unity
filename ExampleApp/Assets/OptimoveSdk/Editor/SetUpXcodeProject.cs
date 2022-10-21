@@ -12,7 +12,7 @@ public class SetUpXcodeProject
     private static readonly string _appGroupName = $"group.{PlayerSettings.applicationIdentifier}.optimove";
 
     [PostProcessBuild]
-    public static void ChangeXcodePlist(BuildTarget buildTarget, string pathToBuiltProject)
+    public static void OnPostprocessBuild(BuildTarget buildTarget, string pathToBuiltProject)
     {
         if (buildTarget != BuildTarget.iOS)
         {

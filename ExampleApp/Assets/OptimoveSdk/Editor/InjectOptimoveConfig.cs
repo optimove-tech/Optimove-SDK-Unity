@@ -73,9 +73,11 @@ public class InjectOptimoveConfig : IPreprocessBuildWithReport
         PlistDocument plist = new PlistDocument();
         PlistElementDict rootDict = plist.root;
         rootDict.SetString("optimoveCredentials", config.optimoveCredentials);
-        rootDict.SetString("optimobileCredentials", config.optimobileCredentials);
+        rootDict.SetString("optimoveMobileCredentials", config.optimobileCredentials);
         rootDict.SetString("optimoveInAppConsentStrategy", config.inAppConsentStrategy);
-        rootDict.SetBoolean("optimoveEnableDeferredDeepLinking", config.enableDeferredDeepLinking);
+        if (config.enableDeferredDeepLinking){
+            rootDict.SetString("optimoveEnableDeferredDeepLinking", "true");
+        }
 
         plist.WriteToFile(Application.dataPath + "/Plugins/iOS/optimove.plist");
     }
