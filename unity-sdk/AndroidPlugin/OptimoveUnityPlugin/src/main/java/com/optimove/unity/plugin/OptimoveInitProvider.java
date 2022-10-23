@@ -22,11 +22,18 @@ public class OptimoveInitProvider extends ContentProvider {
     private static final String SDK_VERSION = "1.0.1";
     private static final int RUNTIME_TYPE = 3;
     private static final int SDK_TYPE = 106;
+    private static final String IN_APP_AUTO_ENROLL = "auto-enroll";
+    private static final String IN_APP_EXPLICIT_BY_USER = "explicit-by-user";
     @Override
     public boolean onCreate() {
         Application app = (Application) this.getContext().getApplicationContext();
         OptimoveConfig.Builder configBuilder = new OptimoveConfig.Builder("YOUR_OPTIMOVE_CREDENTIALS", "YOUR_OPTIMOVE_MOBILE_CREDENTIALS");
-        configBuilder.enableInAppMessaging(OptimoveConfig.InAppConsentStrategy.AUTO_ENROLL);
+        String inAppConsentStrategy = "YOUR_IN-APP_CONSENT_STRATEGY";
+        if (IN_APP_AUTO_ENROLL.equals(inAppConsentStrategy)) {
+            configBuilder = configBuilder.enableInAppMessaging(OptimoveConfig.InAppConsentStrategy.AUTO_ENROLL);
+        } else if (IN_APP_EXPLICIT_BY_USER.equals(inAppConsentStrategy)) {
+            configBuilder = configBuilder.enableInAppMessaging(OptimoveConfig.InAppConsentStrategy.EXPLICIT_BY_USER);
+        }
         overrideInstallInfo(configBuilder);
         Optimove.initialize(app, configBuilder.build());
         Optimove.getInstance().setPushActionHandler(new PushReceiver.PushActionHandler());
