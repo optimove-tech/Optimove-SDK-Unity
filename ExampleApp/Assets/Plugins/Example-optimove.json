@@ -1,0 +1,6 @@
+{
+    "optimoveCredentials": "YOUR_OPTIMOVE_CREDENTIALS",
+    "optimobileCredentials": "YOUR_OPTIMOMOBILE_CREDENTIALS",
+    "inAppConsentStrategy": "explicit-by-user",
+    "enableDeferredDeepLinking": true
+}

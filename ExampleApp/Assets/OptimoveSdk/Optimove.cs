@@ -1,11 +1,10 @@
-﻿    using System.Collections;
-    using System.Collections.Generic;
-    using UnityEngine;
-    using UnityEngine.Networking;
-    using System;
-    using System.Text;
-    using System.Runtime.InteropServices;
-    using System.Linq;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Networking;
+using System;
+using System.Text;
+using System.Runtime.InteropServices;
 
     namespace OptimoveSdk
     {
@@ -26,6 +25,9 @@
 
             public delegate void InAppInboxUpdatedDelegate();
             private event InAppInboxUpdatedDelegate OnInAppInboxUpdated;
+
+        public delegate void DeepLinkResolvedDelegate(DeepLink ddl);
+        public event DeepLinkResolvedDelegate OnDeepLinkResolved;
 
             #region Statics
 
@@ -195,14 +197,20 @@
 
             #endregion
 
-            // #region DDL
+        #region DDL
 
-            // //TODO: set ddl handler
+        public void DeepLinkResolved(string message)
+        {
+                if (OnDeepLinkResolved == null){
+                        return;
+                }
 
-            // #endregion
+                var ddl = DeepLink.CreateFromJson(message);
 
+                OnDeepLinkResolved(ddl);
+        }
 
-            //         #endregion
+                    #endregion
 
             #region Push
             private static void PollPendingPush()
@@ -295,9 +303,11 @@
                             return OptimoveInAppPresentationResult.Failed;
                     #endif
 
-                    return (OptimoveInAppPresentationResult) Enum.Parse(typeof(OptimoveInAppPresentationResult), result, true);
-            }
-            
+                TextInfo info = CultureInfo.CurrentCulture.TextInfo;
+                result = info.ToTitleCase(result);
+
+                return (OptimoveInAppPresentationResult) Enum.Parse(typeof(OptimoveInAppPresentationResult), result, true);
+        }
 
             public bool InAppDeleteMessageFromInbox(InAppInboxItem item)
             {
@@ -477,14 +487,6 @@
                 OnInAppInboxUpdated = inAppInboxUpdatedDelegate;
             }
             #endregion
-            /*
-             * 
-        public delegate void InAppDeepLinkDelegate(InAppButtonPress press);
-        public event InAppDeepLinkDelegate OnInAppDeepLinkPressed;
+            
 
-        public delegate void InAppInboxUpdatedDelegate();
-        public event InAppInboxUpdatedDelegate OnInAppInboxUpdated;
-
-             */
-        }
     }

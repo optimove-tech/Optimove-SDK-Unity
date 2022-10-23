@@ -15,6 +15,7 @@ typealias InboxSummaryResultHandler = ([AnyHashable : Any]) -> Void
     private static let optimoveMobileCredentialsKey = "optimoveMobileCredentials"
     private static let inAppConsentStrategy = "optimoveInAppConsentStrategy"
     private static let enableDeferredDeepLinking = "optimoveEnableDeferredDeepLinking"
+    private static let cname = "optimoveDdlCname"
 
     private static let sdkVersion = "1.0.0"
     private static let sdkTypeOptimoveUnity = 108
@@ -22,18 +23,29 @@ typealias InboxSummaryResultHandler = ([AnyHashable : Any]) -> Void
 
     // ========================== INITIALIZATION ==========================
 
-    @objc(didFinishLaunching:unityVersion:)
-    static func didFinishLaunching(notification: Notification, unityVersion: String) {
+    @objc(didFinishLaunching:)
+    static func didFinishLaunching(notification: Notification) {
+        guard let frameworkBundle = Bundle(identifier:"com.unity3d.framework") else{
+            print("UnityFramework bundle not found")
+            return
+        }
 
-        let configValues = [
-            "optimoveCredentials": "",
-            "optimoveMobileCredentials": "<yours>",
-            "optimoveInAppConsentStrategy": "explicit-by-user"
-        ]
+        let configPath = frameworkBundle.path(forResource: "optimove", ofType: "plist")
+        guard let configPath = configPath else {
+            print("optimove.plist not found")
+            return
+        }
+
+        guard let configValues: [String: String] = NSDictionary(contentsOfFile: configPath) as? [String: String] else {
+            print("optimove.plist is not valid")
+            return
+        }
 
         guard let builder = getConfigBuilder(configValues: configValues) else{
             return
         };
+
+        let unityVersion: String = frameworkBundle.infoDictionary?["unityEngineVersionForOptimoveReporting"] as? String ?? "Unknown"
 
         builder.setPushOpenedHandler(pushOpenedHandlerBlock: { notification in
             let parsedPush = getPushNotificationMap(pushNotification: notification)
@@ -71,6 +83,23 @@ typealias InboxSummaryResultHandler = ([AnyHashable : Any]) -> Void
             OptimoveCallUnityInAppDeepLinkPressed(parsedButtonPress);
         })
 
+        if (configValues[enableDeferredDeepLinking] != nil) {
+            let ddlHandler: DeepLinkHandler = { deepLinkResolution in
+                //TODO: pending?
+
+                let parsedDdl: [String : Any] = getDdlResolutionMap(deepLinkResolution: deepLinkResolution)
+
+                OptimoveCallUnityDeepLinkResolved(parsedDdl);
+            }
+
+            if (configValues[cname] != nil){
+                builder.enableDeepLinking(cname: configValues[cname], ddlHandler)
+            }
+            else{
+                builder.enableDeepLinking(ddlHandler)
+            }
+        }
+
         overrideInstallInfo(builder: builder, unityVersion:unityVersion)
 
         let config = builder.build()
@@ -97,9 +126,9 @@ typealias InboxSummaryResultHandler = ([AnyHashable : Any]) -> Void
         builder.setSdkInfo(sdkInfo: sdkInfo);
 
         var isRelease = true
-        #if DEBUG
-            isRelease = false
-        #endif
+#if DEBUG
+        isRelease = false
+#endif
         builder.setTargetType(isRelease: isRelease);
     }
 
@@ -122,7 +151,6 @@ typealias InboxSummaryResultHandler = ([AnyHashable : Any]) -> Void
 
         return builder
     }
-
 
 
     // ========================== ASSOCIATION AND EVENTS ==========================
@@ -246,19 +274,19 @@ typealias InboxSummaryResultHandler = ([AnyHashable : Any]) -> Void
 
     @objc(inAppMarkAsRead:)
     static func inAppMarkAsRead(messageId: Int64) -> Bool {
-      let inboxItems = OptimoveInApp.getInboxItems()
+        let inboxItems = OptimoveInApp.getInboxItems()
 
-      var result = false
-      for msg in inboxItems {
-          if msg.id != messageId {
-              continue
-          }
+        var result = false
+        for msg in inboxItems {
+            if msg.id != messageId {
+                continue
+            }
 
-          result = OptimoveInApp.markAsRead(item: msg)
-          break
-      }
+            result = OptimoveInApp.markAsRead(item: msg)
+            break
+        }
 
-      return result
+        return result
     }
 
     @objc(inAppMarkAllInboxItemsAsRead)
@@ -283,7 +311,6 @@ typealias InboxSummaryResultHandler = ([AnyHashable : Any]) -> Void
             handler(dict)
         }
     }
-
 
     private static func getPushNotificationMap(pushNotification: PushNotification) -> [String: Any] {
         let aps: [AnyHashable:Any] = pushNotification.aps
@@ -315,5 +342,52 @@ typealias InboxSummaryResultHandler = ([AnyHashable : Any]) -> Void
         ]
 
         return dict
+    }
+
+    // ========================== DDL ==========================
+
+    private static func getDdlResolutionMap(deepLinkResolution: DeepLinkResolution) -> [String: Any] {
+        var urlString: String
+        var resolution: String
+        var content: [String: Any?]? = nil
+        var linkData: [AnyHashable:Any?]? = nil
+
+        switch deepLinkResolution {
+            case .lookupFailed(let dl):
+                urlString = dl.absoluteString
+                resolution = "LOOKUP_FAILED"
+                break;
+            case .linkNotFound(let dl):
+                urlString = dl.absoluteString
+                resolution = "LINK_NOT_FOUND"
+                break;
+            case .linkExpired(let dl):
+                urlString = dl.absoluteString
+                resolution = "LINK_EXPIRED"
+                break;
+            case .linkLimitExceeded(let dl):
+                urlString = dl.absoluteString
+                resolution = "LINK_LIMIT_EXCEEDED"
+                break;
+            case .linkMatched(let dl):
+                urlString = dl.url.absoluteString
+                resolution = "LINK_MATCHED"
+                content = [
+                    "title": dl.content.title,
+                    "description": dl.content.description,
+                ]
+                linkData = dl.data
+                break;
+            default:
+                urlString = "resolution-type-not-found"
+                resolution = "LOOKUP_FAILED"
+        }
+
+        return [
+            "resolution": resolution,
+            "url": urlString,
+            "content": content ?? NSNull(),
+            "linkData": linkData ?? NSNull(),
+        ]
     }
 }
