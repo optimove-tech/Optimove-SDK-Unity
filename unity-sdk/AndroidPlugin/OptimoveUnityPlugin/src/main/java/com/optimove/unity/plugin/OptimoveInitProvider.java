@@ -12,17 +12,25 @@ import androidx.annotation.Nullable;
 import com.optimove.android.Optimove;
 import com.optimove.android.OptimoveConfig;
 import com.optimove.android.optimobile.OptimoveInApp;
+import com.unity3d.player.UnityPlayer;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 
 public class OptimoveInitProvider extends ContentProvider {
+    private static final String SDK_VERSION = "1.0.1";
+    private static final int RUNTIME_TYPE = 3;
+    private static final int SDK_TYPE = 106;
     @Override
     public boolean onCreate() {
         Application app = (Application) this.getContext().getApplicationContext();
         OptimoveConfig.Builder configBuilder = new OptimoveConfig.Builder("YOUR_OPTIMOVE_CREDENTIALS", "YOUR_OPTIMOVE_MOBILE_CREDENTIALS");
         configBuilder.enableInAppMessaging(OptimoveConfig.InAppConsentStrategy.AUTO_ENROLL);
+        overrideInstallInfo(configBuilder);
         Optimove.initialize(app, configBuilder.build());
-        Optimove.getInstance().pushRegister();
         Optimove.getInstance().setPushActionHandler(new PushReceiver.PushActionHandler());
-        OptimoveInApp.getInstance().setDeepLinkHandler(new UnityProxy.DeepLinkHandler());
+        OptimoveInApp.getInstance().setDeepLinkHandler(new UnityProxy.InAppDeepLinkHandler());
         OptimoveInApp.getInstance().setOnInboxUpdated(new UnityProxy.InboxUpdatedHandler());
         return false;
     }
@@ -53,5 +61,22 @@ public class OptimoveInitProvider extends ContentProvider {
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues contentValues, @Nullable String s, @Nullable String[] strings) {
         return 0;
+    }
+
+    private void overrideInstallInfo(OptimoveConfig.Builder configBuilder) {
+        JSONObject sdkInfo = new JSONObject();
+        JSONObject runtimeInfo = new JSONObject();
+
+        try {
+            sdkInfo.put("id", SDK_TYPE);
+            sdkInfo.put("version", SDK_VERSION);
+            runtimeInfo.put("id", RUNTIME_TYPE);
+           // runtimeInfo.put("version", );
+
+            configBuilder.setSdkInfo(sdkInfo);
+            configBuilder.setRuntimeInfo(runtimeInfo);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }
