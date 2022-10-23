@@ -158,15 +158,15 @@ public class UnityProxy {
             return;
         }
         try {
-            if (pendingPush.getBoolean("pushOpened")){
-                notifyUnityOfPush(pendingPush.getJSONObject("pushMessage"),"Opened");
-            }else {
-                notifyUnityOfPush(pendingPush.getJSONObject("pushMessage"),"Received");
+            if (pendingPush.getBoolean("pushOpened")) {
+                notifyUnityOfPush(pendingPush.getJSONObject("pushMessage"), "Opened");
+            } else {
+                notifyUnityOfPush(pendingPush.getJSONObject("pushMessage"), "Received");
             }
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             pendingPush = null;
         }
     }
@@ -322,22 +322,22 @@ public class UnityProxy {
 
     static void queueOrSendPushToUnity(JSONObject msg, boolean didOpenFromPush) {
 
-        try{
+        try {
             if (UnityPlayer.currentActivity == null) {
                 JSONObject pendingPush = new JSONObject();
-                pendingPush.put("pushOpened",didOpenFromPush);
-                pendingPush.put("pushMessage",msg);
+                pendingPush.put("pushOpened", didOpenFromPush);
+                pendingPush.put("pushMessage", msg);
                 UnityProxy.pendingPush = pendingPush;
             } else {
-                if (didOpenFromPush){
+                if (didOpenFromPush) {
                     notifyUnityOfPush(msg, "Opened");
-                }else{
+                } else {
 
-                    notifyUnityOfPush(msg,"Received");
+                    notifyUnityOfPush(msg, "Received");
                 }
 
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -345,11 +345,11 @@ public class UnityProxy {
 
     private static void notifyUnityOfPush(JSONObject pushMessage, String eventType) {
         String unityMessage = pushMessage.toString();
-        UnityPlayer.UnitySendMessage("OptimoveSdkGameObject", "Push"+eventType, unityMessage);
+        UnityPlayer.UnitySendMessage("OptimoveSdkGameObject", "Push" + eventType, unityMessage);
     }
 
 
-    static class DeepLinkHandler implements InAppDeepLinkHandlerInterface {
+    static class InAppDeepLinkHandler implements InAppDeepLinkHandlerInterface {
 
         @Override
         public void handle(Context context, InAppButtonPress buttonPress) {
