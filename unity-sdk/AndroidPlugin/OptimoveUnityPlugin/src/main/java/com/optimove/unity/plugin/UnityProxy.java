@@ -50,22 +50,22 @@ public class UnityProxy {
         }
     }
 
-    public static void reportEvent(String eventName, String eventParamsString) {
+    public static void reportEvent(String eventName, String eventParams) {
 
-        if (eventParamsString == null) {
+        if (eventParams == null) {
             reportEvent(eventName);
             return;
         }
 
         try {
-            JSONObject eventParamsJson = new JSONObject(eventParamsString);
+            JSONObject eventParamsJson = new JSONObject(eventParams);
             Iterator<String> iterator = eventParamsJson.keys();
-            Map<String, Object> eventParams = new HashMap<>();
+            Map<String, Object> eventParamsMap = new HashMap<>();
             while (iterator.hasNext()) {
                 String key = iterator.next();
-                eventParams.put(key, eventParamsJson.get(key));
+                eventParamsMap.put(key, eventParamsJson.get(key));
             }
-            Optimove.getInstance().reportEvent(eventName, eventParams);
+            Optimove.getInstance().reportEvent(eventName, eventParamsMap);
         } catch (Exception e) {
             e.printStackTrace();
         }
