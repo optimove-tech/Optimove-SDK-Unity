@@ -320,13 +320,7 @@ public class UnityProxy {
                 pendingPush.put("pushMessage", msg);
                 UnityProxy.pendingPush = pendingPush;
             } else {
-                if (didOpenFromPush) {
-                    notifyUnityOfPush(msg, "Opened");
-                } else {
-
-                    notifyUnityOfPush(msg, "Received");
-                }
-
+                    notifyUnityOfPush(msg,didOpenFromPush ?  "Opened" : "Received");
             }
         } catch (Exception e) {
             e.printStackTrace();
