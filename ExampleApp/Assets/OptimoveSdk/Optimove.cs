@@ -5,420 +5,428 @@ using UnityEngine.Networking;
 using System;
 using System.Text;
 using System.Runtime.InteropServices;
+using System.Globalization;
 
-    namespace OptimoveSdk
+namespace OptimoveSdk
+{
+    public class Optimove : MonoBehaviour
     {
-        public class Optimove : MonoBehaviour
-        {
-            private const string GameObjectName = "OptimoveSdkGameObject";
+        private const string GameObjectName = "OptimoveSdkGameObject";
 
-            public const string Version = "1.0.0";
+        public const string Version = "1.0.0";
 
-            public delegate void PushReceivedDelegate(PushMessage message);
-            private event PushReceivedDelegate OnPushReceived;
+        public delegate void PushReceivedDelegate(PushMessage message);
+        private event PushReceivedDelegate OnPushReceived;
 
-            public delegate void PushOpenedDelegate(PushMessage message);
-            private event PushOpenedDelegate OnPushOpened;
+        public delegate void PushOpenedDelegate(PushMessage message);
+        private event PushOpenedDelegate OnPushOpened;
 
-            public delegate void InAppDeepLinkDelegate(InAppButtonPress press);
-            private event InAppDeepLinkDelegate OnInAppDeepLinkPressed;
+        public delegate void InAppDeepLinkDelegate(InAppButtonPress press);
+        private event InAppDeepLinkDelegate OnInAppDeepLinkPressed;
 
-            public delegate void InAppInboxUpdatedDelegate();
-            private event InAppInboxUpdatedDelegate OnInAppInboxUpdated;
+        public delegate void InAppInboxUpdatedDelegate();
+        private event InAppInboxUpdatedDelegate OnInAppInboxUpdated;
 
         public delegate void DeepLinkResolvedDelegate(DeepLink ddl);
         public event DeepLinkResolvedDelegate OnDeepLinkResolved;
 
-            #region Statics
+        #region Statics
 
-            public static Optimove Shared
-            {
-                get;
-                private set;
-            }
+        public static Optimove Shared
+        {
+            get;
+            private set;
+        }
 
-    #if UNITY_ANDROID
-            private static AndroidJavaClass AndroidProxy;
-    #endif
+#if UNITY_ANDROID
+        private static AndroidJavaClass AndroidProxy;
+#endif
 
-            public static void Initialize()
-            {
-    #if UNITY_ANDROID
+        public static void Initialize()
+        {
+#if UNITY_ANDROID
             AndroidProxy = new AndroidJavaClass("com.optimove.unity.plugin.UnityProxy");
-    #endif
+#endif
 
-                var optimoveGameObject = new GameObject(GameObjectName);
-                optimoveGameObject.AddComponent<Optimove>();
-                DontDestroyOnLoad(optimoveGameObject);
+            var optimoveGameObject = new GameObject(GameObjectName);
+            optimoveGameObject.AddComponent<Optimove>();
+            DontDestroyOnLoad(optimoveGameObject);
+        }
+
+        #endregion
+
+        #region MonoBehaviour events
+
+        void Awake()
+        {
+            Optimove.Shared = this;
+
+#if UNITY_ANDROID
+            PollPendingPush();
+#endif
+
+        }
+
+        #endregion
+
+        #region Helper Functions
+        private bool IsValidString(string value)
+        {
+            return value != null && !value.Equals("");
+        }
+
+
+        #endregion
+
+        #region User Association
+
+        public void SetUserId(string userId)
+        {
+            if (!IsValidString(userId))
+            {
+                Debug.LogError("Invalid user id");
+                return;
             }
 
-            #endregion
-
-            #region MonoBehaviour events
-
-            void Awake()
-            {
-                Optimove.Shared = this;
-
-    #if UNITY_ANDROID
-                  PollPendingPush();
-    #endif
-
-            }
-
-            #endregion
-
-            #region Helper Functions
-            private bool IsValidString(string value)
-            {
-                return value != null && !value.Equals("");
-            }
-
-
-            #endregion
-
-            #region User Association
-
-            public void SetUserId(string userId)
-            {
-                if (!IsValidString(userId))
-                {
-                    Debug.LogError("Invalid user id");
-                    return;
-                }
-
-    #if UNITY_IOS
+#if UNITY_IOS
                             OptimoveSetUserId(userId);
-    #elif UNITY_ANDROID
-                AndroidProxy.CallStatic("setUserId", userId);
+#elif UNITY_ANDROID
+            AndroidProxy.CallStatic("setUserId", userId);
 
-    #endif
+#endif
+        }
+
+        public void SetUserEmail(string userEmail)
+        {
+            if (!IsValidString(userEmail))
+            {
+                Debug.LogError("Invalid user email");
+                return;
             }
 
-            public void SetUserEmail(string userEmail)
-            {
-                if (!IsValidString(userEmail))
-                {
-                    Debug.LogError("Invalid user email");
-                    return;
-                }
-
-    #if UNITY_IOS
+#if UNITY_IOS
                             OptimoveSetUserEmail(userEmail);
-    #elif UNITY_ANDROID
-                AndroidProxy.CallStatic("setUserEmail", userEmail);
+#elif UNITY_ANDROID
+            AndroidProxy.CallStatic("setUserEmail", userEmail);
 
-    #endif
+#endif
+        }
+
+        public void RegisterUser(string userId, string userEmail)
+        {
+            if (!IsValidString(userId) || !IsValidString(userEmail))
+            {
+                Debug.LogError("Invalid user id or user email");
+                return;
             }
 
-            public void RegisterUser(string userId, string userEmail)
-            {
-                if (!IsValidString(userId) || !IsValidString(userEmail))
-                {
-                    Debug.LogError("Invalid user id or user email");
-                    return;
-                }
-
-    #if UNITY_IOS
+#if UNITY_IOS
                             OptimoveRegisterUser(userId, userEmail);
-    #elif UNITY_ANDROID
-                AndroidProxy.CallStatic("registerUser", userId, userEmail);
-    #endif
-            }
+#elif UNITY_ANDROID
+            AndroidProxy.CallStatic("registerUser", userId, userEmail);
+#endif
+        }
 
-            public string GetVisitorId()
-            {
-    #if UNITY_IOS
+        public string GetVisitorId()
+        {
+#if UNITY_IOS
                             return OptimoveGetVisitorId();
-    #elif UNITY_ANDROID
-                return AndroidProxy.CallStatic<string>("getVisitorId");
-    #endif
-            }
+#elif UNITY_ANDROID
+            return AndroidProxy.CallStatic<string>("getVisitorId");
+#endif
+        }
 
 
-            public void SignOutUser()
-            {
-    #if UNITY_IOS
+        public void SignOutUser()
+        {
+#if UNITY_IOS
                             OptimoveSignOutUser();
-    #elif UNITY_ANDROID
-                AndroidProxy.CallStatic("signOutUser");
-    #endif
+#elif UNITY_ANDROID
+            AndroidProxy.CallStatic("signOutUser");
+#endif
+        }
+
+        #endregion
+
+
+        #region Event Tracking
+
+        public void ReportScreenVisit(string screenName, string screenCategory)
+        {
+            if (!IsValidString(screenName))
+            {
+                Debug.LogError("Invalid screen name");
+                return;
             }
 
-            #endregion
-
-
-            #region Event Tracking
-
-            public void ReportScreenVisit(string screenName, string screenCategory)
+            if (screenCategory != null && screenCategory.Equals(""))
             {
-                if (!IsValidString(screenName))
-                {
-                    Debug.LogError("Invalid screen name");
-                    return;
-                }
+                Debug.LogError("Invalid screen category");
+                return;
+            }
 
-                if (screenCategory != null && screenCategory.Equals(""))
-                {
-                    Debug.LogError("Invalid screen category");
-                    return;
-                }
-
-    #if UNITY_IOS
+#if UNITY_IOS
                             OptimoveReportScreenVisit(screenName, screenCategory);
-    #elif UNITY_ANDROID
-                AndroidProxy.CallStatic("reportScreenVisit", screenName, screenCategory);
-    #endif
-            }
+#elif UNITY_ANDROID
+            AndroidProxy.CallStatic("reportScreenVisit", screenName, screenCategory);
+#endif
+        }
 
-            public void ReportEvent(string eventType, Dictionary<string, object> properties)
+        public void ReportEvent(string eventType, Dictionary<string, object> properties)
+        {
+            if (!IsValidString(eventType))
             {
-                if (!IsValidString(eventType))
-                {
-                    Debug.LogError("Invalid event type");
-                    return;
-                }
-                string propsJson = null;
+                Debug.LogError("Invalid event type");
+                return;
+            }
+            string propsJson = null;
 
 
-                if (properties != null)
-                {
-                    propsJson = MiniJSON.Json.Serialize(properties);
-                }
-
-    #if UNITY_IOS
-                            OptimoveReportEvent(eventType, propsJson);
-    #elif UNITY_ANDROID
-
-                AndroidProxy.CallStatic("reportEvent", eventType, propsJson);
-
-    #endif
+            if (properties != null)
+            {
+                propsJson = MiniJSON.Json.Serialize(properties);
             }
 
-            #endregion
+#if UNITY_IOS
+                            OptimoveReportEvent(eventType, propsJson);
+#elif UNITY_ANDROID
+
+            AndroidProxy.CallStatic("reportEvent", eventType, propsJson);
+
+#endif
+        }
+
+        #endregion
 
         #region DDL
 
         public void DeepLinkResolved(string message)
         {
-                if (OnDeepLinkResolved == null){
-                        return;
-                }
+            if (OnDeepLinkResolved == null)
+            {
+                return;
+            }
 
-                var ddl = DeepLink.CreateFromJson(message);
+            var ddl = DeepLink.CreateFromJson(message);
 
-                OnDeepLinkResolved(ddl);
+            OnDeepLinkResolved(ddl);
         }
 
-                    #endregion
+        #endregion
 
-            #region Push
-            private static void PollPendingPush()
-            {
-                #if UNITY_ANDROID
-                    AndroidProxy.CallStatic("pollPendingPush");
-                #endif
-            }
+        #region Push
+        private static void PollPendingPush()
+        {
+#if UNITY_ANDROID
+            AndroidProxy.CallStatic("pollPendingPush");
+#endif
+        }
 
-            public void PushRegister()
-            {
-    #if UNITY_IOS
+        public void PushRegister()
+        {
+#if UNITY_IOS
                          Optimove.KSPushRequestDeviceToken();
-    #elif UNITY_ANDROID
-                AndroidProxy.CallStatic("pushRegister");
-    #endif
-            }
+#elif UNITY_ANDROID
+            AndroidProxy.CallStatic("pushRegister");
+#endif
+        }
 
-            public void PushUnregister()
-            {
-    #if UNITY_IOS
+        public void PushUnregister()
+        {
+#if UNITY_IOS
                          Optimove.KSPushRequestDeviceToken();
-    #elif UNITY_ANDROID
-                AndroidProxy.CallStatic("pushUnregister");
-    #endif
+#elif UNITY_ANDROID
+            AndroidProxy.CallStatic("pushUnregister");
+#endif
+        }
+
+
+        public void PushReceived(string message)
+        {
+            if (OnPushReceived == null)
+            {
+                return;
             }
 
+            var push = PushMessage.CreateFromJson(message);
 
-            public void PushReceived(string message)
+            OnPushReceived(push);
+        }
+
+        public void PushOpened(string message)
+        {
+            if (OnPushOpened == null)
             {
-                if (OnPushReceived == null)
-                {
-                    return;
-                }
-
-                var push = PushMessage.CreateFromJson(message);
-
-                OnPushReceived(push);
+                return;
             }
 
-            public void PushOpened(string message)
-            {
-                    if (OnPushOpened == null){
-                            return;
-                    }
+            var push = PushMessage.CreateFromJson(message);
 
-                    var push = PushMessage.CreateFromJson(message);
+            OnPushOpened(push);
+        }
 
-                    OnPushOpened(push);
-            }
+        #endregion
 
-            #endregion
+        #region InApp
 
-                     #region InApp
-
-            public void InAppUpdateConsent(bool consented)
-            {
-    #if UNITY_IOS
+        public void InAppUpdateConsent(bool consented)
+        {
+#if UNITY_IOS
                             if (consented) {
                                     OptimoveInAppUpdateConsentForUser(1);
                             } else {
                                     OptimoveInAppUpdateConsentForUser(0);
                             }
-    #elif UNITY_ANDROID
-                AndroidProxy.CallStatic("inAppUpdateConsent", new object[] {consented});
-                    #endif
-            }
-
-            public List<InAppInboxItem> InAppGetInboxItems()
-            {
-                    string json = "[]";
-                    #if UNITY_IOS
-                            json = OptimoveInAppGetInboxItems();
-                    #elif UNITY_ANDROID
-                            json = AndroidProxy.CallStatic<string>("inAppGetInboxItems", new object[] { });
-                    #endif
-
-                    return InAppInboxItem.ListFromJson(json);
-                }
-
-            public OptimoveInAppPresentationResult InAppPresentInboxMessage(InAppInboxItem item)
-            {
-                string result;
-    #if UNITY_IOS
-                            result = OptimoveInAppPresentInboxMessage(item.Id);
-    #elif UNITY_ANDROID
-
-                            result = AndroidProxy.CallStatic<string>("inAppPresentInboxMessage", new object[] { item.Id });
-                    #else
-                            return OptimoveInAppPresentationResult.Failed;
-                    #endif
-
-                TextInfo info = CultureInfo.CurrentCulture.TextInfo;
-                result = info.ToTitleCase(result);
-
-                return (OptimoveInAppPresentationResult) Enum.Parse(typeof(OptimoveInAppPresentationResult), result, true);
+#elif UNITY_ANDROID
+            AndroidProxy.CallStatic("inAppUpdateConsent", new object[] { consented });
+#endif
         }
 
-            public bool InAppDeleteMessageFromInbox(InAppInboxItem item)
-            {
-                    #if UNITY_IOS
+        public List<InAppInboxItem> InAppGetInboxItems()
+        {
+            string json = "[]";
+#if UNITY_IOS
+                            json = OptimoveInAppGetInboxItems();
+#elif UNITY_ANDROID
+            json = AndroidProxy.CallStatic<string>("inAppGetInboxItems", new object[] { });
+#endif
+
+            return InAppInboxItem.ListFromJson(json);
+        }
+
+        public OptimoveInAppPresentationResult InAppPresentInboxMessage(InAppInboxItem item)
+        {
+            string result;
+#if UNITY_IOS
+                            result = OptimoveInAppPresentInboxMessage(item.Id);
+#elif UNITY_ANDROID
+
+            result = AndroidProxy.CallStatic<string>("inAppPresentInboxMessage", new object[] { item.Id });
+#else
+                            return OptimoveInAppPresentationResult.Failed;
+#endif
+
+            TextInfo info = CultureInfo.CurrentCulture.TextInfo;
+            result = info.ToTitleCase(result);
+
+            return (OptimoveInAppPresentationResult)Enum.Parse(typeof(OptimoveInAppPresentationResult), result, true);
+        }
+
+        public bool InAppDeleteMessageFromInbox(InAppInboxItem item)
+        {
+#if UNITY_IOS
                             return OptimoveInAppDeleteMessageFromInbox(item.Id);
-                    #elif UNITY_ANDROID
-                            return AndroidProxy.CallStatic<bool>("inAppDeleteMessageFromInbox", new object[] { item.Id });
-                    #else
+#elif UNITY_ANDROID
+            return AndroidProxy.CallStatic<bool>("inAppDeleteMessageFromInbox", new object[] { item.Id });
+#else
                             return false;
-                    #endif
-            }
-        
-            public bool InAppMarkAsRead(InAppInboxItem item)
-            {
-                    #if UNITY_IOS
+#endif
+        }
+
+        public bool InAppMarkAsRead(InAppInboxItem item)
+        {
+#if UNITY_IOS
                             return OptimoveInAppMarkAsRead(item.Id);
-                    #elif UNITY_ANDROID
-                            return AndroidProxy.CallStatic<bool>("inAppMarkInboxItemRead", new object[] { item.Id });
-                    #else
+#elif UNITY_ANDROID
+            return AndroidProxy.CallStatic<bool>("inAppMarkInboxItemRead", new object[] { item.Id });
+#else
                             return false;
-                    #endif
-            }
-        
+#endif
+        }
 
-            public bool InAppMarkAllInboxItemsRead()
-            {
-                    #if UNITY_IOS
+
+        public bool InAppMarkAllInboxItemsRead()
+        {
+#if UNITY_IOS
                             return OptimoveMarkAllInboxItemsAsRead();
-                    #elif UNITY_ANDROID
-                            return AndroidProxy.CallStatic<bool>("inAppMarkAllInboxItemsRead", new object[] { });
-                    #else
+#elif UNITY_ANDROID
+            return AndroidProxy.CallStatic<bool>("inAppMarkAllInboxItemsRead", new object[] { });
+#else
                             return false;
-                    #endif
-            }
-        
-            public void InAppDeepLinkPressed(string dataJson)
+#endif
+        }
+
+        public void InAppDeepLinkPressed(string dataJson)
+        {
+            if (OnInAppDeepLinkPressed == null)
             {
-                    if (OnInAppDeepLinkPressed == null)
-                    {
-                            return;
-                    }
-
-                    var press = InAppButtonPress.CreateFromJson(dataJson);
-
-                    OnInAppDeepLinkPressed(press);
+                return;
             }
-        
-            public void InAppInboxUpdated()
+
+            var press = InAppButtonPress.CreateFromJson(dataJson);
+
+            OnInAppDeepLinkPressed(press);
+        }
+
+        public void InAppInboxUpdated()
+        {
+            if (OnInAppInboxUpdated == null)
             {
-                if (OnInAppInboxUpdated == null)
-                {
-                    return;
-                }
-
-                OnInAppInboxUpdated();
+                return;
             }
-          
-            //**************************************** SUMMARY ************************************************
-            private static Dictionary<string, Action<InAppInboxSummary>> inboxSummaryHandlers = new Dictionary<string, Action<InAppInboxSummary>>();
 
-            public void GetInboxSummaryAsync(Action<InAppInboxSummary> inboxSummaryHandler) {
-                    string guid = this.CacheInboxSummaryHandler(inboxSummaryHandler);
-                    #if UNITY_IOS
+            OnInAppInboxUpdated();
+        }
+
+        //**************************************** SUMMARY ************************************************
+        private static Dictionary<string, Action<InAppInboxSummary>> inboxSummaryHandlers = new Dictionary<string, Action<InAppInboxSummary>>();
+
+        public void GetInboxSummaryAsync(Action<InAppInboxSummary> inboxSummaryHandler)
+        {
+            string guid = this.CacheInboxSummaryHandler(inboxSummaryHandler);
+#if UNITY_IOS
                             OptimoveInAppGetInboxSummary(guid);
-                    #elif UNITY_ANDROID
-                            AndroidProxy.CallStatic("inAppGetInboxSummary", new object[] { guid });
-                    #endif
-            }
+#elif UNITY_ANDROID
+            AndroidProxy.CallStatic("inAppGetInboxSummary", new object[] { guid });
+#endif
+        }
 
-            private string CacheInboxSummaryHandler(Action<InAppInboxSummary> inboxSummaryHandler)
+        private string CacheInboxSummaryHandler(Action<InAppInboxSummary> inboxSummaryHandler)
+        {
+            string guid = Guid.NewGuid().ToString();
+            while (inboxSummaryHandlers.ContainsKey(guid))
             {
-                string guid = Guid.NewGuid().ToString();
-                while(inboxSummaryHandlers.ContainsKey(guid)){
-                    guid = Guid.NewGuid().ToString();
-                }
-
-                inboxSummaryHandlers.Add(guid, inboxSummaryHandler);
-
-                return guid;
+                guid = Guid.NewGuid().ToString();
             }
 
-            private void InvokeInboxSummaryHandler(string resultJson)
+            inboxSummaryHandlers.Add(guid, inboxSummaryHandler);
+
+            return guid;
+        }
+
+        private void InvokeInboxSummaryHandler(string resultJson)
+        {
+            var parsed = MiniJSON.Json.Deserialize(resultJson) as Dictionary<string, object>;
+            if (parsed == null)
             {
-                var parsed = MiniJSON.Json.Deserialize(resultJson) as Dictionary<string, object>;
-                if (parsed == null){
-                    return;
-                }
-
-                string guid = parsed["guid"] as string;
-                if (!inboxSummaryHandlers.ContainsKey(guid)){
-                    return;
-                }
-
-                bool success = (bool)parsed.GetValueOrDefault("success");
-                InAppInboxSummary summary = null;
-                if (success){
-                    summary = InAppInboxSummary.CreateFromDictionary(parsed);
-                }
-
-                inboxSummaryHandlers[guid](summary);
-                inboxSummaryHandlers.Remove(guid);
+                return;
             }
 
-            //************************************************************************************************
+            string guid = parsed["guid"] as string;
+            if (!inboxSummaryHandlers.ContainsKey(guid))
+            {
+                return;
+            }
+
+            bool success = (bool)parsed.GetValueOrDefault("success");
+            InAppInboxSummary summary = null;
+            if (success)
+            {
+                summary = InAppInboxSummary.CreateFromDictionary(parsed);
+            }
+
+            inboxSummaryHandlers[guid](summary);
+            inboxSummaryHandlers.Remove(guid);
+        }
+
+        //************************************************************************************************
 
 
-            #endregion
+        #endregion
 
-            #region Native
+        #region Native
 
-    #if UNITY_IOS
+#if UNITY_IOS
             private const string nativeLib = "__Internal";
 
             [DllImport(nativeLib)]
@@ -466,27 +474,31 @@ using System.Runtime.InteropServices;
             [DllImport(nativeLib)]
             private static extern void OptimoveInAppGetInboxSummary(string guid);
 
-    #endif
+#endif
 
 
 
-            #endregion
-            #region handlersSetting
-            public void setPushReceivedHandler(PushReceivedDelegate pushReceivedDelegate) {
-                OnPushReceived = pushReceivedDelegate;
-            }
-            public void setPushOpenedHandler(PushOpenedDelegate pushOpenedHanlder) {
-                PollPendingPush();
-                OnPushOpened = pushOpenedHanlder;
-            }
-            public void setInAppDeepLinkHandler(InAppDeepLinkDelegate inAppDeepLinkDelegate)
-            {
-                OnInAppDeepLinkPressed = inAppDeepLinkDelegate;
-            }
-            public void setInAppInboxUpdatedHandler(InAppInboxUpdatedDelegate inAppInboxUpdatedDelegate) {
-                OnInAppInboxUpdated = inAppInboxUpdatedDelegate;
-            }
-            #endregion
-            
+        #endregion
+        #region handlersSetting
+        public void setPushReceivedHandler(PushReceivedDelegate pushReceivedDelegate)
+        {
+            OnPushReceived = pushReceivedDelegate;
+        }
+        public void setPushOpenedHandler(PushOpenedDelegate pushOpenedHanlder)
+        {
+            PollPendingPush();
+            OnPushOpened = pushOpenedHanlder;
+        }
+        public void setInAppDeepLinkHandler(InAppDeepLinkDelegate inAppDeepLinkDelegate)
+        {
+            OnInAppDeepLinkPressed = inAppDeepLinkDelegate;
+        }
+        public void setInAppInboxUpdatedHandler(InAppInboxUpdatedDelegate inAppInboxUpdatedDelegate)
+        {
+            OnInAppInboxUpdated = inAppInboxUpdatedDelegate;
+        }
+        #endregion
+
 
     }
+}
