@@ -289,7 +289,7 @@ namespace OptimoveSdk
                 #endif
 
                 TextInfo info = CultureInfo.CurrentCulture.TextInfo;
-                result = textInfo.ToTitleCase(result);
+                result = info.ToTitleCase(result);
 
                 return (OptimoveInAppPresentationResult) Enum.Parse(typeof(OptimoveInAppPresentationResult), result, true);
         }

@@ -15,6 +15,7 @@ typealias InboxSummaryResultHandler = ([AnyHashable : Any]) -> Void
     private static let optimoveMobileCredentialsKey = "optimoveMobileCredentials"
     private static let inAppConsentStrategy = "optimoveInAppConsentStrategy"
     private static let enableDeferredDeepLinking = "optimoveEnableDeferredDeepLinking"
+    private static let cname = "optimoveDdlCname"
 
     private static let sdkVersion = "1.0.0"
     private static let sdkTypeOptimoveUnity = 108
@@ -81,6 +82,23 @@ typealias InboxSummaryResultHandler = ([AnyHashable : Any]) -> Void
 
             OptimoveCallUnityInAppDeepLinkPressed(parsedButtonPress);
         })
+
+        if (configValues[enableDeferredDeepLinking] != nil) {
+            let ddlHandler: DeepLinkHandler = { deepLinkResolution in
+                //TODO: pending?
+
+                let parsedDdl: [String : Any] = getDdlResolutionMap(deepLinkResolution: deepLinkResolution)
+
+                OptimoveCallUnityDeepLinkResolved(parsedDdl);
+            }
+
+            if (configValues[cname] != nil){
+                builder.enableDeepLinking(cname: configValues[cname], ddlHandler)
+            }
+            else{
+                builder.enableDeepLinking(ddlHandler)
+            }
+        }
 
         overrideInstallInfo(builder: builder, unityVersion:unityVersion)
 
@@ -294,7 +312,6 @@ typealias InboxSummaryResultHandler = ([AnyHashable : Any]) -> Void
         }
     }
 
-
     private static func getPushNotificationMap(pushNotification: PushNotification) -> [String: Any] {
         let aps: [AnyHashable:Any] = pushNotification.aps
         var alert: [String: String] = [:]
@@ -325,5 +342,52 @@ typealias InboxSummaryResultHandler = ([AnyHashable : Any]) -> Void
         ]
 
         return dict
+    }
+
+    // ========================== DDL ==========================
+
+    private static func getDdlResolutionMap(deepLinkResolution: DeepLinkResolution) -> [String: Any] {
+        var urlString: String
+        var resolution: String
+        var content: [String: Any?]? = nil
+        var linkData: [AnyHashable:Any?]? = nil
+
+        switch deepLinkResolution {
+            case .lookupFailed(let dl):
+                urlString = dl.absoluteString
+                resolution = "LOOKUP_FAILED"
+                break;
+            case .linkNotFound(let dl):
+                urlString = dl.absoluteString
+                resolution = "LINK_NOT_FOUND"
+                break;
+            case .linkExpired(let dl):
+                urlString = dl.absoluteString
+                resolution = "LINK_EXPIRED"
+                break;
+            case .linkLimitExceeded(let dl):
+                urlString = dl.absoluteString
+                resolution = "LINK_LIMIT_EXCEEDED"
+                break;
+            case .linkMatched(let dl):
+                urlString = dl.url.absoluteString
+                resolution = "LINK_MATCHED"
+                content = [
+                    "title": dl.content.title,
+                    "description": dl.content.description,
+                ]
+                linkData = dl.data
+                break;
+            default:
+                urlString = "resolution-type-not-found"
+                resolution = "LOOKUP_FAILED"
+        }
+
+        return [
+            "resolution": resolution,
+            "url": urlString,
+            "content": content ?? NSNull(),
+            "linkData": linkData ?? NSNull(),
+        ]
     }
 }
