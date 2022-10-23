@@ -24,6 +24,7 @@ public class OptimoveInitProvider extends ContentProvider {
     private static final int SDK_TYPE = 106;
     private static final String IN_APP_AUTO_ENROLL = "auto-enroll";
     private static final String IN_APP_EXPLICIT_BY_USER = "explicit-by-user";
+
     @Override
     public boolean onCreate() {
         Application app = (Application) this.getContext().getApplicationContext();
@@ -78,7 +79,7 @@ public class OptimoveInitProvider extends ContentProvider {
             sdkInfo.put("id", SDK_TYPE);
             sdkInfo.put("version", SDK_VERSION);
             runtimeInfo.put("id", RUNTIME_TYPE);
-           // runtimeInfo.put("version", );
+            // runtimeInfo.put("version", );
 
             configBuilder.setSdkInfo(sdkInfo);
             configBuilder.setRuntimeInfo(runtimeInfo);
