@@ -104,7 +104,7 @@ public class UnityProxy {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return "";
+        return null;
     }
 
     public static void pushRegister() {
@@ -133,15 +133,6 @@ public class UnityProxy {
             e.printStackTrace();
         }
 
-    }
-
-    public static String getCurrentUserId() {
-        try {
-            return Optimove.getInstance().getCurrentUserIdentifier();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return "";
     }
 
     public static void signOutUser() {
