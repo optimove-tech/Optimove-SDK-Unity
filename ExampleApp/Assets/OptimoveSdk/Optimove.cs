@@ -5,6 +5,7 @@ using UnityEngine.Networking;
 using System;
 using System.Text;
 using System.Runtime.InteropServices;
+using System.Globalization;
 
 namespace OptimoveSdk
 {
@@ -25,6 +26,9 @@ namespace OptimoveSdk
 
         public delegate void InAppInboxUpdatedDelegate();
         public event InAppInboxUpdatedDelegate OnInAppInboxUpdated;
+
+        public delegate void DeepLinkResolvedDelegate(DeepLink ddl);
+        public event DeepLinkResolvedDelegate OnDeepLinkResolved;
 
         #region Statics
 
@@ -184,14 +188,20 @@ namespace OptimoveSdk
 
         #endregion
 
-        // #region DDL
+        #region DDL
 
-        // //TODO: set ddl handler
+        public void DeepLinkResolved(string message)
+        {
+                if (OnDeepLinkResolved == null){
+                        return;
+                }
 
-        // #endregion
+                var ddl = DeepLink.CreateFromJson(message);
 
+                OnDeepLinkResolved(ddl);
+        }
 
-//         #endregion
+        #endregion
 
         #region Push
 
@@ -271,11 +281,15 @@ namespace OptimoveSdk
         {
                 #if UNITY_IOS
                         string result = OptimoveInAppPresentInboxMessage(item.Id);
+
                 #elif UNITY_ANDROID
                         //return AndroidProxy.CallStatic<bool>("inAppPresentInboxMessage", new object[] { item.Id });
                 #else
                         return OptimoveInAppPresentationResult.Failed;
                 #endif
+
+                TextInfo info = CultureInfo.CurrentCulture.TextInfo;
+                result = info.ToTitleCase(result);
 
                 return (OptimoveInAppPresentationResult) Enum.Parse(typeof(OptimoveInAppPresentationResult), result, true);
         }

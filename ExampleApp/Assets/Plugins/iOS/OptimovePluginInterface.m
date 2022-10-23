@@ -173,3 +173,12 @@ void OptimoveCallUnityPushReceived(NSDictionary* push){
 
     UnitySendMessage("OptimoveSdkGameObject", "PushReceived", cStr);
 }
+
+void OptimoveCallUnityDeepLinkResolved(NSDictionary* ddl){
+    char* cStr = dictionaryToCString(ddl);
+    if (cStr == NULL){
+        return;
+    }
+
+    UnitySendMessage("OptimoveSdkGameObject", "DeepLinkResolved", cStr);
+}

@@ -14,6 +14,7 @@ public class OptimoveConfig
     public string optimobileCredentials;
     public string inAppConsentStrategy;
     public bool enableDeferredDeepLinking;
+    public string cname;
 
     public static OptimoveConfig CreateFromJSON(string jsonString)
     {
@@ -78,6 +79,11 @@ public class InjectOptimoveConfig : IPreprocessBuildWithReport
         if (config.enableDeferredDeepLinking){
             rootDict.SetString("optimoveEnableDeferredDeepLinking", "true");
         }
+
+        //TODO: problem of the world: enableDeferredDeepLinking is bool or a cname (a in Flutter)
+        // if (config.cname != null){
+        //     rootDict.SetString("optimoveDdlCname", config.cname);
+        // }
 
         plist.WriteToFile(Application.dataPath + "/Plugins/iOS/optimove.plist");
     }
