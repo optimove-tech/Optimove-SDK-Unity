@@ -2,7 +2,7 @@
 
 - iOS project created by Unity uses xcframeworks built by the Optimive-SDK-iOS (swift). Created xcframeworks ensure Module Stability and swift 5+ provides ABI stability
 - The proxy uses extern C functions to communicate with the C# layer (as per Unity plugin documentation). See `OptimovePluginInterface.h`
-- The app delegate's didFinishLaunching method is swizzled to hook into init by the `InitializePluginManager.m`
+- Delegate's swizzling and observer addition is in `UnityAppController+Optimove.m`
 - User-level config resides in `optimove.json`, turned into `optimove.plist` in `OnPreprocessBuild` and added to the iOS project in `PostProcessBuild`
 - In `PostProcessBuild` we override modulemap for UnityFramework exposing objc wrapper functions to swift. See `Swift-objc-bridging-header.h`. You cannot add bridging header to a framework, and we are avoiding modifying umbrella header. All plugin files belong to the Unity framework.
 
