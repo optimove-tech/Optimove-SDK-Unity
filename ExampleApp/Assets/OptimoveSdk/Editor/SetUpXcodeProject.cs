@@ -11,6 +11,8 @@ public class SetUpXcodeProject
 {
     private static readonly string _appGroupName = $"group.{PlayerSettings.applicationIdentifier}.optimove";
 
+    private static readonly string _optimovePlistSrc = "Assets/Plugins/iOS/optimove.plist";
+
     [PostProcessBuild]
     public static void OnPostprocessBuild(BuildTarget buildTarget, string pathToBuiltProject)
     {
@@ -50,10 +52,9 @@ public class SetUpXcodeProject
 
     private static void AddOptimoveConfig(PBXProject project, string pathToBuiltProject, string unityTargetGuid)
     {
-        var srcPath = "Assets/Plugins/iOS/optimove.plist";
         var dstLocalPath = "Libraries/Plugins/iOS/optimove.plist";
         var dstPath = Path.Combine(pathToBuiltProject, dstLocalPath);
-        File.Copy(srcPath, dstPath, true);
+        File.Copy(_optimovePlistSrc, dstPath, true);
         project.AddFileToBuild(unityTargetGuid, project.AddFile(dstLocalPath, dstLocalPath));
     }
 
@@ -66,9 +67,15 @@ public class SetUpXcodeProject
         var projCapability = new ProjectCapabilityManager(projectPath, entitlementsPath, mainTargetName);
 
         projCapability.AddBackgroundModes(BackgroundModesOptions.RemoteNotifications | BackgroundModesOptions.BackgroundFetch);
-
         projCapability.AddPushNotifications(false);
         projCapability.AddAppGroups(new[] { _appGroupName });
+
+        // associated domains
+        string host = getValueFromOptimovePlist("optimoveDeferredDeepLinkingHost");
+        if (host != null){
+            string[] domains = {"applinks:" + host};
+            projCapability.AddAssociatedDomains(domains);
+        }
 
         projCapability.WriteToFile();
     }
@@ -129,5 +136,18 @@ public class SetUpXcodeProject
         rootDict.SetString("unityEngineVersionForOptimoveReporting", "$(UNITY_RUNTIME_VERSION)");
 
         plist.WriteToFile(plistPath);
+    }
+
+    private static string getValueFromOptimovePlist(string key)
+    {
+        PlistDocument optimoveConfig = new PlistDocument();
+        optimoveConfig.ReadFromFile(_optimovePlistSrc);
+        PlistElementDict rootDict = optimoveConfig.root;
+        PlistElement host = rootDict[key];
+        if (host == null){
+            return null;
+        }
+
+        return host.AsString();
     }
 }
