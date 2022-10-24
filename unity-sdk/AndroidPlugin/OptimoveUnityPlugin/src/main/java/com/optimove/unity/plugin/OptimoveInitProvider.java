@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import com.optimove.android.Optimove;
 import com.optimove.android.OptimoveConfig;
 import com.optimove.android.optimobile.OptimoveInApp;
+import com.unity3d.player.UnityPermissions;
 import com.unity3d.player.UnityPlayer;
 
 import org.json.JSONException;
@@ -19,9 +20,9 @@ import org.json.JSONObject;
 
 
 public class OptimoveInitProvider extends ContentProvider {
-    private static final String SDK_VERSION = "1.0.1";
-    private static final int RUNTIME_TYPE = 3;
-    private static final int SDK_TYPE = 106;
+    private static final String SDK_VERSION = "1.0.0";
+    private static final int RUNTIME_TYPE = 6;
+    private static final int SDK_TYPE = 108;
     private static final String IN_APP_AUTO_ENROLL = "auto-enroll";
     private static final String IN_APP_EXPLICIT_BY_USER = "explicit-by-user";
 
@@ -79,7 +80,8 @@ public class OptimoveInitProvider extends ContentProvider {
             sdkInfo.put("id", SDK_TYPE);
             sdkInfo.put("version", SDK_VERSION);
             runtimeInfo.put("id", RUNTIME_TYPE);
-            // runtimeInfo.put("version", );
+            runtimeInfo.put("version", "unknown" );
+            Uni
 
             configBuilder.setSdkInfo(sdkInfo);
             configBuilder.setRuntimeInfo(runtimeInfo);

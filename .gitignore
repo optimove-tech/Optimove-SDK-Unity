@@ -26,3 +26,4 @@ ExampleApp/Assets/ExternalDependencyManager/
 ExampleApp/Assets/Editor Default Resources/Firebase.meta
 ExampleApp/Assets/GeneratedLocalRepo/
 ExampleApp/Assets/Plugins/Android/FirebaseApp.androidlib.meta
+ExampleApp/firstTest_BurstDebugInformation_DoNotShip/tempburstlibs/armeabi-v7a/lib_burst_generated.txt
