@@ -15,3 +15,4 @@ ExampleApp/Assets/StreamingAssets/
 ExampleApp/ProjectSettings/AndroidResolverDependencies.xml
 ExampleApp/ProjectSettings/GvhProjectSettings.xml
 ExampleApp/firstTest_BurstDebugInformation_DoNotShip/tempburstlibs/armeabi-v7a/lib_burst_generated.txt
+ExampleApp/Assets/Plugins/Android/FirebaseApp.androidlib.meta
