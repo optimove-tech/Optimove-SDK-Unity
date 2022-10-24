@@ -81,7 +81,6 @@ public class OptimoveInitProvider extends ContentProvider {
             sdkInfo.put("version", SDK_VERSION);
             runtimeInfo.put("id", RUNTIME_TYPE);
             runtimeInfo.put("version", "unknown" );
-            Uni
 
             configBuilder.setSdkInfo(sdkInfo);
             configBuilder.setRuntimeInfo(runtimeInfo);
