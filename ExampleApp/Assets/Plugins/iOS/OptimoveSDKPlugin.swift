@@ -85,8 +85,7 @@ typealias InboxSummaryResultHandler = ([AnyHashable : Any]) -> Void
 
         if (configValues[enableDeferredDeepLinking] != nil) {
             let ddlHandler: DeepLinkHandler = { deepLinkResolution in
-                //TODO: pending?
-
+                //TODO: need pending?
                 let parsedDdl: [String : Any] = getDdlResolutionMap(deepLinkResolution: deepLinkResolution)
 
                 OptimoveCallUnityDeepLinkResolved(parsedDdl);
@@ -389,5 +388,10 @@ typealias InboxSummaryResultHandler = ([AnyHashable : Any]) -> Void
             "content": content ?? NSNull(),
             "linkData": linkData ?? NSNull(),
         ]
+    }
+
+    @objc(application:userActivity:restorationHandler:)
+    static func application(_ application: UIApplication, userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void){
+        _ = Optimove.shared.application(application, continue: userActivity, restorationHandler: restorationHandler)
     }
 }

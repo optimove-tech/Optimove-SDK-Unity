@@ -2,9 +2,13 @@
 
 typedef void (^InboxSummaryResultHandler)(NSDictionary* _Nonnull);
 
-
+// for UnityAppController extension
 + (void)didFinishLaunching:(NSNotification * _Nonnull)notification;
++ (BOOL)application:(UIApplication * _Nonnull)application
+       userActivity:(NSUserActivity * _Nonnull)userActivity
+ restorationHandler:(void (^_Nonnull)(NSArray<id<UIUserActivityRestoring>> * _Nonnull restorableObjects))restorationHandler;
 
+// for wrapper
 + (void)reportEvent:(NSString * _Nonnull)type parameters:(NSDictionary * _Nullable) parameters;
 + (void)reportScreenVisit:(NSString * _Nonnull)screenTitle screenCategory:(NSString * _Nullable) screenCategory;
 
