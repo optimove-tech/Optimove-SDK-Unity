@@ -6,7 +6,6 @@ using System.IO;
 using System;
 using System.Linq;
 using UnityEditor.iOS.Xcode;
-
 [Serializable]
 public class OptimoveConfig
 {
@@ -88,8 +87,10 @@ public class InjectOptimoveConfig : IPreprocessBuildWithReport
         plist.WriteToFile(Application.dataPath + "/Plugins/iOS/optimove.plist");
     }
 
-    // private void SetUpAndroid(OptimoveConfig config)
-    // {
-    //     //TODO:
-    // }
+    //private void SetUpAndroid(OptimoveConfig config)
+    //{
+      //TODO
+    //}
+
+    
 }
