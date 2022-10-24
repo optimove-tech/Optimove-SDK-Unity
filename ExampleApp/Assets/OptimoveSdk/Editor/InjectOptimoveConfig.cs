@@ -87,21 +87,10 @@ public class InjectOptimoveConfig : IPreprocessBuildWithReport
         plist.WriteToFile(Application.dataPath + "/Plugins/iOS/optimove.plist");
     }
 
-    private void SetUpAndroid(OptimoveConfig config)
-    {
-        string OptimoveXmlPath = Application.dataPath + "/Plugins/Android/optimove.xml";
-        if (!File.Exists(OptimoveXmlPath))
-        {
-            throw new BuildFailedException("optimove.xml not found. Please, add missing configuration file");
-        }
-        string optimoveTemplateText = File.ReadAllText(OptimoveXmlPath);
-        optimoveTemplateText = optimoveTemplateText.Replace("{{OPTIMOVE_CREDENTIALS}}", config.optimoveCredentials);
-        optimoveTemplateText = optimoveTemplateText.Replace("{{OPTIMOVE_MOBILE_CREDENTIALS}}", config.optimobileCredentials);
-        optimoveTemplateText = optimoveTemplateText.Replace("{{IN_APP_STRATEGY}}", config.inAppConsentStrategy);
-        optimoveTemplateText = optimoveTemplateText.Replace("{{ENABLE_DEFERRED_DEEP_LINKING}}", config.enableDeferredDeepLinking.ToString());
-        string resDestenationPath = Application.dataPath + "/Plugins/Android/res/values";
-        File.WriteAllText(resDestenationPath + "/optimove.xml", optimoveTemplateText);
-    }
+    //private void SetUpAndroid(OptimoveConfig config)
+    //{
+      //TODO
+    //}
 
     
 }
