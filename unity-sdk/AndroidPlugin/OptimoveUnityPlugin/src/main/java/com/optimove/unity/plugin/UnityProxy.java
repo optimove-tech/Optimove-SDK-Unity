@@ -27,11 +27,7 @@ public class UnityProxy {
     private static JSONObject pendingPush;
 
     public static void setUserId(String userId) {
-        try {
             Optimove.getInstance().setUserId(userId);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     public static void setUserEmail(String userEmail) {
