@@ -27,23 +27,15 @@ public class UnityProxy {
     private static JSONObject pendingPush;
 
     public static void setUserId(String userId) {
-            Optimove.getInstance().setUserId(userId);
+        Optimove.getInstance().setUserId(userId);
     }
 
     public static void setUserEmail(String userEmail) {
-        try {
-            Optimove.getInstance().setUserEmail(userEmail);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Optimove.getInstance().setUserEmail(userEmail);
     }
 
     public static void reportEvent(String eventName) {
-        try {
-            Optimove.getInstance().reportEvent(eventName);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Optimove.getInstance().reportEvent(eventName);
     }
 
     public static void reportEvent(String eventName, String eventParams) {
@@ -62,82 +54,41 @@ public class UnityProxy {
                 eventParamsMap.put(key, eventParamsJson.get(key));
             }
             Optimove.getInstance().reportEvent(eventName, eventParamsMap);
-        } catch (Exception e) {
+        } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
     public static void registerUser(String userId, String userEmail) {
-        try {
-            Optimove.getInstance().registerUser(userId, userEmail);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+        Optimove.getInstance().registerUser(userId, userEmail);
     }
 
     public static void reportScreenVisit(String screenName) {
-        try {
-            Optimove.getInstance().reportScreenVisit(screenName);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+        Optimove.getInstance().reportScreenVisit(screenName);
     }
 
     public static void reportScreenVisit(String screenName, String screenCategory) {
-        try {
-            Optimove.getInstance().reportScreenVisit(screenName, screenCategory);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Optimove.getInstance().reportScreenVisit(screenName, screenCategory);
     }
 
     public static String getVisitorId() {
-        try {
-
-            return Optimove.getInstance().getVisitorId();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
+        return Optimove.getInstance().getVisitorId();
     }
 
     public static void pushRegister() {
-        try {
-            Optimove.getInstance().pushRegister();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Optimove.getInstance().pushRegister();
     }
 
     public static void pushUnregister() {
-        try {
-
-            Optimove.getInstance().pushUnregister();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+        Optimove.getInstance().pushUnregister();
     }
 
     public static void inAppUpdateConsent(boolean consented) {
-        try {
-
-            OptimoveInApp.getInstance().updateConsentForUser(consented);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+        OptimoveInApp.getInstance().updateConsentForUser(consented);
     }
 
     public static void signOutUser() {
-        try {
-
-            Optimove.getInstance().signOutUser();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Optimove.getInstance().signOutUser();
     }
 
     public static void pollPendingPush() {
@@ -151,7 +102,7 @@ public class UnityProxy {
                 notifyUnityOfPush(pendingPush.getJSONObject("pushMessage"), "Received");
             }
 
-        } catch (Exception e) {
+        } catch (JSONException e) {
             e.printStackTrace();
         } finally {
             pendingPush = null;
@@ -214,76 +165,47 @@ public class UnityProxy {
     }
 
     public static String inAppPresentInboxMessage(long messageId) {
-        try {
-            List<InAppInboxItem> items = OptimoveInApp.getInstance().getInboxItems();
-            for (InAppInboxItem item : items) {
-                if (item.getId() == messageId) {
-                    OptimoveInApp.InboxMessagePresentationResult result = OptimoveInApp.getInstance().presentInboxMessage(item);
-                    return result.toString();
-                }
+        List<InAppInboxItem> items = OptimoveInApp.getInstance().getInboxItems();
+        for (InAppInboxItem item : items) {
+            if (item.getId() == messageId) {
+                OptimoveInApp.InboxMessagePresentationResult result = OptimoveInApp.getInstance().presentInboxMessage(item);
+                return result.toString();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
-
 
         return OptimoveInApp.InboxMessagePresentationResult.FAILED.toString();
     }
 
     public static boolean inAppDeleteMessageFromInbox(long messageId) {
-        try {
-
-            List<InAppInboxItem> items = OptimoveInApp.getInstance().getInboxItems();
-            for (InAppInboxItem item : items) {
-                if (item.getId() == messageId) {
-                    return OptimoveInApp.getInstance().deleteMessageFromInbox(item);
-                }
+        List<InAppInboxItem> items = OptimoveInApp.getInstance().getInboxItems();
+        for (InAppInboxItem item : items) {
+            if (item.getId() == messageId) {
+                return OptimoveInApp.getInstance().deleteMessageFromInbox(item);
             }
-
-        } catch (Exception e) {
-            e.printStackTrace();
         }
-
-
         return false;
     }
 
     public static boolean inAppMarkInboxItemRead(long messageId) {
-        try {
-
-            List<InAppInboxItem> items = OptimoveInApp.getInstance().getInboxItems();
-            for (InAppInboxItem item : items) {
-                if (item.getId() == messageId) {
-                    return OptimoveInApp.getInstance().markAsRead(item);
-                }
+        List<InAppInboxItem> items = OptimoveInApp.getInstance().getInboxItems();
+        for (InAppInboxItem item : items) {
+            if (item.getId() == messageId) {
+                return OptimoveInApp.getInstance().markAsRead(item);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
-
 
         return false;
     }
 
     public static boolean inAppMarkAllInboxItemsRead() {
-        try {
             return OptimoveInApp.getInstance().markAllInboxItemsAsRead();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
     }
 
     public static void inAppGetInboxSummary(String guid) {
-        try {
 
             OptimoveInApp.getInstance().getInboxSummaryAsync((InAppInboxSummary summary) -> {
                 notifyUnityOfInboxSummary(guid, summary);
             });
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
     }
 
     private static void notifyUnityOfInboxSummary(String guid, InAppInboxSummary summary) {
@@ -318,7 +240,7 @@ public class UnityProxy {
             } else {
                 notifyUnityOfPush(msg, didOpenFromPush ? "Opened" : "Received");
             }
-        } catch (Exception e) {
+        } catch (JSONException e) {
             e.printStackTrace();
         }
 
