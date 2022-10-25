@@ -240,7 +240,6 @@ namespace OptimoveSdk
 #endif
         }
 
-
         public void PushReceived(string message)
         {
             if (OnPushReceived == null)
@@ -476,27 +475,32 @@ namespace OptimoveSdk
 
 #endif
 
-
-
         #endregion
+
         #region handlersSetting
-        public void setPushReceivedHandler(PushReceivedDelegate pushReceivedDelegate)
+        public void SetPushReceivedHandler(PushReceivedDelegate pushReceivedDelegate)
         {
             OnPushReceived = pushReceivedDelegate;
         }
-        public void setPushOpenedHandler(PushOpenedDelegate pushOpenedHanlder)
+        public void SetPushOpenedHandler(PushOpenedDelegate pushOpenedHanlder)
         {
             PollPendingPush();
             OnPushOpened = pushOpenedHanlder;
         }
-        public void setInAppDeepLinkHandler(InAppDeepLinkDelegate inAppDeepLinkDelegate)
+        public void SetInAppDeepLinkHandler(InAppDeepLinkDelegate inAppDeepLinkDelegate)
         {
             OnInAppDeepLinkPressed = inAppDeepLinkDelegate;
         }
-        public void setInAppInboxUpdatedHandler(InAppInboxUpdatedDelegate inAppInboxUpdatedDelegate)
+        public void SetInAppInboxUpdatedHandler(InAppInboxUpdatedDelegate inAppInboxUpdatedDelegate)
         {
             OnInAppInboxUpdated = inAppInboxUpdatedDelegate;
         }
+
+        public void SetDeepLinkResolvedHandler(DeepLinkResolvedDelegate deepLinkResolvedDelegate)
+        {
+            OnDeepLinkResolved = deepLinkResolvedDelegate;
+        }
+
         #endregion
 
 
