@@ -7,6 +7,13 @@
           <action android:name="android.intent.action.MAIN" />
           <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
+            <intent-filter android:label="deepLabel" android:autoVerify="true">
+    <action android:name="android.intent.action.VIEW" />
+    <category android:name="android.intent.category.DEFAULT" />
+    <category android:name="android.intent.category.BROWSABLE" />
+    <!-- Specify which URIs should be matched. Note, domain should be .lnk.click -->
+    <data android:scheme="https" android:host="subdomain.lnk.click"/>
+</intent-filter>
         <meta-data android:name="unityplayer.UnityActivity" android:value="true" />
         <meta-data android:name="android.notch_support" android:value="true" />
     </activity>
@@ -18,6 +25,7 @@
             <action android:name="com.optimove.push.BUTTON_CLICKED" />
         </intent-filter>
     </receiver>
+
     <service android:name="com.google.firebase.messaging.MessageForwardingService"          android:exported="false" />
         <service android:name="com.optimove.android.optimobile.FirebaseMessagingService" android:exported="false">
         <intent-filter>
