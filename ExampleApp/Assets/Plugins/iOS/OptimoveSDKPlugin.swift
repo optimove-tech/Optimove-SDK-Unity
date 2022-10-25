@@ -14,7 +14,7 @@ typealias InboxSummaryResultHandler = ([AnyHashable : Any]) -> Void
     private static let optimoveCredentialsKey = "optimoveCredentials"
     private static let optimoveMobileCredentialsKey = "optimoveMobileCredentials"
     private static let inAppConsentStrategy = "optimoveInAppConsentStrategy"
-    private static let enableDeferredDeepLinking = "optimoveEnableDeferredDeepLinking"
+    private static let deferredDeepLinkingHost = "optimoveDeferredDeepLinkingHost"
     private static let cname = "optimoveDdlCname"
 
     private static let sdkVersion = "1.0.0"
@@ -83,21 +83,15 @@ typealias InboxSummaryResultHandler = ([AnyHashable : Any]) -> Void
             OptimoveCallUnityInAppDeepLinkPressed(parsedButtonPress);
         })
 
-        if (configValues[enableDeferredDeepLinking] != nil) {
+        if let ddlHost = configValues[deferredDeepLinkingHost] {
             let ddlHandler: DeepLinkHandler = { deepLinkResolution in
-                //TODO: pending?
-
                 let parsedDdl: [String : Any] = getDdlResolutionMap(deepLinkResolution: deepLinkResolution)
 
                 OptimoveCallUnityDeepLinkResolved(parsedDdl);
             }
 
-            if (configValues[cname] != nil){
-                builder.enableDeepLinking(cname: configValues[cname], ddlHandler)
-            }
-            else{
-                builder.enableDeepLinking(ddlHandler)
-            }
+            let cname = ddlHost.hasSuffix("lnk.click") ? nil : ddlHost
+            _ = cname != nil ? builder.enableDeepLinking(cname: cname, ddlHandler) : builder.enableDeepLinking(ddlHandler)
         }
 
         overrideInstallInfo(builder: builder, unityVersion:unityVersion)
@@ -389,5 +383,10 @@ typealias InboxSummaryResultHandler = ([AnyHashable : Any]) -> Void
             "content": content ?? NSNull(),
             "linkData": linkData ?? NSNull(),
         ]
+    }
+
+    @objc(application:userActivity:restorationHandler:)
+    static func application(_ application: UIApplication, userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void){
+        _ = Optimove.shared.application(application, continue: userActivity, restorationHandler: restorationHandler)
     }
 }
