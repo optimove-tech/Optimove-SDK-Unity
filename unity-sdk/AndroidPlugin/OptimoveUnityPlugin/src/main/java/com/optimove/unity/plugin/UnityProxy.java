@@ -76,7 +76,7 @@ public class UnityProxy {
     }
 
     public static void pushRegister() {
-        Optimove.getInstance().pushRegister();
+        Optimove.getInstance().pushRequestDeviceToken();
     }
 
     public static void pushUnregister() {
