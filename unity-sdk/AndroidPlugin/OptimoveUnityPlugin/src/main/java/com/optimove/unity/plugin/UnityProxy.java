@@ -96,12 +96,8 @@ public class UnityProxy {
             return;
         }
         try {
-            if (pendingPush.getBoolean("pushOpened")) {
-                notifyUnityOfPush(pendingPush.getJSONObject("pushMessage"), "Opened");
-            } else {
-                notifyUnityOfPush(pendingPush.getJSONObject("pushMessage"), "Received");
-            }
-
+            String eventType = pendingPush.getBoolean("pushOpened") ? "Opened" : "Received";
+            notifyUnityOfPush(pendingPush.getJSONObject("pushMessage"), eventType);
         } catch (JSONException e) {
             e.printStackTrace();
         } finally {
