@@ -225,18 +225,18 @@ namespace OptimoveSdk
         public void PushRegister()
         {
 #if UNITY_IOS
-                         Optimove.KSPushRequestDeviceToken();
+                OptimoveUpdatePushRegistration(1);
 #elif UNITY_ANDROID
-            AndroidProxy.CallStatic("pushRegister");
+                AndroidProxy.CallStatic("pushRegister");
 #endif
         }
 
         public void PushUnregister()
         {
 #if UNITY_IOS
-                         Optimove.KSPushRequestDeviceToken();
+                OptimoveUpdatePushRegistration(0);
 #elif UNITY_ANDROID
-            AndroidProxy.CallStatic("pushUnregister");
+                AndroidProxy.CallStatic("pushUnregister");
 #endif
         }
 

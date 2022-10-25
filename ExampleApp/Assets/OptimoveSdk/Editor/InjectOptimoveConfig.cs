@@ -6,6 +6,7 @@ using System.IO;
 using System;
 using System.Linq;
 using UnityEditor.iOS.Xcode;
+
 [Serializable]
 public class OptimoveConfig
 {
@@ -86,5 +87,5 @@ public class InjectOptimoveConfig : IPreprocessBuildWithReport
       //TODO
     //}
 
-    
+
 }
