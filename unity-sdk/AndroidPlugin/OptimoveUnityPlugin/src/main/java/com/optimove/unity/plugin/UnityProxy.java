@@ -63,10 +63,6 @@ public class UnityProxy {
         Optimove.getInstance().registerUser(userId, userEmail);
     }
 
-//    public static void reportScreenVisit(String screenName) {
-//        Optimove.getInstance().reportScreenVisit(screenName);
-//    }
-
     public static void reportScreenVisit(String screenName, String screenCategory) {
         Optimove.getInstance().reportScreenVisit(screenName, screenCategory);
     }
