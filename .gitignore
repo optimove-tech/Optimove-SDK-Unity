@@ -1,13 +1,10 @@
 .DS_Store
-ExampleApp/Assets/Plugins/Android/OptimoveUnityPlugin-debug.aar
-unity-sdk/AndroidPlugin/OptimoveUnityPlugin/google-services.json
-ExampleApp/Assets/google-services.json
+
 ExampleApp/Assets/Plugins/Android/FirebaseApp.androidlib/
-ExampleApp/Assets/Plugins/Android/OptimoveUnityPlugin-debug.aar
+
 ExampleApp/Assets/StreamingAssets/google-services-desktop.json
 ExampleApp/Assets/StreamingAssets/google-services-desktop.json.meta
 
-ExampleApp/Assets/Plugins/Android/OptimoveUnityPlugin-debug.aar
 ExampleApp/Assets/Editor Default Resources.meta
 ExampleApp/Assets/ExternalDependencyManager.meta
 ExampleApp/Assets/Firebase.meta
@@ -15,15 +12,10 @@ ExampleApp/Assets/GeneratedLocalRepo.meta
 ExampleApp/Assets/StreamingAssets.meta
 
 ExampleApp/ProjectSettings/AndroidResolverDependencies.xml
-.gitignore
 ExampleApp/ProjectSettings/GvhProjectSettings.xml
-ExampleApp/Assets/google-services.json.meta
-ExampleApp/Assets/Plugins/Android/OptimoveUnityPlugin-debug.aar
 ExampleApp/Assets/Editor Default Resources/Firebase/
-.gitignore
 ExampleApp/Assets/Firebase/
 ExampleApp/Assets/ExternalDependencyManager/
 ExampleApp/Assets/Editor Default Resources/Firebase.meta
 ExampleApp/Assets/GeneratedLocalRepo/
 ExampleApp/Assets/Plugins/Android/FirebaseApp.androidlib.meta
-ExampleApp/firstTest_BurstDebugInformation_DoNotShip/tempburstlibs/armeabi-v7a/lib_burst_generated.txt

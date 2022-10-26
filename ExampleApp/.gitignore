@@ -78,3 +78,10 @@ Assets/Plugins/optimove.json
 Assets/Plugins/optimove.json.meta
 Assets/Plugins/iOS/optimove.plist
 Assets/Plugins/iOS/optimove.plist.meta
+
+Assets/google-services.json
+Assets/google-services.json.meta
+
+# dont commit as presently it contains credentials. TODO: fix
+Assets/Plugins/Android/OptimoveUnityPlugin.aar
+Assets/Plugins/Android/OptimoveUnityPlugin.aar.meta

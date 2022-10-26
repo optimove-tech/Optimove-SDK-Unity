@@ -23,6 +23,13 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    libraryVariants.all { variant ->
+        variant.outputs.all { output ->
+            if (outputFileName.endsWith('.aar')) {
+                outputFileName = "${archivesBaseName}.aar"
+            }
+        }
+    }
 }
 
 dependencies {
