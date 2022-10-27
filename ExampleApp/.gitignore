@@ -95,6 +95,7 @@ Assets/ExternalDependencyManager.meta
 Assets/Firebase/
 Assets/Firebase.meta
 ProjectSettings/GvhProjectSettings.xml
+Assets/Plugins/iOS/Firebase/
 
 # auto-generatd by Firebase when add google-services.json to Assets/
 Assets/StreamingAssets/google-services-desktop.json
