@@ -1,8 +1,9 @@
 package com.optimove.unity.plugin;
+import com.google.firebase.MessagingUnityPlayerActivity;
 import com.optimove.android.Optimove;
 import android.os.Bundle;
 
-public class OptimoveMainActivity extends UnityPlayerActivity {
+public class OptimoveMainActivity extends MessagingUnityPlayerActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

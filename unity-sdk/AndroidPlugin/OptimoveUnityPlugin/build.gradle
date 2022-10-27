@@ -37,5 +37,8 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     implementation 'com.optimove.android:optimove-android:6.+'
     compileOnly files('libs/classes.jar')
+    compileOnly files('libs/firebase-messaging-unity-10.0.1.aar')
+    compileOnly files('libs/UnityActivity.aar')
+
 }
 apply plugin: 'com.google.gms.google-services'

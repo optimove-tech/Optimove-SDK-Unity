@@ -27,3 +27,12 @@ ExampleApp/Assets/Editor Default Resources/Firebase.meta
 ExampleApp/Assets/GeneratedLocalRepo/
 ExampleApp/Assets/Plugins/Android/FirebaseApp.androidlib.meta
 ExampleApp/firstTest_BurstDebugInformation_DoNotShip/tempburstlibs/armeabi-v7a/lib_burst_generated.txt
+ExampleApp/Assets/Plugins/Android/OptimoveUnityPlugin.aar
+unity-sdk/AndroidPlugin/UnityActivity/build.gradle
+unity-sdk/AndroidPlugin/UnityActivity/consumer-rules.pro
+unity-sdk/AndroidPlugin/UnityActivity/proguard-rules.pro
+unity-sdk/AndroidPlugin/UnityActivity/libs/classes.jar
+unity-sdk/AndroidPlugin/UnityActivity/src/androidTest/java/com/unity3d/player/ExampleInstrumentedTest.java
+unity-sdk/AndroidPlugin/UnityActivity/src/main/AndroidManifest.xml
+unity-sdk/AndroidPlugin/UnityActivity/src/main/java/com/unity3d/player/UnityPlayerActivity.java
+unity-sdk/AndroidPlugin/UnityActivity/src/test/java/com/unity3d/player/ExampleUnitTest.java

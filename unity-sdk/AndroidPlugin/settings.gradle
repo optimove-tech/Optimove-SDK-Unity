@@ -15,3 +15,4 @@ dependencyResolutionManagement {
 rootProject.name = "unity"
 include ':app'
 include ':OptimoveUnityPlugin'
+include ':UnityActivity'
