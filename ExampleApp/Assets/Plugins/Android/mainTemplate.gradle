@@ -16,7 +16,7 @@
 apply plugin: 'com.android.library'
 **APPLY_PLUGINS**
 
-depependencies {
+dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.optimove.android:optimove-android:7.+'
 

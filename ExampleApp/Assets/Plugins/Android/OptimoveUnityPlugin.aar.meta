@@ -1,9 +1,5 @@
 fileFormatVersion: 2
-<<<<<<<< HEAD:ExampleApp/Assets/Plugins/Android/OptimoveUnityPlugin.aar.meta
-guid: a1e4fdb95ed0e48cd90626cc364b7f38
-========
-guid: f45f68a91273c4bedaaf03328f89d886
->>>>>>>> unity-public-api-functions:ExampleApp/Assets/Plugins/iOS/UnityAppController+Optimove.h.meta
+guid: 497d8926f8c154ce4b2eef73e9fba427
 PluginImporter:
   externalObjects: {}
   serializedVersion: 2
@@ -16,6 +12,11 @@ PluginImporter:
   validateReferences: 1
   platformData:
   - first:
+      Android: Android
+    second:
+      enabled: 1
+      settings: {}
+  - first:
       Any: 
     second:
       enabled: 0
@@ -26,12 +27,6 @@ PluginImporter:
       enabled: 0
       settings:
         DefaultValueInitialized: true
-  - first:
-      iPhone: iOS
-    second:
-      enabled: 1
-      settings:
-        AddToEmbeddedBinaries: false
   userData: 
   assetBundleName: 
   assetBundleVariant: 

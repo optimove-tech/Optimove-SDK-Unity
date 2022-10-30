@@ -32,7 +32,7 @@ public class OptimoveInitProvider extends ContentProvider {
     @Override
     public boolean onCreate() {
         Application app = (Application) this.getContext().getApplicationContext();
-        OptimoveConfig.Builder configBuilder = new OptimoveConfig.Builder("YOUR_OPTIMOVE_CREDENTIALS", "YOUR_OPTIMOVE_MOBILE_CREDENTIALS");
+       OptimoveConfig.Builder configBuilder = new OptimoveConfig.Builder("YOUR_OPTIMOVE_CREDENTIALS", "YOUR_OPTIMOVE_MOBILE_CREDENTIALS");
 
         String inAppConsentStrategy = "YOUR_IN-APP_CONSENT_STRATEGY";
         String enableDeferredDeepLinks = "true/false";
@@ -43,7 +43,7 @@ public class OptimoveInitProvider extends ContentProvider {
         }
         overrideInstallInfo(configBuilder);
         if (Boolean.parseBoolean(enableDeferredDeepLinks)) {
-            configBuilder.enableDeepLinking(getDDLHandler());
+           configBuilder = configBuilder.enableDeepLinking(getDDLHandler());
         }
         Optimove.initialize(app, configBuilder.build());
 
@@ -146,7 +146,7 @@ public class OptimoveInitProvider extends ContentProvider {
                 deepLink.put("url", url);
                 deepLink.put("content", deepLinkContent == null ? JSONObject.NULL : deepLinkContent);
                 deepLink.put("linkData", linkData == null ? JSONObject.NULL : linkData);
-                UnityPlayer.UnitySendMessage("OptimoveSdkGameObject", "DeepLinkResolved", deepLink.toString());
+                UnityProxy.queueOrSendDdlDataToUnity(deepLink);
             } catch (Exception e) {
                 e.printStackTrace();
             }
