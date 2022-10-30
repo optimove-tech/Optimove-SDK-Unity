@@ -2,4 +2,33 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.optimove.unity.plugin">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application android:allowBackup="true"
+        android:supportsRtl="true">
+
+        <provider android:authorities="com.optimove.unity.plugin.optimoveinitprovider"
+            android:exported="false"
+            android:name=".OptimoveInitProvider" />
+
+        <!-- Optimove FCM handler -->
+        <service android:name="com.optimove.android.optimobile.FirebaseMessagingService" android:exported="false">
+            <intent-filter
+                android:priority="10">
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <!-- Optimove Push receiver -->
+        <receiver android:name=".PushReceiver" android:exported="false">
+            <intent-filter>
+                <action android:name="com.optimove.push.RECEIVED" />
+                <action android:name="com.optimove.push.OPENED" />
+                <action android:name="com.optimove.push.DISMISSED" />
+                <action android:name="com.optimove.push.BUTTON_CLICKED" />
+            </intent-filter>
+        </receiver>
+    </application>
+
+
 </manifest>

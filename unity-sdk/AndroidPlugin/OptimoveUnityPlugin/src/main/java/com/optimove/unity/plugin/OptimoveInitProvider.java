@@ -33,6 +33,7 @@ public class OptimoveInitProvider extends ContentProvider {
     public boolean onCreate() {
         Application app = (Application) this.getContext().getApplicationContext();
         OptimoveConfig.Builder configBuilder = new OptimoveConfig.Builder("YOUR_OPTIMOVE_CREDENTIALS", "YOUR_OPTIMOVE_MOBILE_CREDENTIALS");
+
         String inAppConsentStrategy = "YOUR_IN-APP_CONSENT_STRATEGY";
         String enableDeferredDeepLinks = "true/false";
         if (IN_APP_AUTO_ENROLL.equals(inAppConsentStrategy)) {
@@ -45,11 +46,14 @@ public class OptimoveInitProvider extends ContentProvider {
             configBuilder.enableDeepLinking(getDDLHandler());
         }
         Optimove.initialize(app, configBuilder.build());
+
+        if (IN_APP_AUTO_ENROLL.equals(inAppConsentStrategy) || IN_APP_EXPLICIT_BY_USER.equals(inAppConsentStrategy)) {
+            OptimoveInApp.getInstance().setDeepLinkHandler(new UnityProxy.InAppDeepLinkHandler());
+        }
         Optimove.getInstance().setPushActionHandler(new PushReceiver.PushActionHandler());
-        OptimoveInApp.getInstance().setDeepLinkHandler(new UnityProxy.InAppDeepLinkHandler());
         OptimoveInApp.getInstance().setOnInboxUpdated(new UnityProxy.InboxUpdatedHandler());
 
-        return false;
+        return true;
     }
 
     @Nullable

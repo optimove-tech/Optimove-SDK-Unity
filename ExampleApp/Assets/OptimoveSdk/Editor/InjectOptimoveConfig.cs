@@ -6,14 +6,14 @@ using System.IO;
 using System;
 using System.Linq;
 using UnityEditor.iOS.Xcode;
+
 [Serializable]
 public class OptimoveConfig
 {
     public string optimoveCredentials;
     public string optimobileCredentials;
     public string inAppConsentStrategy;
-    public bool enableDeferredDeepLinking;
-    public string cname;
+    public string deferredDeepLinkingHost;
 
     public static OptimoveConfig CreateFromJSON(string jsonString)
     {
@@ -75,14 +75,9 @@ public class InjectOptimoveConfig : IPreprocessBuildWithReport
         rootDict.SetString("optimoveCredentials", config.optimoveCredentials);
         rootDict.SetString("optimoveMobileCredentials", config.optimobileCredentials);
         rootDict.SetString("optimoveInAppConsentStrategy", config.inAppConsentStrategy);
-        if (config.enableDeferredDeepLinking){
-            rootDict.SetString("optimoveEnableDeferredDeepLinking", "true");
+        if (config.deferredDeepLinkingHost != null){
+            rootDict.SetString("optimoveDeferredDeepLinkingHost", config.deferredDeepLinkingHost);
         }
-
-        //TODO: problem of the world: enableDeferredDeepLinking is bool or a cname (a in Flutter)
-        // if (config.cname != null){
-        //     rootDict.SetString("optimoveDdlCname", config.cname);
-        // }
 
         plist.WriteToFile(Application.dataPath + "/Plugins/iOS/optimove.plist");
     }
@@ -92,5 +87,5 @@ public class InjectOptimoveConfig : IPreprocessBuildWithReport
       //TODO
     //}
 
-    
+
 }

@@ -1,5 +1,9 @@
 fileFormatVersion: 2
-guid: 11ed486baff664e1dbd8f13bbbeb3b4e
+<<<<<<<< HEAD:ExampleApp/Assets/Plugins/Android/OptimoveUnityPlugin.aar.meta
+guid: a1e4fdb95ed0e48cd90626cc364b7f38
+========
+guid: f45f68a91273c4bedaaf03328f89d886
+>>>>>>>> unity-public-api-functions:ExampleApp/Assets/Plugins/iOS/UnityAppController+Optimove.h.meta
 PluginImporter:
   externalObjects: {}
   serializedVersion: 2
