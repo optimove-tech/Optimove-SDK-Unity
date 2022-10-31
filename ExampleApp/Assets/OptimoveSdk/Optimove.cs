@@ -475,8 +475,9 @@ namespace OptimoveSdk
         }
         public void SetPushOpenedHandler(PushOpenedDelegate pushOpenedHanlder)
         {
-                PollPendingPush();
+                
                 OnPushOpened = pushOpenedHanlder;
+                PollPendingPush();
         }
         public void SetInAppDeepLinkHandler(InAppDeepLinkDelegate inAppDeepLinkDelegate)
         {
