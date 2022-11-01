@@ -4,7 +4,11 @@ apply plugin: 'com.android.application'
 
 dependencies {
     implementation project(':unityLibrary')
-    }
+
+    // Add library dependency to retrieve FCM push tokens
+    implementation platform('com.google.firebase:firebase-bom:28.2.0')
+    implementation 'com.google.firebase:firebase-messaging'
+}
 
 android {
     compileSdkVersion **APIVERSION**
@@ -65,3 +69,5 @@ android {
         }
     }
 }**SPLITS_VERSION_CODE****LAUNCHER_SOURCE_BUILD_SETUP**
+
+apply plugin: 'com.google.gms.google-services'
