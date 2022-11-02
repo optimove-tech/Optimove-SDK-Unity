@@ -11,7 +11,7 @@
     <category android:name="android.intent.category.DEFAULT" />
     <category android:name="android.intent.category.BROWSABLE" />
     <!-- Specify which URIs should be matched. Note, domain should be .lnk.click -->
-    <data android:scheme="https" android:host="subdomain.lnk.click"/>
+    <data android:scheme="https" android:host="unity-example-optimove.lnk.click"/>
 </intent-filter>
         <meta-data android:name="unityplayer.UnityActivity" android:value="true" />
         <meta-data android:name="android.notch_support" android:value="true" />

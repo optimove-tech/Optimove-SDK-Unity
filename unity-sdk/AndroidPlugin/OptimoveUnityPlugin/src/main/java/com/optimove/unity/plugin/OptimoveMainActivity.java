@@ -1,7 +1,7 @@
 package com.optimove.unity.plugin;
 
 import com.optimove.android.Optimove;
-import com.unity3d.player.UnityPlayer;
+import com.unity3d.player.UnityPlayerActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
