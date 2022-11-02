@@ -6,6 +6,8 @@ using System.IO;
 using System;
 using System.Linq;
 using UnityEditor.iOS.Xcode;
+using UnityEditor.Android;
+using Unity.VisualScripting.FullSerializer;
 
 
 [Serializable]
@@ -65,7 +67,7 @@ public class PreprocessSetup : IPreprocessBuildWithReport
         }
 
         this.SetUpIos(config);
-        //this.SetUpAndroid(config);
+        this.SetUpAndroid(config);
     }
 
     private OptimoveConfig ReadConfig()
@@ -113,10 +115,37 @@ public class PreprocessSetup : IPreprocessBuildWithReport
         plist.WriteToFile(Application.dataPath + "/Plugins/iOS/optimove.plist");
     }
 
-    //private void SetUpAndroid(OptimoveConfig config)
-    //{
-      //TODO
-    //}
+
+    private void SetUpAndroid(OptimoveConfig config)
+    {
+        // No way to add assets per platform
+        string src = Path.Combine(Application.dataPath, "optimove.xml");
+        string dest = Path.Combine(Application.dataPath, "StreamingAssets/optimove.xml");
+        
+        bool srcExists = File.Exists(src);
+        bool destExists = File.Exists(dest);
+
+        if (!srcExists)
+        {
+            if (destExists)
+            {
+                FileUtil.DeleteFileOrDirectory(dest);
+            }
+
+            return;
+        }
+
+        if (!destExists)
+        {
+            string optimoveXmlTemplate = File.ReadAllText(src);
+           optimoveXmlTemplate = optimoveXmlTemplate.Replace("{{OPTIMOVE_CREDENTIALS}}", config.optimoveCredentials);
+            optimoveXmlTemplate = optimoveXmlTemplate.Replace("{{OPTIMOVE_MOBILE_CREDENTIALS}}", config.optimobileCredentials);
+            optimoveXmlTemplate = optimoveXmlTemplate.Replace("{{IN_APP_STRATEGY}}",config.inAppConsentStrategy);
+            optimoveXmlTemplate = optimoveXmlTemplate.Replace("{{ENABLE_DEFERRED_DEEP_LINKING}}", config.deferredDeepLinkingHost);
+
+            File.WriteAllText(dest, optimoveXmlTemplate);
+        }
+    }
 
 
 }
