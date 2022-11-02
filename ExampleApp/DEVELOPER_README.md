@@ -39,11 +39,9 @@ Then follow instructions below
 5. paste NotificationService.m contents (copy from docs)
 6. Add App Groups capability to the extension target. Set group to `group.{bundleId}.optimove`
 7. Switch to New Build System in File -> Project Settings -> Build System (likely already on). This is necessary to use xcframeworks.
-8. Add `OptimoveSDK.xcframework` and `OptimoveSDKCore.xcframework` from UnitySDK to UnityFramework target (drag under frameworks, copy files). Select `Do Not Embed` option. This is equivalent to adding the xcframeworks to `Link Binary With Libraries` section in `Build phases`.
-9. Add `OptimoveSDK.xcframework` and `OptimoveSDKCore.xcframework` from UnitySDK to the application target. Select `Embed and sign` option. This is equivalent to adding the xcframeworks to `Link Binary With Libraries` and `Embed Frameworks` sections in `Build phases`. Simulator builds (as chosen in unity) don't have general tab, add frameworks in Build phases.
-10. Add `OptimoveNotificationServiceExtension.xcframework` from UnitySDK to the extension target. Select `Embed and sign` option.
-
-> Note. 7) to 9) are explained in detail [here](https://docs.leanplum.com/changelog/unity-ios-xcode-123-and-new-build-system)
+8. Add `OptimoveSDK.xcframework` and `OptimoveSDKCore.xcframework` from UnitySDK to UnityFramework target (drag under frameworks, copy files). Select `Do Not Embed` option. Same way add `OptimoveNotificationServiceExtension.xcframework` from UnitySDK to the extension target. This is equivalent to adding the xcframeworks to `Link Binary With Libraries` section in `Build phases`.
+9. Add `OptimoveSDK.xcframework`, `OptimoveSDKCore.xcframework` and `OptimoveNotificationServiceExtension.xcframework` from UnitySDK to the application target. Select `Embed and sign` option. This is equivalent to adding the xcframeworks to `Link Binary With Libraries` and `Embed Frameworks` sections in `Build phases`. Simulator builds (as chosen in unity) don't have general tab, add frameworks in Build phases.
+> Note. 8. and 9. are explained in detail [here](https://docs.leanplum.com/changelog/unity-ios-xcode-123-and-new-build-system)
 
 #### iOS Other
 

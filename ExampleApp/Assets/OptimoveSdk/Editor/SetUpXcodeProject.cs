@@ -33,13 +33,15 @@ public class SetUpXcodeProject
 
         project.ReadFromFile(projectPath);
 
-        var unityTarget = project.GetUnityFrameworkTargetGuid();
+        //2019.3+ only
+        string mainTargetGuid = project.GetUnityMainTargetGuid();
+        string unityTarget = project.GetUnityFrameworkTargetGuid();
 
         // copy optimove.plist as *.plist files are not copied automatically
         AddOptimoveConfig(project, pathToBuiltProject, unityTarget);
 
         // Push Notifications, Background Modes, App Groups for the main target
-        SetupMainTargetCapabilities(project, projectPath, pathToBuiltProject);
+        SetupMainTargetCapabilities(project, projectPath, pathToBuiltProject, mainTargetGuid);
 
         // enables calling objc functions from swift
         SetModuleMap(project, unityTarget, pathToBuiltProject);
@@ -47,7 +49,15 @@ public class SetUpXcodeProject
         // add UNITY_RUNTIME_VERSION to Info.plist of the framework target
         AddUnityVersionToPlist(pathToBuiltProject);
 
+        SetBuildProperties(project, mainTargetGuid, unityTarget);
+
         project.WriteToFile(projectPath);
+    }
+
+    private static void SetBuildProperties(PBXProject project, string mainTargetGuid, string unityTarget)
+    {
+        project.SetBuildProperty(mainTargetGuid, "ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES", "YES");
+        project.SetBuildProperty(unityTarget, "ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES", "NO");
     }
 
     private static void AddOptimoveConfig(PBXProject project, string pathToBuiltProject, string unityTargetGuid)
@@ -58,9 +68,7 @@ public class SetUpXcodeProject
         project.AddFileToBuild(unityTargetGuid, project.AddFile(dstLocalPath, dstLocalPath));
     }
 
-    private static void SetupMainTargetCapabilities(PBXProject project, string projectPath, string pathToBuiltProject) {
-        //2019.3+ only
-        var mainTargetGuid = project.GetUnityMainTargetGuid();
+    private static void SetupMainTargetCapabilities(PBXProject project, string projectPath, string pathToBuiltProject, string mainTargetGuid) {
         var mainTargetName = "Unity-iPhone";
 
         var entitlementsPath = GetEntitlementsPath(project, mainTargetGuid, mainTargetName, pathToBuiltProject);
