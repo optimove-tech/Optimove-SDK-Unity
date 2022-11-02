@@ -1,7 +1,6 @@
 package com.optimove.unity.plugin;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.optimove.android.Optimove;
 import com.optimove.android.optimobile.InAppDeepLinkHandlerInterface;
@@ -250,11 +249,8 @@ public class UnityProxy {
 
     static void queueOrSendDdlDataToUnity(JSONObject ddl) {
         if (UnityPlayer.currentActivity == null) {
-            Log.e("Unity", " ddl was saved");
             pendingDdl = ddl;
         } else {
-
-            Log.e("Unity", "no ddl was saved");
             UnityPlayer.UnitySendMessage("OptimoveSdkGameObject", "DeepLinkResolved", ddl.toString());
         }
     }

@@ -2,7 +2,6 @@ package com.optimove.unity.android;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.optimove.unity.plugin.UnityProxy;
 
