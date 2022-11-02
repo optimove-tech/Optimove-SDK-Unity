@@ -4,8 +4,10 @@ import android.app.Application;
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
+import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,6 +25,9 @@ import org.json.JSONObject;
 
 
 public class OptimoveInitProvider extends ContentProvider {
+    private static final String KEY_OPTIMOVE_CREDENTIALS = "optimoveCredentials";
+    private static final String KEY_OPTIMOVE_MOBILE_CREDENTIALS = "optimoveMobileCredentials";
+    private static final String KEY_IN_APP_CONSENT_STRATEGY = "optimoveInAppConsentStrategy";
     private static final String SDK_VERSION = "1.0.0";
     private static final int RUNTIME_TYPE = 6;
     private static final int SDK_TYPE = 108;
@@ -32,6 +37,7 @@ public class OptimoveInitProvider extends ContentProvider {
     @Override
     public boolean onCreate() {
         Application app = (Application) this.getContext().getApplicationContext();
+        getStringConfigValue()
        OptimoveConfig.Builder configBuilder = new OptimoveConfig.Builder("YOUR_OPTIMOVE_CREDENTIALS", "YOUR_OPTIMOVE_MOBILE_CREDENTIALS");
 
         String inAppConsentStrategy = "YOUR_IN-APP_CONSENT_STRATEGY";
@@ -99,6 +105,15 @@ public class OptimoveInitProvider extends ContentProvider {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+    private @Nullable
+    String getStringConfigValue(String packageName, Resources resources, String key) {
+        int resId = resources.getIdentifier(key, "string", packageName);
+        if (0 == resId) {
+            return null;
+        }
+        String value = resources.getString(resId);
+        return TextUtils.isEmpty(value) ? null : value;
     }
 
     private DeferredDeepLinkHandlerInterface getDDLHandler() {
