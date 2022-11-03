@@ -3,7 +3,7 @@ apply plugin: 'com.android.library'
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.optimove.android:optimove-android:7.+'
+    implementation 'com.optimove.android:optimove-android:7.0.0'
 
 **DEPS**}
 
