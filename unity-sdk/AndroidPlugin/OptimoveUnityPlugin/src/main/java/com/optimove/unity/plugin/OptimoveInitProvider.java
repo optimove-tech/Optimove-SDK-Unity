@@ -11,13 +11,43 @@ import androidx.annotation.Nullable;
 
 import com.optimove.android.Optimove;
 import com.optimove.android.OptimoveConfig;
+import com.optimove.android.optimobile.OptimoveInApp;
+import com.unity3d.player.UnityPermissions;
+import com.unity3d.player.UnityPlayer;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 
 public class OptimoveInitProvider extends ContentProvider {
+    private static final String SDK_VERSION = "1.0.0";
+    private static final int RUNTIME_TYPE = 6;
+    private static final int SDK_TYPE = 108;
+    private static final String IN_APP_AUTO_ENROLL = "auto-enroll";
+    private static final String IN_APP_EXPLICIT_BY_USER = "explicit-by-user";
+
     @Override
     public boolean onCreate() {
         Application app = (Application) this.getContext().getApplicationContext();
-        Optimove.initialize(app, new OptimoveConfig.Builder("YOUR OPTIMOVE CREDENTIALS", "YOUR OPTIMOVE MOBILE CREDENTIALS").build());
-        return false;
+        OptimoveConfig.Builder configBuilder = new OptimoveConfig.Builder("YOUR_OPTIMOVE_CREDENTIALS", "YOUR_OPTIMOVE_MOBILE_CREDENTIALS");
+
+        String inAppConsentStrategy = "YOUR_IN-APP_CONSENT_STRATEGY";
+        if (IN_APP_AUTO_ENROLL.equals(inAppConsentStrategy)) {
+            configBuilder = configBuilder.enableInAppMessaging(OptimoveConfig.InAppConsentStrategy.AUTO_ENROLL);
+        } else if (IN_APP_EXPLICIT_BY_USER.equals(inAppConsentStrategy)) {
+            configBuilder = configBuilder.enableInAppMessaging(OptimoveConfig.InAppConsentStrategy.EXPLICIT_BY_USER);
+        }
+        overrideInstallInfo(configBuilder);
+
+        Optimove.initialize(app, configBuilder.build());
+
+        if (IN_APP_AUTO_ENROLL.equals(inAppConsentStrategy) || IN_APP_EXPLICIT_BY_USER.equals(inAppConsentStrategy)) {
+            OptimoveInApp.getInstance().setDeepLinkHandler(new UnityProxy.InAppDeepLinkHandler());
+        }
+        Optimove.getInstance().setPushActionHandler(new PushReceiver.PushActionHandler());
+        OptimoveInApp.getInstance().setOnInboxUpdated(new UnityProxy.InboxUpdatedHandler());
+
+        return true;
     }
 
     @Nullable
@@ -46,5 +76,22 @@ public class OptimoveInitProvider extends ContentProvider {
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues contentValues, @Nullable String s, @Nullable String[] strings) {
         return 0;
+    }
+
+    private void overrideInstallInfo(OptimoveConfig.Builder configBuilder) {
+        JSONObject sdkInfo = new JSONObject();
+        JSONObject runtimeInfo = new JSONObject();
+
+        try {
+            sdkInfo.put("id", SDK_TYPE);
+            sdkInfo.put("version", SDK_VERSION);
+            runtimeInfo.put("id", RUNTIME_TYPE);
+            runtimeInfo.put("version", "unknown" );
+
+            configBuilder.setSdkInfo(sdkInfo);
+            configBuilder.setRuntimeInfo(runtimeInfo);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }

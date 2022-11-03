@@ -62,20 +62,21 @@ public class ButtonController : MonoBehaviour
 
     void SetUpHandlers()
     {
-        Optimove.Shared.OnInAppDeepLinkPressed += (InAppButtonPress press) =>
+        Optimove.InAppDeepLinkDelegate inAppHandler = (InAppButtonPress press) =>
         {
             string deepLinkData = OptimoveSdk.MiniJSON.Json.Serialize(press.DeepLinkData);
             string messageData = OptimoveSdk.MiniJSON.Json.Serialize(press.MessageData);
 
             AddLogMessage(string.Format("InAppDeepLinkPressedHandler: id: {0}, deepLinkData: {1}, messageData: {2}", press.MessageId, deepLinkData, messageData));
         };
+        Optimove.Shared.SetInAppDeepLinkHandler (inAppHandler);
 
-        Optimove.Shared.OnInAppInboxUpdated += () =>
+        Optimove.Shared.SetInAppInboxUpdatedHandler(() =>
         {
             AddLogMessage("InAppInboxUpdatedHandler");
-        };
+        });
 
-        Optimove.Shared.OnPushOpened += (PushMessage push) =>
+        Optimove.Shared.SetPushOpenedHandler( (PushMessage push) =>
         {
             string id = push.Id.ToString();
             string title = push.Title ?? "";
@@ -83,9 +84,9 @@ public class ButtonController : MonoBehaviour
             string data = push.Data != null ? OptimoveSdk.MiniJSON.Json.Serialize(push.Data) : "";
 
             AddLogMessage(string.Format("PushOpenedHandler: id: {0}, title: {1}, message: {2}, data: {3} ", id, title, message, data));
-        };
+        });
 
-        Optimove.Shared.OnPushReceived += (PushMessage push) =>
+        Optimove.Shared.SetPushReceivedHandler ( (PushMessage push) =>
         {
             string id = push.Id.ToString();
             string title = push.Title ?? "";
@@ -93,9 +94,9 @@ public class ButtonController : MonoBehaviour
             string data = push.Data != null ? OptimoveSdk.MiniJSON.Json.Serialize(push.Data) : "";
 
             AddLogMessage(string.Format("PushReceivedHandler: id: {0}, title: {1}, message: {2}, data: {3} ", id, title, message, data));
-        };
+        });
 
-        Optimove.Shared.OnDeepLinkResolved += (DeepLink ddl) =>
+        Optimove.Shared.SetDeepLinkResolvedHandler ( (DeepLink ddl) =>
         {
             string resolution = ddl.Resolution.ToString();
             string url = ddl.Url;
@@ -103,7 +104,7 @@ public class ButtonController : MonoBehaviour
             string content = ddl.Content != null ? OptimoveSdk.MiniJSON.Json.Serialize(ddl.Content) : "";
 
             AddLogMessage(string.Format("DeepLinkHandler: resolution: {0}, url: {1}, linkData: {2}, content: {3} ", resolution, url, linkData, content));
-        };
+        });
     }
 
     // events
@@ -123,8 +124,9 @@ public class ButtonController : MonoBehaviour
         string eventProps = m_eventProps.text;
 
         Dictionary<string, object> props = null;
-        if (!eventProps.Equals("")){
-            props =  Json.Deserialize(eventProps) as Dictionary<string, object>;
+        if (!eventProps.Equals(""))
+        {
+            props = Json.Deserialize(eventProps) as Dictionary<string, object>;
         }
         Optimove.Shared.ReportEvent(eventType, props);
 
@@ -207,6 +209,7 @@ public class ButtonController : MonoBehaviour
         }
     }
 
+
     void DeleteInboxMessage()
     {
         int targetId = ReadInboxItemId();
@@ -240,6 +243,7 @@ public class ButtonController : MonoBehaviour
             }
         }
     }
+
 
     void GetInboxItems()
     {

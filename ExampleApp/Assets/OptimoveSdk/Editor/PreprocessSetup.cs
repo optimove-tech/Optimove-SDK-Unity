@@ -7,6 +7,7 @@ using System;
 using System.Linq;
 using UnityEditor.iOS.Xcode;
 
+
 [Serializable]
 public class OptimoveConfig
 {
@@ -21,10 +22,40 @@ public class OptimoveConfig
     }
 }
 
-public class InjectOptimoveConfig : IPreprocessBuildWithReport
+public class PreprocessSetup : IPreprocessBuildWithReport
 {
     public int callbackOrder => 0;
     public void OnPreprocessBuild(BuildReport report)
+    {
+        this.AddGoogleServicesForAndroidOnly(report);
+
+        this.InjectOptimoveConfig();
+    }
+
+    private void AddGoogleServicesForAndroidOnly(BuildReport report)
+    {
+        // No way to add assets per platform
+        string src = Path.Combine(Application.dataPath, "google-services.json");
+        string dest = Path.Combine(Application.dataPath, "StreamingAssets/google-services.json");
+
+        bool srcExists = File.Exists(src);
+        bool destExists = File.Exists(dest);
+        bool isAndroid = report.summary.platform == BuildTarget.Android;
+
+        if (!srcExists || !isAndroid){
+            if (destExists){
+                FileUtil.DeleteFileOrDirectory(dest);
+            }
+
+            return;
+        }
+
+        if (!destExists){
+            FileUtil.CopyFileOrDirectory(src, dest);
+        }
+    }
+
+    private void InjectOptimoveConfig()
     {
         OptimoveConfig config = this.ReadConfig();
         this.ValidateConfig(config);
@@ -82,8 +113,10 @@ public class InjectOptimoveConfig : IPreprocessBuildWithReport
         plist.WriteToFile(Application.dataPath + "/Plugins/iOS/optimove.plist");
     }
 
-    // private void SetUpAndroid(OptimoveConfig config)
-    // {
-    //     //TODO:
-    // }
+    //private void SetUpAndroid(OptimoveConfig config)
+    //{
+      //TODO
+    //}
+
+
 }
