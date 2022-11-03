@@ -11,5 +11,3 @@
     </activity>
   </application>
 </manifest>
-
-<!-- Merged Optimove and Firebase manifest (activity name + adds MessageForwardingService) -->

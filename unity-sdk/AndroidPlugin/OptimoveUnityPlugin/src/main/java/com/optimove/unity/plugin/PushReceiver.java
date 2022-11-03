@@ -6,9 +6,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-
 import androidx.core.app.TaskStackBuilder;
-
 import com.optimove.android.Optimove;
 import com.optimove.android.optimobile.Optimobile;
 import com.optimove.android.optimobile.PushActionHandlerInterface;
@@ -55,16 +53,25 @@ public class PushReceiver extends PushBroadcastReceiver {
             Optimove.getInstance().pushTrackOpen(pushMessage.getId());
         } catch (Optimobile.UninitializedException ignored) {
         }
-        PushReceiver.handlePushOpen(context, pushMessage, null);
+
+        handlePushOpen(context, pushMessage, null);
+    }
+
+    @Override
+    protected Intent getPushOpenActivityIntent(Context context, PushMessage pushMessage) {
+        // Dont launch any activity from base sdk. This lets launching activity from here with desired
+        // launch flags in order to avoid unity bug with FLAG_ACTIVITY_CLEAR_TASK.
+        return null;
     }
 
     private static void handlePushOpen(Context context, PushMessage pushMessage, String actionId) {
-        PushReceiver pr = new PushReceiver();
-        Intent launchIntent = pr.getPushOpenActivityIntent(context, pushMessage);
-
+        Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
         if (null == launchIntent) {
             return;
         }
+
+        launchIntent.putExtra(PushMessage.EXTRAS_KEY, pushMessage);
+        launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK/* | Intent.FLAG_ACTIVITY_CLEAR_TASK*/);
 
         ComponentName component = launchIntent.getComponent();
         if (null == component) {
@@ -73,7 +80,7 @@ public class PushReceiver extends PushBroadcastReceiver {
 
         Class<? extends Activity> cls = null;
         try {
-            cls = (Class<? extends Activity>) Class.forName(component.getClassName());
+            cls = Class.forName(component.getClassName()).asSubclass(Activity.class);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -98,8 +105,6 @@ public class PushReceiver extends PushBroadcastReceiver {
             taskStackBuilder.addNextIntent(launchIntent);
             taskStackBuilder.startActivities();
         } else {
-            launchIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-
             addDeepLinkExtras(pushMessage, launchIntent);
 
             context.startActivity(launchIntent);
@@ -121,6 +126,4 @@ public class PushReceiver extends PushBroadcastReceiver {
             }
         }
     }
-
-
 }
