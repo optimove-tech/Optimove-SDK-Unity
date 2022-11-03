@@ -1,21 +1,5 @@
 fileFormatVersion: 2
-<<<<<<< HEAD
-<<<<<<<< HEAD:ExampleApp/Assets/Plugins/iOS/UnityAppController+Optimove.h.meta
-<<<<<<<< HEAD:ExampleApp/Assets/Plugins/Android/OptimoveUnityPlugin.aar.meta
-guid: 071a5aae95e1b4444a8a26d09ff5a91b
-========
 guid: f45f68a91273c4bedaaf03328f89d886
->>>>>>>> unity-public-api-functions:ExampleApp/Assets/Plugins/iOS/UnityAppController+Optimove.h.meta
-========
-guid: 632add9f0863847b995915acbb149a07
->>>>>>>> unity-public-api-functions:ExampleApp/Assets/Plugins/iOS/UnityAppController+Optimove.m.meta
-=======
-<<<<<<<< HEAD:ExampleApp/Assets/Plugins/iOS/UnityAppController+Optimove.m.meta
-guid: 632add9f0863847b995915acbb149a07
-========
-guid: f45f68a91273c4bedaaf03328f89d886
->>>>>>>> unity-public-api-functions:ExampleApp/Assets/Plugins/iOS/UnityAppController+Optimove.h.meta
->>>>>>> unity-public-api-functions
 PluginImporter:
   externalObjects: {}
   serializedVersion: 2

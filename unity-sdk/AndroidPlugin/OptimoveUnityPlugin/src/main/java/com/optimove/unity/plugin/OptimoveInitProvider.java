@@ -6,10 +6,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
 import com.optimove.android.Optimove;
 import com.optimove.android.OptimoveConfig;
 import com.optimove.android.optimobile.DeferredDeepLinkHandlerInterface;
@@ -17,10 +15,8 @@ import com.optimove.android.optimobile.DeferredDeepLinkHelper;
 import com.optimove.android.optimobile.OptimoveInApp;
 import com.unity3d.player.UnityPermissions;
 import com.unity3d.player.UnityPlayer;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 
 public class OptimoveInitProvider extends ContentProvider {
     private static final String SDK_VERSION = "1.0.0";
@@ -35,7 +31,7 @@ public class OptimoveInitProvider extends ContentProvider {
        OptimoveConfig.Builder configBuilder = new OptimoveConfig.Builder("YOUR_OPTIMOVE_CREDENTIALS", "YOUR_OPTIMOVE_MOBILE_CREDENTIALS");
 
         String inAppConsentStrategy = "YOUR_IN-APP_CONSENT_STRATEGY";
-        String enableDeferredDeepLinks = "true/false";
+        String enableDeferredDeepLinks = "true";
         if (IN_APP_AUTO_ENROLL.equals(inAppConsentStrategy)) {
             configBuilder = configBuilder.enableInAppMessaging(OptimoveConfig.InAppConsentStrategy.AUTO_ENROLL);
         } else if (IN_APP_EXPLICIT_BY_USER.equals(inAppConsentStrategy)) {
@@ -92,7 +88,7 @@ public class OptimoveInitProvider extends ContentProvider {
             sdkInfo.put("id", SDK_TYPE);
             sdkInfo.put("version", SDK_VERSION);
             runtimeInfo.put("id", RUNTIME_TYPE);
-            runtimeInfo.put("version", "unknown");
+            runtimeInfo.put("version", "Unknown");
 
             configBuilder.setSdkInfo(sdkInfo);
             configBuilder.setRuntimeInfo(runtimeInfo);
