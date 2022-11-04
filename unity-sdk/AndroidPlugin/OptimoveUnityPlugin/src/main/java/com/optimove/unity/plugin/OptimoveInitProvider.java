@@ -31,14 +31,16 @@ public class OptimoveInitProvider extends ContentProvider {
         OptimoveConfig.Builder configBuilder = new OptimoveConfig.Builder(null, null);
 
         String inAppConsentStrategy = "explicit-by-user";
-        String enableDeferredDeepLinks = "true";
+        String deferredDeepLinkingHost = "unity-example-optimove.lnk.click";
         if (IN_APP_AUTO_ENROLL.equals(inAppConsentStrategy)) {
             configBuilder = configBuilder.enableInAppMessaging(OptimoveConfig.InAppConsentStrategy.AUTO_ENROLL);
         } else if (IN_APP_EXPLICIT_BY_USER.equals(inAppConsentStrategy)) {
             configBuilder = configBuilder.enableInAppMessaging(OptimoveConfig.InAppConsentStrategy.EXPLICIT_BY_USER);
         }
-        if (Boolean.parseBoolean(enableDeferredDeepLinks)) {
-           configBuilder = configBuilder.enableDeepLinking(getDDLHandler());
+
+        if (deferredDeepLinkingHost != null){
+            String cname =  deferredDeepLinkingHost.endsWith("lnk.click") ? null : deferredDeepLinkingHost;
+            configBuilder = cname == null ? configBuilder.enableDeepLinking(getDDLHandler()) : configBuilder.enableDeepLinking(cname, getDDLHandler());
         }
 
         overrideInstallInfo(configBuilder);

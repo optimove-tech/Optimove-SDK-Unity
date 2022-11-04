@@ -1,6 +1,6 @@
 {
-    "optimoveCredentials": "YOUR_OPTIMOVE_CREDENTIALS",
-    "optimobileCredentials": "YOUR_OPTIMOMOBILE_CREDENTIALS",
-    "inAppConsentStrategy": "explicit-by-user",
-    "enableDeferredDeepLinking": true
+    "optimoveCredentials": "<YOUR_OPTIMOVE_CREDENTIALS>",
+    "optimobileCredentials": "<YOUR_OPTIMOMOBILE_CREDENTIALS>",
+    "inAppConsentStrategy": "<YOUR_IN_APP_CONSENT_STRATEGY>",
+    "deferredDeepLinkingHost": "<YOUR_SUBDOMAIN>.lnk.click"
 }
