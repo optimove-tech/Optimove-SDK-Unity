@@ -10,6 +10,7 @@ using UnityEditor.Android;
 using Unity.VisualScripting.FullSerializer;
 
 
+
 [Serializable]
 public class OptimoveConfig
 {
@@ -115,13 +116,12 @@ public class PreprocessSetup : IPreprocessBuildWithReport
         plist.WriteToFile(Application.dataPath + "/Plugins/iOS/optimove.plist");
     }
 
-
     private void SetUpAndroid(OptimoveConfig config)
     {
         // No way to add assets per platform
         string src = Path.Combine(Application.dataPath, "optimove.xml");
         string dest = Path.Combine(Application.dataPath, "StreamingAssets/optimove.xml");
-        
+
         bool srcExists = File.Exists(src);
         bool destExists = File.Exists(dest);
 

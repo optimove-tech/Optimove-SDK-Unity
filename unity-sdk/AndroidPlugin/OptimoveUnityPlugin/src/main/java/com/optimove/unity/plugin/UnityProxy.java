@@ -203,7 +203,6 @@ public class UnityProxy {
     }
 
     public static void inAppGetInboxSummary(String guid) {
-
         OptimoveInApp.getInstance().getInboxSummaryAsync((InAppInboxSummary summary) -> {
             notifyUnityOfInboxSummary(guid, summary);
         });

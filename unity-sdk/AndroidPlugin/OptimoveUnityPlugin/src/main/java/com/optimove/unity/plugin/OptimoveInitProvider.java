@@ -11,7 +11,6 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
 import com.optimove.android.Optimove;
 import com.optimove.android.OptimoveConfig;
 import com.optimove.android.optimobile.DeferredDeepLinkHandlerInterface;
@@ -38,19 +37,23 @@ public class OptimoveInitProvider extends ContentProvider {
     public boolean onCreate() {
         Application app = (Application) this.getContext().getApplicationContext();
         getStringConfigValue()
-       OptimoveConfig.Builder configBuilder = new OptimoveConfig.Builder("YOUR_OPTIMOVE_CREDENTIALS", "YOUR_OPTIMOVE_MOBILE_CREDENTIALS");
+        OptimoveConfig.Builder configBuilder = new OptimoveConfig.Builder(null, null);
 
-        String inAppConsentStrategy = "YOUR_IN-APP_CONSENT_STRATEGY";
-        String enableDeferredDeepLinks = "true/false";
+        String inAppConsentStrategy = "explicit-by-user";
+        String deferredDeepLinkingHost = "unity-example-optimove.lnk.click";
         if (IN_APP_AUTO_ENROLL.equals(inAppConsentStrategy)) {
             configBuilder = configBuilder.enableInAppMessaging(OptimoveConfig.InAppConsentStrategy.AUTO_ENROLL);
         } else if (IN_APP_EXPLICIT_BY_USER.equals(inAppConsentStrategy)) {
             configBuilder = configBuilder.enableInAppMessaging(OptimoveConfig.InAppConsentStrategy.EXPLICIT_BY_USER);
         }
-        overrideInstallInfo(configBuilder);
-        if (Boolean.parseBoolean(enableDeferredDeepLinks)) {
-           configBuilder = configBuilder.enableDeepLinking(getDDLHandler());
+
+        if (deferredDeepLinkingHost != null){
+            String cname =  deferredDeepLinkingHost.endsWith("lnk.click") ? null : deferredDeepLinkingHost;
+            configBuilder = cname == null ? configBuilder.enableDeepLinking(getDDLHandler()) : configBuilder.enableDeepLinking(cname, getDDLHandler());
         }
+
+        overrideInstallInfo(configBuilder);
+
         Optimove.initialize(app, configBuilder.build());
 
         if (IN_APP_AUTO_ENROLL.equals(inAppConsentStrategy) || IN_APP_EXPLICIT_BY_USER.equals(inAppConsentStrategy)) {
@@ -98,7 +101,7 @@ public class OptimoveInitProvider extends ContentProvider {
             sdkInfo.put("id", SDK_TYPE);
             sdkInfo.put("version", SDK_VERSION);
             runtimeInfo.put("id", RUNTIME_TYPE);
-            runtimeInfo.put("version", "unknown");
+            runtimeInfo.put("version", "Unknown");
 
             configBuilder.setSdkInfo(sdkInfo);
             configBuilder.setRuntimeInfo(runtimeInfo);
