@@ -130,6 +130,8 @@ namespace OptimoveSdk
                 return OptimoveGetVisitorId();
 #elif UNITY_ANDROID
                 return AndroidProxy.CallStatic<string>("getVisitorId");
+#else
+                return "unity-editor";
 #endif
         }
 
