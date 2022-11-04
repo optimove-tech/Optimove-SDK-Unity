@@ -28,19 +28,21 @@ public class OptimoveInitProvider extends ContentProvider {
     @Override
     public boolean onCreate() {
         Application app = (Application) this.getContext().getApplicationContext();
-       OptimoveConfig.Builder configBuilder = new OptimoveConfig.Builder("YOUR_OPTIMOVE_CREDENTIALS", "YOUR_OPTIMOVE_MOBILE_CREDENTIALS");
+        OptimoveConfig.Builder configBuilder = new OptimoveConfig.Builder(null, null);
 
-        String inAppConsentStrategy = "YOUR_IN-APP_CONSENT_STRATEGY";
+        String inAppConsentStrategy = "explicit-by-user";
         String enableDeferredDeepLinks = "true";
         if (IN_APP_AUTO_ENROLL.equals(inAppConsentStrategy)) {
             configBuilder = configBuilder.enableInAppMessaging(OptimoveConfig.InAppConsentStrategy.AUTO_ENROLL);
         } else if (IN_APP_EXPLICIT_BY_USER.equals(inAppConsentStrategy)) {
             configBuilder = configBuilder.enableInAppMessaging(OptimoveConfig.InAppConsentStrategy.EXPLICIT_BY_USER);
         }
-        overrideInstallInfo(configBuilder);
         if (Boolean.parseBoolean(enableDeferredDeepLinks)) {
            configBuilder = configBuilder.enableDeepLinking(getDDLHandler());
         }
+
+        overrideInstallInfo(configBuilder);
+
         Optimove.initialize(app, configBuilder.build());
 
         if (IN_APP_AUTO_ENROLL.equals(inAppConsentStrategy) || IN_APP_EXPLICIT_BY_USER.equals(inAppConsentStrategy)) {

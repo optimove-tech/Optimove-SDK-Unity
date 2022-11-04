@@ -29,7 +29,7 @@ Then follow instructions below
 
 This is only relevant for Optimove developers
 
-- The `AndroidPlugin` folder should be opened in Android Studio to work on the Android proxy classes. This project can be run on device and can receive push (need to add google-services.json to the app/ folder)
+- The `AndroidPlugin` folder should be opened in Android Studio to work on the Android proxy classes. This project can be run on device and can receive push (need to add google-services.json to the app/ folder). Project has 2 libs. `classes.jar` are unity classes missing UnityPlayerActivity. So, to extend the activity (for DDL) we add `UnityActivity.aar` with the copied UnityPlayerActivity.
 - The proxy is shipped in the SDK as an AAR, built with `./gradlew OptimoveUnityPlugin:assembleRelease`. Created file is `AndroidPlugin/OptimoveUnityPlugin/build/outputs/aar/OptimoveUnityPlugin.aar`
 - Copy the proxy AAR into `Assets/Plugins/Android`
 - We also ship gradle templates and AndroidManifest template with the Android plugin, see files in `Assets/Plugins/Android`
