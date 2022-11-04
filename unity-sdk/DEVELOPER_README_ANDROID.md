@@ -21,8 +21,8 @@ Then follow instructions below
 
 ## For the ExampleApp project
 
-8. Create `Assets/Plugins/optimove.json`, set credentials
-9. If using push push add `google-services.json` to `Assets/google-services.json`
+8. Create `Assets/OptimoveConfigFiles/optimove.json`, set credentials
+9. If using push push add `google-services.json` to `Assets/OptimoveConfigFiles/google-services.json`
 10. (Optional) Export project
 
 # Internal

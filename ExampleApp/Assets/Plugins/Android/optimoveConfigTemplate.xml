@@ -2,6 +2,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="optimoveCredentials" tools:ignore="TypographyDashes">{{OPTIMOVE_CREDENTIALS}}</string>
     <string name="optimoveMobileCredentials" tools:ignore="TypographyDashes">{{OPTIMOVE_MOBILE_CREDENTIALS}}</string>
-    <string name="optimoveInAppConsentStrategy" tools:ignore="TypographyDashes">{{IN_APP_STRATEGY}}</string>
-    <string name="optimoveEnableDeferredDeepLinking" tools:ignore="TypographyDashes">{{ENABLE_DEFERRED_DEEP_LINKING}}</string>
+    <string name="optimoveInAppConsentStrategy" tools:ignore="TypographyDashes">{{OPTIMOVE_IN_APP_STRATEGY}}</string>
+    <string name="optimoveDeferredDeepLinkingHost" tools:ignore="TypographyDashes">{{OPTIMOVE_DDL_HOST}}</string>
 </resources>

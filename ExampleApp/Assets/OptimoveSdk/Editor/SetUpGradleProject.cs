@@ -2,11 +2,19 @@ using UnityEditor;
 using UnityEditor.Android;
 using UnityEngine;
 using System.IO;
+using UnityEditor.Build;
 
 class SetUpGradleProject : IPostGenerateGradleAndroidProject
 {
     public int callbackOrder { get { return 0; } }
     public void OnPostGenerateGradleAndroidProject(string pathToUnityLibrary)
+    {
+        MoveGoogleServices(pathToUnityLibrary);
+
+        MoveOptimoveConfig(pathToUnityLibrary);
+    }
+
+    private void MoveGoogleServices(string pathToUnityLibrary)
     {
         string src = Path.Combine(pathToUnityLibrary, "src/main/assets/google-services.json");
         string dest = Path.Combine(pathToUnityLibrary, "../launcher/google-services.json");
@@ -19,17 +27,14 @@ class SetUpGradleProject : IPostGenerateGradleAndroidProject
         }
 
         FileUtil.MoveFileOrDirectory(src, dest);
-        setUpAndroidConfig(pathToUnityLibrary);
     }
 
-
-
-    private void setUpAndroidConfig(string pathToUnityLibrary) {
+    private void MoveOptimoveConfig(string pathToUnityLibrary) {
         string src = Path.Combine(pathToUnityLibrary, "src/main/assets/optimove.xml");
-        string dest = Path.Combine(pathToUnityLibrary, "../launcher/src/main/res/optimove.xml");
+        string dest = Path.Combine(pathToUnityLibrary, "../launcher/src/main/res/values/optimove.xml");
         if (!File.Exists(src))
         {
-            return;
+            throw new BuildFailedException("optimove.xml is missing in StreamingAssets");
         }
 
         if (File.Exists(dest))
