@@ -3,21 +3,20 @@ package com.optimove.unity.plugin;
 import android.app.Application;
 import android.content.ContentProvider;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
 import com.optimove.android.Optimove;
 import com.optimove.android.OptimoveConfig;
+import com.optimove.android.optimobile.DeferredDeepLinkHandlerInterface;
+import com.optimove.android.optimobile.DeferredDeepLinkHelper;
 import com.optimove.android.optimobile.OptimoveInApp;
 import com.unity3d.player.UnityPermissions;
 import com.unity3d.player.UnityPlayer;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 
 public class OptimoveInitProvider extends ContentProvider {
     private static final String SDK_VERSION = "1.0.0";
@@ -29,14 +28,21 @@ public class OptimoveInitProvider extends ContentProvider {
     @Override
     public boolean onCreate() {
         Application app = (Application) this.getContext().getApplicationContext();
-        OptimoveConfig.Builder configBuilder = new OptimoveConfig.Builder("YOUR_OPTIMOVE_CREDENTIALS", "YOUR_OPTIMOVE_MOBILE_CREDENTIALS");
+        OptimoveConfig.Builder configBuilder = new OptimoveConfig.Builder(null, null);
 
-        String inAppConsentStrategy = "YOUR_IN-APP_CONSENT_STRATEGY";
+        String inAppConsentStrategy = "explicit-by-user";
+        String deferredDeepLinkingHost = "unity-example-optimove.lnk.click";
         if (IN_APP_AUTO_ENROLL.equals(inAppConsentStrategy)) {
             configBuilder = configBuilder.enableInAppMessaging(OptimoveConfig.InAppConsentStrategy.AUTO_ENROLL);
         } else if (IN_APP_EXPLICIT_BY_USER.equals(inAppConsentStrategy)) {
             configBuilder = configBuilder.enableInAppMessaging(OptimoveConfig.InAppConsentStrategy.EXPLICIT_BY_USER);
         }
+
+        if (deferredDeepLinkingHost != null){
+            String cname =  deferredDeepLinkingHost.endsWith("lnk.click") ? null : deferredDeepLinkingHost;
+            configBuilder = cname == null ? configBuilder.enableDeepLinking(getDDLHandler()) : configBuilder.enableDeepLinking(cname, getDDLHandler());
+        }
+
         overrideInstallInfo(configBuilder);
 
         Optimove.initialize(app, configBuilder.build());
@@ -86,12 +92,64 @@ public class OptimoveInitProvider extends ContentProvider {
             sdkInfo.put("id", SDK_TYPE);
             sdkInfo.put("version", SDK_VERSION);
             runtimeInfo.put("id", RUNTIME_TYPE);
-            runtimeInfo.put("version", "unknown" );
+            runtimeInfo.put("version", "Unknown");
 
             configBuilder.setSdkInfo(sdkInfo);
             configBuilder.setRuntimeInfo(runtimeInfo);
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    private DeferredDeepLinkHandlerInterface getDDLHandler() {
+        return (Context context, DeferredDeepLinkHelper.DeepLinkResolution resolution, String link,
+                @Nullable DeferredDeepLinkHelper.DeepLink data) -> {
+            try {
+                String mappedResolution;
+                String url;
+                JSONObject deepLinkContent = null;
+                JSONObject linkData = null;
+
+                switch (resolution) {
+                    case LINK_MATCHED:
+                        mappedResolution = "LINK_MATCHED";
+                        url = data.url;
+
+                        deepLinkContent = new JSONObject();
+                        deepLinkContent.put("title", data.content.title);
+                        deepLinkContent.put("description", data.content.description);
+
+                        linkData = data.data;
+
+                        break;
+                    case LINK_NOT_FOUND:
+                        mappedResolution = "LINK_NOT_FOUND";
+                        url = link;
+                        break;
+                    case LINK_EXPIRED:
+                        mappedResolution = "LINK_EXPIRED";
+                        url = link;
+                        break;
+                    case LINK_LIMIT_EXCEEDED:
+                        mappedResolution = "LINK_LIMIT_EXCEEDED";
+                        url = link;
+                        break;
+                    case LOOKUP_FAILED:
+                    default:
+                        mappedResolution = "LOOKUP_FAILED";
+                        url = link;
+                        break;
+                }
+
+                JSONObject deepLink = new JSONObject();
+                deepLink.put("resolution", mappedResolution);
+                deepLink.put("url", url);
+                deepLink.put("content", deepLinkContent == null ? JSONObject.NULL : deepLinkContent);
+                deepLink.put("linkData", linkData == null ? JSONObject.NULL : linkData);
+                UnityProxy.queueOrSendDdlDataToUnity(deepLink);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        };
     }
 }

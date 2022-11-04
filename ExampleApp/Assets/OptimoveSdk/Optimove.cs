@@ -205,6 +205,12 @@ namespace OptimoveSdk
                 OnDeepLinkResolved(ddl);
         }
 
+        private static void PollPendingDdl()
+        {
+#if UNITY_ANDROID
+            AndroidProxy.CallStatic("pollPendingDdl");
+#endif
+        }
         #endregion
 
         #region Push
@@ -475,7 +481,7 @@ namespace OptimoveSdk
         }
         public void SetPushOpenedHandler(PushOpenedDelegate pushOpenedHanlder)
         {
-                
+
                 OnPushOpened = pushOpenedHanlder;
                 PollPendingPush();
         }

@@ -25,6 +25,7 @@ import java.util.TimeZone;
 
 public class UnityProxy {
     private static JSONObject pendingPush;
+    private static JSONObject pendingDdl;
 
     public static void setUserId(String userId) {
         Optimove.getInstance().setUserId(userId);
@@ -99,6 +100,14 @@ public class UnityProxy {
         } finally {
             pendingPush = null;
         }
+    }
+
+    public static void pollPendingDdl() {
+        if (pendingDdl == null) {
+            return;
+        }
+        UnityPlayer.UnitySendMessage("OptimoveSdkGameObject", "DeepLinkResolved", pendingDdl.toString());
+        pendingDdl = null;
     }
 
 
@@ -190,14 +199,13 @@ public class UnityProxy {
     }
 
     public static boolean inAppMarkAllInboxItemsRead() {
-            return OptimoveInApp.getInstance().markAllInboxItemsAsRead();
+        return OptimoveInApp.getInstance().markAllInboxItemsAsRead();
     }
 
     public static void inAppGetInboxSummary(String guid) {
-
-            OptimoveInApp.getInstance().getInboxSummaryAsync((InAppInboxSummary summary) -> {
-                notifyUnityOfInboxSummary(guid, summary);
-            });
+        OptimoveInApp.getInstance().getInboxSummaryAsync((InAppInboxSummary summary) -> {
+            notifyUnityOfInboxSummary(guid, summary);
+        });
     }
 
     private static void notifyUnityOfInboxSummary(String guid, InAppInboxSummary summary) {
@@ -236,6 +244,14 @@ public class UnityProxy {
             e.printStackTrace();
         }
 
+    }
+
+    static void queueOrSendDdlDataToUnity(JSONObject ddl) {
+        if (UnityPlayer.currentActivity == null) {
+            pendingDdl = ddl;
+        } else {
+            UnityPlayer.UnitySendMessage("OptimoveSdkGameObject", "DeepLinkResolved", ddl.toString());
+        }
     }
 
     private static void notifyUnityOfPush(JSONObject pushMessage, String eventType) {

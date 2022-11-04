@@ -13,7 +13,6 @@ import com.optimove.android.optimobile.PushActionHandlerInterface;
 import com.optimove.android.optimobile.PushBroadcastReceiver;
 import com.optimove.android.optimobile.PushMessage;
 import com.unity3d.player.UnityPlayer;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
