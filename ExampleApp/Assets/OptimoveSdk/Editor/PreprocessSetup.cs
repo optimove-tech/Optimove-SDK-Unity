@@ -6,7 +6,8 @@ using System.IO;
 using System;
 using System.Linq;
 using UnityEditor.iOS.Xcode;
-
+using UnityEditor.Android;
+using Unity.VisualScripting.FullSerializer;
 
 [Serializable]
 public class OptimoveConfig
@@ -27,35 +28,42 @@ public class PreprocessSetup : IPreprocessBuildWithReport
     public int callbackOrder => 0;
     public void OnPreprocessBuild(BuildReport report)
     {
-        this.AddGoogleServicesForAndroidOnly(report);
+        this.ClearGeneratedAssetsBeforeSetup();
 
-        this.InjectOptimoveConfig();
-    }
-
-    private void AddGoogleServicesForAndroidOnly(BuildReport report)
-    {
-        // No way to add assets per platform
-        string src = Path.Combine(Application.dataPath, "google-services.json");
-        string dest = Path.Combine(Application.dataPath, "StreamingAssets/google-services.json");
-
-        bool srcExists = File.Exists(src);
-        bool destExists = File.Exists(dest);
         bool isAndroid = report.summary.platform == BuildTarget.Android;
-
-        if (!srcExists || !isAndroid){
-            if (destExists){
-                FileUtil.DeleteFileOrDirectory(dest);
-            }
-
-            return;
+        if (isAndroid){
+            this.AddGoogleServices();
         }
 
-        if (!destExists){
+        this.InjectOptimoveConfig(isAndroid);
+    }
+
+    private void ClearGeneratedAssetsBeforeSetup()
+    {
+        // to make sure values are updated + to remove irrelevant platforms
+        string[] androidSpecificFiles = new string[2]{
+            Path.Combine(Application.dataPath, "StreamingAssets/google-services.json"),
+            Path.Combine(Application.dataPath, "StreamingAssets/optimove.xml")
+        };
+
+        foreach (string path in androidSpecificFiles){
+            if (File.Exists(path)){
+                FileUtil.DeleteFileOrDirectory(path);
+            }
+        }
+    }
+
+    private void AddGoogleServices()
+    {
+        string src = Path.Combine(Application.dataPath, "OptimoveConfigFiles/google-services.json");
+        string dest = Path.Combine(Application.dataPath, "StreamingAssets/google-services.json");
+
+        if (File.Exists(src)){
             FileUtil.CopyFileOrDirectory(src, dest);
         }
     }
 
-    private void InjectOptimoveConfig()
+    private void InjectOptimoveConfig(bool isAndroid)
     {
         OptimoveConfig config = this.ReadConfig();
         this.ValidateConfig(config);
@@ -65,14 +73,17 @@ public class PreprocessSetup : IPreprocessBuildWithReport
         }
 
         this.SetUpIos(config);
-        //this.SetUpAndroid(config);
+        if (isAndroid){
+            this.SetUpAndroid(config);
+        }
     }
 
     private OptimoveConfig ReadConfig()
     {
-        string jsonPath = Application.dataPath + "/Plugins/optimove.json";
+        string jsonPath = Path.Combine(Application.dataPath, "OptimoveConfigFiles/optimove.json");
+
         if (!File.Exists(jsonPath)){
-            throw new BuildFailedException("Optimove.json not found. Please, add missing configuration file");
+            throw new BuildFailedException("optimove.json not found. Please, add missing configuration file");
         }
 
         StreamReader reader = new StreamReader(jsonPath);
@@ -81,7 +92,7 @@ public class PreprocessSetup : IPreprocessBuildWithReport
             return OptimoveConfig.CreateFromJSON(json);
         }
         catch(ArgumentException){
-            throw new BuildFailedException("Optimove.json is not a valid json");
+            throw new BuildFailedException("optimove.json is not a valid json");
         }
     }
 
@@ -113,10 +124,22 @@ public class PreprocessSetup : IPreprocessBuildWithReport
         plist.WriteToFile(Application.dataPath + "/Plugins/iOS/optimove.plist");
     }
 
-    //private void SetUpAndroid(OptimoveConfig config)
-    //{
-      //TODO
-    //}
+    private void SetUpAndroid(OptimoveConfig config)
+    {
+        string templateSrc = Path.Combine(Application.dataPath, "Plugins/Android/optimoveConfigTemplate.xml");
+        string dest = Path.Combine(Application.dataPath, "StreamingAssets/optimove.xml");
 
+        string optimoveXmlTemplate = File.ReadAllText(templateSrc);
+        optimoveXmlTemplate = this.FillTemplateValue(optimoveXmlTemplate, "{{OPTIMOVE_CREDENTIALS}}", config.optimoveCredentials);
+        optimoveXmlTemplate = this.FillTemplateValue(optimoveXmlTemplate, "{{OPTIMOVE_MOBILE_CREDENTIALS}}", config.optimobileCredentials);
+        optimoveXmlTemplate = this.FillTemplateValue(optimoveXmlTemplate, "{{OPTIMOVE_IN_APP_STRATEGY}}", config.inAppConsentStrategy);
+        optimoveXmlTemplate = this.FillTemplateValue(optimoveXmlTemplate, "{{OPTIMOVE_DDL_HOST}}", config.deferredDeepLinkingHost);
 
+        File.WriteAllText(dest, optimoveXmlTemplate);
+    }
+
+    private string FillTemplateValue(string target, string search, string value)
+    {
+        return target.Replace(search, value == null ? "" : value);
+    }
 }

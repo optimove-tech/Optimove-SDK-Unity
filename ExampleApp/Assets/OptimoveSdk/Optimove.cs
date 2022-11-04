@@ -481,7 +481,6 @@ namespace OptimoveSdk
         }
         public void SetPushOpenedHandler(PushOpenedDelegate pushOpenedHanlder)
         {
-
                 OnPushOpened = pushOpenedHanlder;
                 PollPendingPush();
         }

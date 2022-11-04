@@ -4,8 +4,11 @@ import android.app.Application;
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
+import android.text.TextUtils;
+import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.optimove.android.Optimove;
@@ -13,12 +16,15 @@ import com.optimove.android.OptimoveConfig;
 import com.optimove.android.optimobile.DeferredDeepLinkHandlerInterface;
 import com.optimove.android.optimobile.DeferredDeepLinkHelper;
 import com.optimove.android.optimobile.OptimoveInApp;
-import com.unity3d.player.UnityPermissions;
-import com.unity3d.player.UnityPlayer;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+
 public class OptimoveInitProvider extends ContentProvider {
+    private static final String KEY_OPTIMOVE_CREDENTIALS = "optimoveCredentials";
+    private static final String KEY_OPTIMOVE_MOBILE_CREDENTIALS = "optimoveMobileCredentials";
+    private static final String KEY_IN_APP_CONSENT_STRATEGY = "optimoveInAppConsentStrategy";
+    private static final String KEY_DEFERRED_DEEP_LINKING_HOST = "optimoveDeferredDeepLinkingHost";
     private static final String SDK_VERSION = "1.0.0";
     private static final int RUNTIME_TYPE = 6;
     private static final int SDK_TYPE = 108;
@@ -28,10 +34,17 @@ public class OptimoveInitProvider extends ContentProvider {
     @Override
     public boolean onCreate() {
         Application app = (Application) this.getContext().getApplicationContext();
-        OptimoveConfig.Builder configBuilder = new OptimoveConfig.Builder(null, null);
 
-        String inAppConsentStrategy = "explicit-by-user";
-        String deferredDeepLinkingHost = "unity-example-optimove.lnk.click";
+        String packageName = app.getPackageName();
+        Resources resources = app.getResources();
+        String optimoveCredentials = getStringConfigValue(packageName, resources, KEY_OPTIMOVE_CREDENTIALS);
+        String optimoveMobileCredentials = getStringConfigValue(packageName, resources,
+                KEY_OPTIMOVE_MOBILE_CREDENTIALS);
+        String inAppConsentStrategy = getStringConfigValue(packageName, resources, KEY_IN_APP_CONSENT_STRATEGY);
+        String deferredDeepLinkingHost = getStringConfigValue(packageName, resources, KEY_DEFERRED_DEEP_LINKING_HOST);
+
+        OptimoveConfig.Builder configBuilder = new OptimoveConfig.Builder(optimoveCredentials, optimoveMobileCredentials);
+
         if (IN_APP_AUTO_ENROLL.equals(inAppConsentStrategy)) {
             configBuilder = configBuilder.enableInAppMessaging(OptimoveConfig.InAppConsentStrategy.AUTO_ENROLL);
         } else if (IN_APP_EXPLICIT_BY_USER.equals(inAppConsentStrategy)) {
@@ -54,6 +67,16 @@ public class OptimoveInitProvider extends ContentProvider {
         OptimoveInApp.getInstance().setOnInboxUpdated(new UnityProxy.InboxUpdatedHandler());
 
         return true;
+    }
+
+    private @Nullable
+    String getStringConfigValue(String packageName, Resources resources, String key) {
+        int resId = resources.getIdentifier(key, "string", packageName);
+        if (0 == resId) {
+            return null;
+        }
+        String value = resources.getString(resId);
+        return TextUtils.isEmpty(value) ? null : value;
     }
 
     @Nullable
@@ -100,6 +123,7 @@ public class OptimoveInitProvider extends ContentProvider {
             e.printStackTrace();
         }
     }
+
 
     private DeferredDeepLinkHandlerInterface getDDLHandler() {
         return (Context context, DeferredDeepLinkHelper.DeepLinkResolution resolution, String link,

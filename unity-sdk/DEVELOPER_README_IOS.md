@@ -14,7 +14,7 @@ Then follow instructions below
 
 ## For the ExampleApp project
 
-6. Create `Assets/Plugins/optimove.json`, set credentials
+6. Create `Assets/OptimoveConfigFiles/optimove.json`, set credentials
 7. build project
 
 ## In Xcode project
