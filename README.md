@@ -3,7 +3,7 @@
 
 # Integration Guide
 
-In this guide we will discuss the steps to implement the Optimove Unity SDK for your application.
+In this guide we will discuss the steps to integrate the Optimove Unity SDK with your application.
 
 ### Setup
 
@@ -68,18 +68,9 @@ This is a quick start integration guide. For detailed integration instructions r
 10. paste NotificationService.m contents (copy from docs)
 11. Add App Groups capability to the extension target. Set group to `group.{bundleId}.optimove`
 12. Switch to New Build System in File -> Project Settings -> Build System (likely already on). This is necessary to use xcframeworks.
-13. Add `OptimoveSDK.xcframework` and `OptimoveSDKCore.xcframework` from UnitySDK to UnityFramework target (drag under frameworks, copy files). Select `Do Not Embed` option. Same way add `OptimoveNotificationServiceExtension.xcframework` from UnitySDK to the extension target. This is equivalent to adding the xcframeworks to `Link Binary With Libraries` section in `Build phases`.
+13. Add `OptimoveSDK.xcframework` and `OptimoveSDKCore.xcframework` to UnityFramework target (drag under frameworks, copy files). Select `Do Not Embed` option. Same way add `OptimoveNotificationServiceExtension.xcframework` to the extension target. This is equivalent to adding the xcframeworks to `Link Binary With Libraries` section in `Build phases`.
 14. Add `OptimoveSDK.xcframework`, `OptimoveSDKCore.xcframework` and `OptimoveNotificationServiceExtension.xcframework` from UnitySDK to the application target. Select `Embed and sign` option. This is equivalent to adding the xcframeworks to `Link Binary With Libraries` and `Embed Frameworks` sections in `Build phases`. Simulator builds (as chosen in unity) don't have general tab, add frameworks in Build phases.
 
 # License
 
-Optimove SDK for Unity is available under the [MIT license](LICENSE).
-
-
-
-
-
-
-
-
-
+Optimove SDK for Unity is available under the [MIT license](LICENSE.md).
