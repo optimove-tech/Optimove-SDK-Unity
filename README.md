@@ -59,17 +59,18 @@ This is a quick start integration guide. For detailed integration instructions r
 ##### For the ExampleApp project
 
 6. Create `Assets/OptimoveConfigFiles/optimove.json`, set credentials
-7. build project
+7. If building for iOS add `OptimoveSDK.xcframework` and `OptimoveSDKCore.xcframework` to `Assets/.OptimoveNativeAssets` folder
+8. build project
 
 ##### In Xcode project
 
-8. signing
-9. add NotificationServiceExtension (signing)
-10. paste NotificationService.m contents (copy from docs)
-11. Add App Groups capability to the extension target. Set group to `group.{bundleId}.optimove`
-12. Switch to New Build System in File -> Project Settings -> Build System (likely already on). This is necessary to use xcframeworks.
-13. Add `OptimoveSDK.xcframework` and `OptimoveSDKCore.xcframework` to UnityFramework target (drag under frameworks, copy files). Select `Do Not Embed` option. Same way add `OptimoveNotificationServiceExtension.xcframework` to the extension target. This is equivalent to adding the xcframeworks to `Link Binary With Libraries` section in `Build phases`.
-14. Add `OptimoveSDK.xcframework`, `OptimoveSDKCore.xcframework` and `OptimoveNotificationServiceExtension.xcframework` from UnitySDK to the application target. Select `Embed and sign` option. This is equivalent to adding the xcframeworks to `Link Binary With Libraries` and `Embed Frameworks` sections in `Build phases`. Simulator builds (as chosen in unity) don't have general tab, add frameworks in Build phases.
+9. signing
+10. Switch to New Build System in File -> Project Settings -> Build System (likely already on). This is necessary to use xcframeworks.
+11. add NotificationServiceExtension
+12. paste `NotificationService.m` contents (copy from docs)
+13. Add App Groups capability to the extension target. Set group to `group.{bundleId}.optimove`
+14. Add `OptimoveNotificationServiceExtension.xcframework` to the extension target (drag under frameworks, copy files). Select `Do Not Embed` option. This is equivalent to adding it to `Link Binary With Libraries` section in `Build phases`.
+15. Add `OptimoveNotificationServiceExtension.xcframework` to the application target. Select `Embed and sign` option. This is equivalent to adding it to `Link Binary With Libraries` and `Embed Frameworks` sections in `Build phases`. Simulator builds (as chosen in unity) don't have general tab, add the framework in Build phases.
 
 # License
 

@@ -87,3 +87,9 @@ Assets/StreamingAssets/google-services.json
 Assets/StreamingAssets/google-services.json.meta
 Assets/StreamingAssets/optimove.xml
 Assets/StreamingAssets/optimove.xml.meta
+
+Assets/.OptimoveNativeAssets/OptimoveSDK.xcframework
+Assets/.OptimoveNativeAssets/OptimoveSDK.xcframework.meta
+Assets/.OptimoveNativeAssets/OptimoveSDKCore.xcframework
+Assets/.OptimoveNativeAssets/OptimoveSDKCore.xcframework.meta
+Assets/OptimoveNativeAssets

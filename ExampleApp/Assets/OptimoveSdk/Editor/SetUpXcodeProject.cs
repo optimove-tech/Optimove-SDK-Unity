@@ -6,6 +6,8 @@ using System.IO;
 using UnityEditor;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor.iOS.Xcode.Extensions;
+using UnityEditor.Build;
 
 public class SetUpXcodeProject
 {
@@ -50,6 +52,8 @@ public class SetUpXcodeProject
         AddUnityVersionToPlist(pathToBuiltProject);
 
         SetBuildProperties(project, mainTargetGuid, unityTarget);
+
+        AddXcframeworks(project, pathToBuiltProject, mainTargetGuid, unityTarget);
 
         project.WriteToFile(projectPath);
     }
@@ -157,5 +161,54 @@ public class SetUpXcodeProject
         }
 
         return host.AsString();
+    }
+
+    private static void AddXcframeworks(PBXProject project, string pathToBuiltProject, string mainTargetGuid, string unityTarget)
+    {
+        AddXcframework(project, pathToBuiltProject, mainTargetGuid, unityTarget, "OptimoveSDK.xcframework");
+        AddXcframework(project, pathToBuiltProject, mainTargetGuid, unityTarget, "OptimoveSDKCore.xcframework");
+    }
+
+    private static void AddXcframework(PBXProject project, string pathToBuiltProject, string mainTargetGuid, string unityTargetGuid, string frameworkName)
+    {
+        string src = Path.Combine(Application.dataPath, ".OptimoveNativeAssets/" + frameworkName);
+        string dest = Path.Combine(pathToBuiltProject, frameworkName);
+
+        if (Directory.Exists(dest)){
+            return;
+        }
+
+        if (!Directory.Exists(src)){
+            throw new BuildFailedException("Please, add " + frameworkName + " to .OptimoveNativeAssets folder");
+        }
+
+        CopyDirectory(src, dest);
+
+        string fileGuid = project.AddFile(dest, Path.Combine("Frameworks", frameworkName));
+
+        //MAIN TARGET
+        //embed and sign
+        project.AddFileToEmbedFrameworks(mainTargetGuid, fileGuid);
+
+        //link binary
+        string mPhaseGuid = project.GetFrameworksBuildPhaseByTarget(mainTargetGuid);
+        project.AddFileToBuildSection(mainTargetGuid, mPhaseGuid, fileGuid);
+
+        //UNITY FRAMEWORK TARGET
+
+        //link binary
+        string uPhaseGuid = project.GetFrameworksBuildPhaseByTarget(unityTargetGuid);
+        project.AddFileToBuildSection(unityTargetGuid, uPhaseGuid, fileGuid);
+    }
+
+    private static void CopyDirectory(string sourcePath, string destPath)
+    {
+        Directory.CreateDirectory(destPath);
+
+        foreach (string file in Directory.GetFiles(sourcePath))
+            File.Copy(file, Path.Combine(destPath, Path.GetFileName(file)));
+
+        foreach (string dir in Directory.GetDirectories(sourcePath))
+            CopyDirectory(dir, Path.Combine(destPath, Path.GetFileName(dir)));
     }
 }
