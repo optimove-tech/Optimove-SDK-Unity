@@ -92,4 +92,6 @@ Assets/.OptimoveNativeAssets/OptimoveSDK.xcframework
 Assets/.OptimoveNativeAssets/OptimoveSDK.xcframework.meta
 Assets/.OptimoveNativeAssets/OptimoveSDKCore.xcframework
 Assets/.OptimoveNativeAssets/OptimoveSDKCore.xcframework.meta
+Assets/.OptimoveNativeAssets/OptimoveNotificationServiceExtension.xcframework
+Assets/.OptimoveNativeAssets/OptimoveNotificationServiceExtension.xcframework.meta
 Assets/OptimoveNativeAssets
