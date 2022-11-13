@@ -42,8 +42,8 @@ public class PreprocessSetup : IPreprocessBuildWithReport
     {
         // to make sure values are updated + to remove irrelevant platforms
         string[] androidSpecificFiles = new string[2]{
-            Path.Combine(Application.dataPath, "StreamingAssets/google-services.json"),
-            Path.Combine(Application.dataPath, "StreamingAssets/optimove.xml")
+            Path.Combine(Application.dataPath, "StreamingAssets", "google-services.json"),
+            Path.Combine(Application.dataPath, "StreamingAssets", "optimove.xml")
         };
 
         foreach (string path in androidSpecificFiles){
@@ -55,8 +55,8 @@ public class PreprocessSetup : IPreprocessBuildWithReport
 
     private void AddGoogleServices()
     {
-        string src = Path.Combine(Application.dataPath, "OptimoveConfigFiles/google-services.json");
-        string dest = Path.Combine(Application.dataPath, "StreamingAssets/google-services.json");
+        string src = Path.Combine(Application.dataPath, "OptimoveConfigFiles", "google-services.json");
+        string dest = Path.Combine(Application.dataPath, "StreamingAssets", "google-services.json");
 
         if (File.Exists(src)){
             FileUtil.CopyFileOrDirectory(src, dest);
@@ -80,7 +80,7 @@ public class PreprocessSetup : IPreprocessBuildWithReport
 
     private OptimoveConfig ReadConfig()
     {
-        string jsonPath = Path.Combine(Application.dataPath, "OptimoveConfigFiles/optimove.json");
+        string jsonPath = Path.Combine(Application.dataPath, "OptimoveConfigFiles", "optimove.json");
 
         if (!File.Exists(jsonPath)){
             throw new BuildFailedException("optimove.json not found. Please, add missing configuration file");
@@ -121,13 +121,13 @@ public class PreprocessSetup : IPreprocessBuildWithReport
             rootDict.SetString("optimoveDeferredDeepLinkingHost", config.deferredDeepLinkingHost);
         }
 
-        plist.WriteToFile(Application.dataPath + "/Plugins/iOS/optimove.plist");
+        plist.WriteToFile(Path.Combine(Application.dataPath, "Plugins", "iOS", "optimove.plist"));
     }
 
     private void SetUpAndroid(OptimoveConfig config)
     {
-        string templateSrc = Path.Combine(Application.dataPath, "Plugins/Android/optimoveConfigTemplate.xml");
-        string dest = Path.Combine(Application.dataPath, "StreamingAssets/optimove.xml");
+        string templateSrc = Path.Combine(Application.dataPath, "Plugins", "Android", "optimoveConfigTemplate.xml");
+        string dest = Path.Combine(Application.dataPath, "StreamingAssets", "optimove.xml");
 
         string optimoveXmlTemplate = File.ReadAllText(templateSrc);
         optimoveXmlTemplate = this.FillTemplateValue(optimoveXmlTemplate, "{{OPTIMOVE_CREDENTIALS}}", config.optimoveCredentials);
