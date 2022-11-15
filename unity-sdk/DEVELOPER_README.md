@@ -29,4 +29,4 @@ This is only relevant for Optimove developers
 - Make changes in ExampleApp
 - When ready port changes to `unity-sdk`
 - To create `.unitypackage` open `unity-sdk` project and export `Optimove-*.*.*.unitypackage`
-- `.OptimoveNativeAssets` folder is shipped separately alongside `.unitypackage`
+- `OptimoveNativeAssets~` folder is shipped separately alongside `.unitypackage`

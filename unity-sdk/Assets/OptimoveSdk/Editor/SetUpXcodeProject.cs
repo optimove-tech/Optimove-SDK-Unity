@@ -178,7 +178,7 @@ public class SetUpXcodeProject
 
     private static void AddXcframework(PBXProject project, string pathToBuiltProject, string mainTargetGuid, string secondaryTargetGuid, string frameworkName)
     {
-        string src = Path.Combine(Application.dataPath, ".OptimoveNativeAssets", frameworkName);
+        string src = Path.Combine(Application.dataPath, "OptimoveNativeAssets~", frameworkName);
         string dest = Path.Combine(pathToBuiltProject, frameworkName);
 
         if (Directory.Exists(dest)){
@@ -186,7 +186,7 @@ public class SetUpXcodeProject
         }
 
         if (!Directory.Exists(src)){
-            throw new BuildFailedException("Please, add .OptimoveNativeAssets to Assets folder");
+            throw new BuildFailedException("Please, add OptimoveNativeAssets~ to Assets folder");
         }
 
         CopyDirectory(src, dest);
@@ -232,7 +232,7 @@ public class SetUpXcodeProject
             return;
         }
 
-        string extensionFilesPath = Path.Combine(Application.dataPath, ".OptimoveNativeAssets", "NotificationServiceExtension");
+        string extensionFilesPath = Path.Combine(Application.dataPath, "OptimoveNativeAssets~", "NotificationServiceExtension");
 
         // add plist
         string extensionPath = Path.Combine(pathToBuiltProject, extensionTargetName);
