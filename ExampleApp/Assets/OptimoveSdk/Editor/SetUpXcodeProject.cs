@@ -186,7 +186,7 @@ public class SetUpXcodeProject
         }
 
         if (!Directory.Exists(src)){
-            throw new BuildFailedException("Please, add " + frameworkName + " to .OptimoveNativeAssets folder");
+            throw new BuildFailedException("Please, add .OptimoveNativeAssets to Assets folder");
         }
 
         CopyDirectory(src, dest);
