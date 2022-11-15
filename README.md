@@ -24,8 +24,6 @@ This is a quick start integration guide. For detailed integration instructions r
 
 #### ================= Android =================
 
-##### For a new project
-
 1. create a new project
 2. switch platform: Android
 3. set package id (Player Settings -> Other Settings)
@@ -38,9 +36,6 @@ This is a quick start integration guide. For detailed integration instructions r
     - custom main manifest set to `Plugins/Android/AndroidManifest.xml`.
     - for 2020.3+ make sure custom gradle properties template set to `Plugins/Android/gradleTemplate.properties`
 7. If using push/ddl uncomment relevant lines in gradle templates and `AndroidManifest.xml`
-
-##### For the ExampleApp project
-
 8. Create `Assets/OptimoveConfigFiles/optimove.json`, set credentials
 9. If using push push add `google-services.json` to `Assets/OptimoveConfigFiles/google-services.json`
 10. (Optional) Export project
@@ -48,18 +43,11 @@ This is a quick start integration guide. For detailed integration instructions r
 
 #### ================= iOS =================
 
-##### For a new project
-
 1. create a new project
 2. switch platform to ios
 3. set bundle id (Player Settings -> Other Settings)
 4. import OptimoveSDKUnity package
 5. add OptimoveInit to MainCamera
-
-Continue with the step 6 below.
-
-##### If using ExampleApp project start here
-
 6. Create `Assets/OptimoveConfigFiles/optimove.json`, set credentials
 7. Move `Artifacts/OptimoveNativeAssets~` to `Assets` folder
 8. build project. Depending on values in `optimove.json` this automatically adds capabilities, NotificationServiceExtension and sets up Xcode project.
