@@ -56,20 +56,18 @@ This is a quick start integration guide. For detailed integration instructions r
 4. import OptimoveSDKUnity package
 5. add OptimoveInit to MainCamera
 
-##### For the ExampleApp project
+Continue with the step 6 below.
+
+##### If using ExampleApp project start here
 
 6. Create `Assets/OptimoveConfigFiles/optimove.json`, set credentials
-7. build project
+7. Move `Artifacts/OptimoveNativeAssets~` to `Assets` folder
+8. build project. Depending on values in `optimove.json` this automatically adds capabilities, NotificationServiceExtension and sets up Xcode project.
 
 ##### In Xcode project
 
-8. signing
-9. add NotificationServiceExtension (signing)
-10. paste NotificationService.m contents (copy from docs)
-11. Add App Groups capability to the extension target. Set group to `group.{bundleId}.optimove`
-12. Switch to New Build System in File -> Project Settings -> Build System (likely already on). This is necessary to use xcframeworks.
-13. Add `OptimoveSDK.xcframework` and `OptimoveSDKCore.xcframework` to UnityFramework target (drag under frameworks, copy files). Select `Do Not Embed` option. Same way add `OptimoveNotificationServiceExtension.xcframework` to the extension target. This is equivalent to adding the xcframeworks to `Link Binary With Libraries` section in `Build phases`.
-14. Add `OptimoveSDK.xcframework`, `OptimoveSDKCore.xcframework` and `OptimoveNotificationServiceExtension.xcframework` from UnitySDK to the application target. Select `Embed and sign` option. This is equivalent to adding the xcframeworks to `Link Binary With Libraries` and `Embed Frameworks` sections in `Build phases`. Simulator builds (as chosen in unity) don't have general tab, add frameworks in Build phases.
+9. signing (if was not set in Unity Player Settings)
+10. Switch to New Build System in File -> Project Settings -> Build System (likely already on). This is necessary to use xcframeworks.
 
 # License
 

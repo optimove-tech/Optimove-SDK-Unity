@@ -16,8 +16,8 @@ class SetUpGradleProject : IPostGenerateGradleAndroidProject
 
     private void MoveGoogleServices(string pathToUnityLibrary)
     {
-        string src = Path.Combine(pathToUnityLibrary, "src/main/assets/google-services.json");
-        string dest = Path.Combine(pathToUnityLibrary, "../launcher/google-services.json");
+        string src = Path.Combine(pathToUnityLibrary, "src", "main", "assets", "google-services.json");
+        string dest = Path.Combine(pathToUnityLibrary, "..", "launcher", "google-services.json");
         if (!File.Exists(src)){
             return;
         }
@@ -30,8 +30,8 @@ class SetUpGradleProject : IPostGenerateGradleAndroidProject
     }
 
     private void MoveOptimoveConfig(string pathToUnityLibrary) {
-        string src = Path.Combine(pathToUnityLibrary, "src/main/assets/optimove.xml");
-        string dest = Path.Combine(pathToUnityLibrary, "../launcher/src/main/res/values/optimove.xml");
+        string src = Path.Combine(pathToUnityLibrary, "src", "main", "assets", "optimove.xml");
+        string dest = Path.Combine(pathToUnityLibrary, "..", "launcher", "src", "main", "res", "values", "optimove.xml");
         if (!File.Exists(src))
         {
             throw new BuildFailedException("optimove.xml is missing in StreamingAssets");

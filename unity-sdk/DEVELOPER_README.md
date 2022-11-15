@@ -24,6 +24,9 @@ This is only relevant for Optimove developers
 - If Swift SDK was updated with new files, make sure these files are added to dynamic framework targets.
 - Create `OptimoveSDK.xcframework`, `OptimoveSDKCore.xcframework` and `OptimoveNotificationServiceExtension.xcframework` from Optimive-SDK-iOS project's combined targets.
 
-## ================= Unity ==================
+## ================= Workflow ==================
 
-To create `.unitypackage` open unity-sdk project and export package. `xcframeworks` are shipped separately alongside `.unitypackage`.
+- Make changes in ExampleApp
+- When ready port changes to `unity-sdk`
+- To create `.unitypackage` open `unity-sdk` project and export `Optimove-*.*.*.unitypackage`
+- `OptimoveNativeAssets~` folder is shipped separately alongside `.unitypackage`

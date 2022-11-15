@@ -130,6 +130,8 @@ namespace OptimoveSdk
                 return OptimoveGetVisitorId();
 #elif UNITY_ANDROID
                 return AndroidProxy.CallStatic<string>("getVisitorId");
+#else
+                return "unity-editor";
 #endif
         }
 
@@ -299,7 +301,7 @@ namespace OptimoveSdk
 #elif UNITY_ANDROID
                 result = AndroidProxy.CallStatic<string>("inAppPresentInboxMessage", new object[] { item.Id });
 #else
-                return OptimoveInAppPresentationResult.Failed;
+                result = "Failed";
 #endif
 
                 TextInfo info = CultureInfo.CurrentCulture.TextInfo;
