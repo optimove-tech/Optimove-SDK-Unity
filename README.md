@@ -56,10 +56,12 @@ This is a quick start integration guide. For detailed integration instructions r
 4. import OptimoveSDKUnity package
 5. add OptimoveInit to MainCamera
 
-##### For the ExampleApp project
+Continue with the step 6 below.
+
+##### If using ExampleApp project start here
 
 6. Create `Assets/OptimoveConfigFiles/optimove.json`, set credentials
-7. If building for iOS move `Artifacts/OptimoveNativeAssets~` to `Assets` folder
+7. Move `Artifacts/OptimoveNativeAssets~` to `Assets` folder
 8. build project. Depending on values in `optimove.json` this automatically adds capabilities, NotificationServiceExtension and sets up Xcode project.
 
 ##### In Xcode project
