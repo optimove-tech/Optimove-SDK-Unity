@@ -24,6 +24,8 @@ This is only relevant for Optimove developers
 - If Swift SDK was updated with new files, make sure these files are added to dynamic framework targets.
 - Create `OptimoveSDK.xcframework`, `OptimoveSDKCore.xcframework` and `OptimoveNotificationServiceExtension.xcframework` from Optimive-SDK-iOS project's combined targets.
 
+Xcframeworks in the current SDK version are built from the base iOS SDK `5.1.1`.
+
 ## ================= Workflow ==================
 
 - Make changes in ExampleApp
