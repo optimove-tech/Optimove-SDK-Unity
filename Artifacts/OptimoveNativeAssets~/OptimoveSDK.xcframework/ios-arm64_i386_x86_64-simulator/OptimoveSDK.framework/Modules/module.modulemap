@@ -1,0 +1,4 @@
+framework module OptimoveSDK {
+  header "OptimoveSDK-Swift.h"
+  requires objc
+}

@@ -1,0 +1,4 @@
+framework module OptimoveNotificationServiceExtension {
+  header "OptimoveNotificationServiceExtension-Swift.h"
+  requires objc
+}
