@@ -16,7 +16,7 @@ public class ButtonController : MonoBehaviour
     public Button m_setUserIdButton, m_setUserEmailButton, m_registerUserButton, m_getVisitorId, m_signOutUser;
 
     // registration
-    public Button m_pushRegister, m_pushUnregister, m_inAppConsentTrue, m_inAppConsentFalse;
+    public Button m_pushRequestDeviceToken, m_pushUnregister, m_inAppConsentTrue, m_inAppConsentFalse;
 
     // messaging
     public InputField m_inboxItemId;
@@ -41,7 +41,7 @@ public class ButtonController : MonoBehaviour
         m_signOutUser.onClick.AddListener(SignOutUser);
 
         // registration
-        m_pushRegister.onClick.AddListener(PushRegister);
+        m_pushRequestDeviceToken.onClick.AddListener(PushRequestDeviceToken);
         m_pushUnregister.onClick.AddListener(PushUnregister);
         m_inAppConsentTrue.onClick.AddListener(InAppConsentTrue);
         m_inAppConsentFalse.onClick.AddListener(InAppConsentFalse);
@@ -167,10 +167,10 @@ public class ButtonController : MonoBehaviour
     }
 
     // registration
-    void PushRegister()
+    void PushRequestDeviceToken()
     {
         AddLogMessage("Registering for push");
-        Optimove.Shared.PushRegister();
+        Optimove.Shared.PushRequestDeviceToken();
     }
 
     void PushUnregister()

@@ -223,12 +223,12 @@ namespace OptimoveSdk
 #endif
         }
 
-        public void PushRegister()
+        public void PushRequestDeviceToken()
         {
 #if UNITY_IOS
                 OptimoveUpdatePushRegistration(1);
 #elif UNITY_ANDROID
-                AndroidProxy.CallStatic("pushRegister");
+                AndroidProxy.CallStatic("pushRequestDeviceToken");
 #endif
         }
 

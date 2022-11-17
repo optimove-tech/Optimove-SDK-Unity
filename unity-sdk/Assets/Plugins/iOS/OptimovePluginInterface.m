@@ -85,7 +85,7 @@ void OptimoveSignOutUser() {
 
 void OptimoveUpdatePushRegistration(int status) {
     if (status == 1){
-        [Optimove_Unity pushRegister];
+        [Optimove_Unity pushRequestDeviceToken];
     }
     else if (status == 0){
         [Optimove_Unity pushUnregister];

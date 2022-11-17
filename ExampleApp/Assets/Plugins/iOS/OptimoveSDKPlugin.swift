@@ -186,8 +186,8 @@ typealias InboxSummaryResultHandler = ([AnyHashable : Any]) -> Void
 
     // ========================== MESSAGING ==========================
 
-    @objc(pushRegister)
-    static func pushRegister() {
+    @objc(pushRequestDeviceToken)
+    static func pushRequestDeviceToken() {
         Optimove.shared.pushRequestDeviceToken()
     }
 

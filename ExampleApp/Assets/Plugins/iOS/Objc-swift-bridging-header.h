@@ -18,7 +18,7 @@ typedef void (^InboxSummaryResultHandler)(NSDictionary* _Nonnull);
 + (NSString * _Nullable)getVisitorId;
 + (void)signOutUser;
 
-+ (void)pushRegister;
++ (void)pushRequestDeviceToken;
 + (void)pushUnregister;
 + (void)inAppUpdateConsent:(BOOL)consented;
 + (NSMutableArray<NSDictionary*>* _Nonnull)inAppGetInboxItems;

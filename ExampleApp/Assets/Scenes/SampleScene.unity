@@ -2586,7 +2586,7 @@ GameObject:
   - component: {fileID: 861175182}
   - component: {fileID: 861175181}
   m_Layer: 0
-  m_Name: Button_PushRegister
+  m_Name: Button_PushRequestDeviceToken
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2917,7 +2917,7 @@ MonoBehaviour:
   m_registerUserButton: {fileID: 777054676}
   m_getVisitorId: {fileID: 1776605919}
   m_signOutUser: {fileID: 1306747325}
-  m_pushRegister: {fileID: 861175181}
+  m_pushRequestDeviceToken: {fileID: 861175181}
   m_pushUnregister: {fileID: 1256248861}
   m_inAppConsentTrue: {fileID: 2031151768}
   m_inAppConsentFalse: {fileID: 1255868251}
