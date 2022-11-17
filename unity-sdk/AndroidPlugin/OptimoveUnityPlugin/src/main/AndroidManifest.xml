@@ -13,8 +13,7 @@
 
         <!-- Optimove FCM handler -->
         <service android:name="com.optimove.android.optimobile.FirebaseMessagingService" android:exported="false">
-            <intent-filter
-                android:priority="10">
+            <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
