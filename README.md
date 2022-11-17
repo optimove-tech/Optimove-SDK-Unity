@@ -1,9 +1,9 @@
 # Optimove-SDK-Unity
 ![GitHub](https://img.shields.io/github/license/optimove-tech/Optimove-SDK-Unity?style=flat-square)
 
-# Unity Version Support
+# Unity Version And Platform Support
 
-Optimove Unity SDK supports Unity >= 2019.3.
+Optimove Unity SDK supports Unity >= 2019.3. Supported platforms are iOS and Android.
 
 # Integration Guide
 
