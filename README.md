@@ -22,6 +22,9 @@ In this guide we will discuss the steps to integrate the Optimove Unity SDK with
 3. [Deferred Deep Linking](https://github.com/optimove-tech/Optimove-SDK-Unity/wiki/deferred-deep-linking)
 4. [Testing](https://github.com/optimove-tech/Optimove-SDK-Unity/wiki/testing-troubleshooting)
 
+> **NOTE**:
+To unlock these capabilities, you will need to have added the relevant OptiMobile channels to your Optimove package. If you can’t see this feature in your Optimove instance, contact your CSM to find out more.
+
 ### Integration summaries
 
 This is a quick start integration guide. For detailed integration instructions refer to the above.
