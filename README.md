@@ -1,33 +1,21 @@
 # Optimove-SDK-Unity
 ![GitHub](https://img.shields.io/github/license/optimove-tech/Optimove-SDK-Unity?style=flat-square)
 
-# Unity Version And Platform Support
+## Unity Version And Platform Support
 
 Optimove Unity SDK supports Unity >= 2019.3. Supported platforms are iOS and Android.
 
-# Integration Guide
+## Integration Guide
 
-In this guide we will discuss the steps to integrate the Optimove Unity SDK with your application.
+[Developer Docs](https://developer.optimove.com/docs/optimove-sdk-unity)
 
-### Setup
+## Repository structure
 
-1. [Initializing the SDK](https://github.com/optimove-tech/Optimove-SDK-Unity/wiki/Initializing-the-sdk)
-2. [Tracking customers](https://github.com/optimove-tech/Optimove-SDK-Unity/wiki/Tracking-customers)
-3. [Tracking events](https://github.com/optimove-tech/Optimove-SDK-Unity/wiki/Tracking-events)
+This repository contains 3 folders:
+1. `Artifacts` has everything necessary to integrate with Optimove Unity SDK. This includes `Optimove.unitypackage` and `OptimoveNativeAssets~` required if integrating with iOS.
+2. `unity-sdk` contains a Unity project used to create `Optimove.unitypackage`.
+3. `ExampleApp` is an example project with imported `Optimove.unitypackage`. Check `ExampleApp/README.md` if you want to run it.
 
-### Mobile Messaging
-
-1. [Push Setup](https://github.com/optimove-tech/Optimove-SDK-Unity/wiki/push-setup)
-2. [In-App Setup](https://github.com/optimove-tech/Optimove-SDK-Unity/wiki/in-app)
-3. [Deferred Deep Linking](https://github.com/optimove-tech/Optimove-SDK-Unity/wiki/deferred-deep-linking)
-4. [Testing](https://github.com/optimove-tech/Optimove-SDK-Unity/wiki/testing-troubleshooting)
-
-> **NOTE**:
-To unlock these capabilities, you will need to have added the relevant OptiMobile channels to your Optimove package. If you can’t see this feature in your Optimove instance, contact your CSM to find out more.
-
-### Integration summaries
-
-This is a quick start integration guide. For detailed integration instructions refer to the above.
 
 #### ================= Android =================
 
