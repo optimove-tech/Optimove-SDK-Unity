@@ -9,14 +9,6 @@ Optimove Unity SDK supports Unity >= 2019.3. Supported platforms are iOS and And
 
 [Developer Docs](https://developer.optimove.com/docs/optimove-sdk-unity)
 
-## Repository structure
-
-This repository contains 3 folders:
-1. `Artifacts` has everything necessary to integrate with Optimove Unity SDK. This includes `Optimove.unitypackage` and `OptimoveNativeAssets~` required if integrating with iOS.
-2. `unity-sdk` contains a Unity project used to create `Optimove.unitypackage`.
-3. `ExampleApp` is an example project with imported `Optimove.unitypackage`. Check `ExampleApp/README.md` if you want to run it.
-
-
 #### ================= Android =================
 
 1. create a new project
@@ -34,7 +26,6 @@ This repository contains 3 folders:
 8. Create `Assets/OptimoveConfigFiles/optimove.json`, set credentials
 9. If using push push add `google-services.json` to `Assets/OptimoveConfigFiles/google-services.json`
 10. (Optional) Export project
-
 
 #### ================= iOS =================
 
